@@ -6,7 +6,7 @@
 | 02 | yes | 1.0 | 1.0 | 16.1 | 3.01 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27; cloud runtime 18.1s |
 | 03 | yes | 1.0 | 1.0 | 11.9 | 2.56 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27; cloud runtime 14.3s |
 | 04 | yes | 1.0 | 1.0 | 213.7 | 11.94 | pending | pending | v2 (MPSCircuit vectorized-DM) after v1 Kraus-ladder failed the audit; awaiting re-stamp |
-| 05 | - | - | - | - | - | - | - | |
+| 05 | yes | 1.0 | 1.0 | 194.7 | 1.19 | pending | pending | cloud precheck passed; awaiting official stamp |
 | 06 | - | - | - | - | - | - | - | |
 | 07 | - | - | - | - | - | - | - | |
 | 08 | - | - | - | - | - | - | - | |
@@ -54,6 +54,14 @@ density-matrix evolution but rejected by the LLM audit as a raw-simulator
 bypass. Fitted probabilities p01=0.034033, p10=0.011037 (absolute errors
 3.3e-5 and 3.7e-5, tolerance 2e-4); table MSE 7.1e-3 -> 2.5e-8; fitted Kraus
 set trace-preserving to 1e-16.
+
+Challenge-05 physics summary (cloud precheck): exact sparse GS energy density
+-1.326896 (18 qubits, h=1.10); the ten-layer non-unitary filter cascade
+(exp(a_l X) on all qubits then exp(b_l ZZ) on brickwork bonds, state rescaled
+to unit norm after every layer, gate-level composition on disjoint supports)
+cools the energy density from -1.1720 to -1.32673, within 1.7e-4 of the exact
+ground state (criterion allows 0.5) and never below it; learned filter
+strengths grow monotonically toward the late layers.
 
 Challenge-02 physics summary (cloud precheck): exact sparse GS energy density
 -2.00036788; energy density optimized from -0.7412 to -1.9925 (gap 0.0079 to
