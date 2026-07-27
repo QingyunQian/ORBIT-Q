@@ -5,8 +5,8 @@
 | 01 | yes | 1.0 | 1.0 | 178.5 | 2.14 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27; cloud runtime 156.0s |
 | 02 | yes | 1.0 | 1.0 | 16.1 | 3.01 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27; cloud runtime 18.1s |
 | 03 | yes | 1.0 | 1.0 | 11.9 | 2.56 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27; cloud runtime 14.3s |
-| 04 | yes | 1.0 | 1.0 | 213.7 | 11.94 | pending | pending | v2 (MPSCircuit vectorized-DM) after v1 Kraus-ladder failed the audit; awaiting re-stamp |
-| 05 | yes | 1.0 | 1.0 | 194.7 | 1.19 | pending | pending | cloud precheck passed; awaiting official stamp |
+| 04 | yes | 1.0 | 1.0 | 196.3 | 11.94 | 1.0 (gpt-5.6-sol) | **1.0**# | v2 (MPSCircuit vectorized-DM); stamped reward.json shows 0.8646 from the pre-fix scorer's runtime multiplier |
+| 05 | yes | 1.0 | 1.0 | 101.2 | 1.19 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27 |
 | 06 | - | - | - | - | - | - | - | |
 | 07 | - | - | - | - | - | - | - | |
 | 08 | - | - | - | - | - | - | - | |
@@ -18,6 +18,15 @@
 Runtime is the evaluator's timed `run_solution(config)` wall time from the
 cloud precheck (4 vCPU x86_64); the official stamp records its own runtime in
 `challenge-NN/reward.json`.
+
+`#` on task 04: the stamp ran before commit cd60dd3, when
+`score_submission.py` still multiplied `runtime_score` into `reward` even
+though AGENTS.md/README had declared (since ea088db) that runtime is not a
+pass criterion; 0.8646 is exactly the runtime interpolation
+(300-196.25)/120 times an otherwise perfect 1.0 x 1.0 x 1.0. The scorer is
+now synced with the declared policy; a re-stamp would report 1.0. All three
+gating components (functional, static, audit) are 1.0, so the task counts as
+passed under the paper-facing definition.
 
 `T/T_ref` is the hardware-independent artifact-efficiency metric used by the
 paper figures: candidate runtime divided by the publication reference runtime,
