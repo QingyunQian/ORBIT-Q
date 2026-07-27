@@ -27,11 +27,6 @@ Do not edit, benchmark, or promote a second challenge in the same campaign.
 Do not switch targets after seeing results. Close the campaign, preserve its
 evidence, and start a separate campaign if another challenge is selected.
 
-The open-PR review on 2026-07-28 found one infrastructure PR, ORBIT-Q
-[#2](https://github.com/sxzgroup/ORBIT-Q/pull/2), and no challenge-specific
-improvement PR. This dated note is context only; inspect the live PR list when
-a new campaign starts.
-
 ## Acceptance target and research target
 
 Issue #78 accepts any runtime reduction that survives repeated measurement while preserving the task contract, functional checks, quantum semantics, and TensorCircuit-NG framework fidelity.
@@ -110,7 +105,7 @@ for a runtime-improvement claim until the promotion gate has valid pairs.
 
 The public manifest at `datasets/public/manifest.json` starts with `status: "not_built"`. Keep this gate closed until the setup maintainer adds real cases, computes hashes, assigns a version, validates task coverage, and changes the status to `ready`.
 
-Store hidden tuning records, holdout records, decryption keys, seeds, paths, and populated private configuration outside the Git checkout. Use `private-data.example.toml` as a shape reference. Never populate or commit that example.
+Store hidden tuning records, holdout records, decryption keys, seeds, paths, and populated private configuration outside the Git checkout. Use `private-data.example.toml` as a shape reference. Never /gpopulate or commit that example.
 
 ### Gate 3: repeated reference baselines for promotion
 
