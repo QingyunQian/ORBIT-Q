@@ -9,23 +9,20 @@ Primary sources:
 - [ORBIT-Q](https://github.com/sxzgroup/ORBIT-Q)
 - [Karpathy autoresearch](https://github.com/karpathy/autoresearch)
 
-## One-challenge campaign scope
+## One-task campaign scope
 
 The survey, dataset construction, environment setup, and reference bootstrap
-cover all 12 challenges. Each optimization campaign covers exactly one.
+cover all 12 tasks. Each optimization campaign covers exactly one.
 
 Before creating the first campaign worktree:
 
-1. Inspect the currently open pull requests on
-   [sxzgroup/ORBIT-Q](https://github.com/sxzgroup/ORBIT-Q/pulls).
-2. Choose one challenge that does not already have an open improvement,
-   optimization, performance, or runtime PR.
-3. Record that challenge as `challenge-XX` in `LOG.md`.
-4. Use the same challenge for every hypothesis worktree in the campaign.
+1. Choose one task.
+2. Record that task as `task-XX` in `LOG.md`.
+3. Use the same task for every hypothesis worktree in the campaign.
 
-Do not edit, benchmark, or promote a second challenge in the same campaign.
+Do not edit, benchmark, or promote a second task in the same campaign.
 Do not switch targets after seeing results. Close the campaign, preserve its
-evidence, and start a separate campaign if another challenge is selected.
+evidence, and start a separate campaign if another task is selected.
 
 ## Acceptance target and research target
 
@@ -69,7 +66,7 @@ documentation, source files, issues, and benchmark records for each claim.
 
 Compare the current state of the art for each workload. Record the best reported algorithmic scaling, runtime, memory use, implementation method, hardware, and software version when a source reports them. Mark missing comparisons as open evidence gaps.
 
-Include one section for each challenge from 01 through 12. Each section must identify:
+Include one section for each task from 01 through 12. Each section must identify:
 
 - the expert algorithm and required output contract;
 - the dominant operations and expected time or memory costs;
@@ -96,7 +93,7 @@ The dataset must contain:
 - a hidden tuning set that the trusted controller rotates;
 - a sealed final holdout that no proposal agent can query.
 
-Cover every challenge from 01 through 12. Preserve each task's scientific semantics and `run_solution(config)` contract. Validate every workload with the corresponding human expert solution before use.
+Cover every task from 01 through 12. Preserve each task's scientific semantics and `run_solution(config)` contract. Validate every workload with the corresponding human expert solution before use.
 
 If an immutable expert cannot run in the pinned setup, preserve that terminal
 result and require an independent trusted oracle to validate the workload
@@ -181,21 +178,21 @@ Redact private values from `LOG.md`, `results.tsv`, `run.log`, JSON reports, exc
 ## Worktree contract
 
 Use one fresh Git worktree for each falsifiable hypothesis on the campaign's
-single selected challenge. Start from the latest accepted commit; never recycle
+single selected task. Start from the latest accepted commit; never recycle
 a prior experiment worktree. Name branches:
 
 ```text
-codex/orbitbreakers/challenge-XX/<opaque-id>
+codex/orbitbreakers/task-XX/<opaque-id>
 ```
 
 Place worktrees under:
 
 ```text
-../ORBIT-Q-worktrees/orbitbreakers/challenge-XX/<opaque-id>
+../ORBIT-Q-worktrees/orbitbreakers/task-XX/<opaque-id>
 ```
 
-Do not combine two challenges or two performance hypotheses in one worktree.
-Every worktree in one campaign must use the same `challenge-XX`.
+Do not combine two tasks or two performance hypotheses in one worktree.
+Every worktree in one campaign must use the same `task-XX`.
 
 Each worktree must contain:
 
@@ -220,8 +217,8 @@ storage under a run-specific directory.
 
 For a solution experiment:
 
-1. Confirm that `src/solutions/challenge-XX/solution_N.py` is initialized from
-   `references/challenge-XX/solution_N.py`.
+1. Confirm that `src/solutions/task-XX/solution_N.py` is initialized from
+   `references/task-XX/solution_N.py`.
 2. Edit only that task's file under `src/solutions/`.
 3. Leave every file under `references/`, plus the evaluator, task manifest,
    runner, environment lock, workload data, and scoring policy unchanged.
@@ -314,11 +311,11 @@ Correctness and TensorCircuit-NG fidelity are hard gates. A fast invalid result 
 ## Experiment loop
 
 Run this loop after the survey, dataset, and trusted-controller knowledge gates
-pass and one eligible challenge has been selected. A closed repeated-baseline
+pass and one eligible task has been selected. A closed repeated-baseline
 gate permits hypotheses but not promotion:
 
 1. Create a fresh worktree and branch for one hypothesis on the campaign
-   challenge.
+   task.
 2. Create `LOG.md` and `results.tsv` from the templates.
 3. Select one hypothesis from `research/SURVEY.md` or prior sanitized evidence.
 4. Record the hypothesis, parent commit, and permitted data in `LOG.md`.
@@ -335,7 +332,7 @@ gate permits hypotheses but not promotion:
      --engine docker \
      --timeout 300 \
      --no-build \
-     --output results/challenge-XX-<opaque-id>
+     --output results/task-XX-<opaque-id>
    ```
 
 8. Run public development checks.
@@ -348,7 +345,7 @@ gate permits hypotheses but not promotion:
     candidate as `unbenchmarked` even when it restores correctness.
 13. Restore the prior best candidate after a regression or invalid result, but
     preserve the log, terminal status, and report.
-14. Start the next hypothesis for the same challenge in a new worktree.
+14. Start the next hypothesis for the same task in a new worktree.
     Continue until a human interrupts the research loop.
 
 If an implementation bug causes a crash, fix it and rerun the same hypothesis. If the hypothesis violates semantics or cannot pass after bounded debugging, record `crash` or `invalid`, restore the prior best candidate, and select another hypothesis.
