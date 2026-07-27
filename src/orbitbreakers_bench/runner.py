@@ -553,7 +553,7 @@ def _measurement_result(
         "-",
         solution_name.lower(),
     ).strip("-") or "solution"
-    stem = f"challenge-{task.id}-{solution_slug}-repeat-{repeat_index:03d}"
+    stem = f"task-{task.id}-{solution_slug}-repeat-{repeat_index:03d}"
     logs_dir.mkdir(parents=True, exist_ok=True)
     stdout_path = logs_dir / f"{stem}.stdout.log"
     stderr_path = logs_dir / f"{stem}.stderr.log"

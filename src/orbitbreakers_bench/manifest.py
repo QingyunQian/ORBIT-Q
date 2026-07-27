@@ -88,8 +88,8 @@ def _read_toml(path: Path) -> dict[str, Any]:
 
 def _normalize_task_id(value: Any, path: Path) -> str:
     text = str(value).strip()
-    if text.startswith("challenge-"):
-        text = text.removeprefix("challenge-")
+    if text.startswith("task-"):
+        text = text.removeprefix("task-")
     try:
         number = int(text)
     except ValueError as exc:
@@ -279,7 +279,7 @@ def load_task_manifest(
 def discover_tasks(root: Path, bench_config: BenchConfig | None = None) -> list[TaskConfig]:
     root = root.expanduser().resolve()
     config = bench_config or load_bench_config(root)
-    manifest_paths = sorted((root / "tasks").glob("challenge-*/task.toml"))
+    manifest_paths = sorted((root / "tasks").glob("task-*/task.toml"))
     tasks = [
         load_task_manifest(path, root=root, bench_config=config)
         for path in manifest_paths

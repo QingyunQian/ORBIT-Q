@@ -1,18 +1,18 @@
 # Experiment `<opaque-id>`
 
-Task: `challenge-XX`
+Task: `task-XX`
 
-Branch: `codex/orbitbreakers/challenge-XX/<opaque-id>`
+Branch: `codex/orbitbreakers/task-XX/<opaque-id>`
 
 Worktree:
 
-Campaign challenge: `challenge-XX`
+Campaign task: `task-XX`
 
 Live upstream PR list inspected at:
 
-Confirm no open improvement PR targets this challenge:
+Confirm no open improvement PR targets this task:
 
-Confirm every prior worktree in this campaign targets the same challenge:
+Confirm every prior worktree in this campaign targets the same task:
 
 ## Hypothesis
 
@@ -25,7 +25,7 @@ Latest accepted parent commit:
 
 Hypothesis commit:
 
-Candidate file: `src/solutions/challenge-XX/solution_N.py`
+Candidate file: `src/solutions/task-XX/solution_N.py`
 
 Candidate SHA-256:
 

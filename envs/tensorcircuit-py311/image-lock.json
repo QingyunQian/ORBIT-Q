@@ -4,7 +4,7 @@
   "platform": "linux/arm64",
   "benchmark_image": "orbitbreakers-expert-benchmarks:tensorcircuit-py311",
   "benchmark_image_id": "sha256:623dc47116d71b5f4e2879a61def7beada982438cb2df45de8367d92f7ec242c",
-  "reference_image": "challenge-benchmark-quantum-tensorcircuit:py311",
+  "reference_image": "task-benchmark-quantum-tensorcircuit:py311",
   "reference_image_id": "sha256:623dc47116d71b5f4e2879a61def7beada982438cb2df45de8367d92f7ec242c",
   "captured_on": "2026-07-27",
   "requirements": "requirements.lock",

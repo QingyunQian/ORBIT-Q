@@ -90,7 +90,7 @@ def create_benchmark(root: Path, *, task_count: int = 1) -> None:
 
     for number in range(1, task_count + 1):
         task_id = f"{number:02d}"
-        task = root / "tasks" / f"challenge-{task_id}"
+        task = root / "tasks" / f"task-{task_id}"
         evaluator_dir = task / "evaluator"
         solution_dir = task / "solutions" / "optimized"
         evaluator_dir.mkdir(parents=True)
@@ -128,7 +128,7 @@ def add_solution(
     source: str = SOLUTION_SOURCE,
 ) -> Path:
     number = int(task_id)
-    task = root / "tasks" / f"challenge-{task_id}"
+    task = root / "tasks" / f"task-{task_id}"
     solution_dir = task / "solutions" / name
     solution_dir.mkdir(parents=True, exist_ok=True)
     solution = solution_dir / f"solution_{number}_{name}.py"
@@ -206,7 +206,7 @@ class ManifestTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
             create_benchmark(root)
-            manifest = root / "tasks" / "challenge-01" / "task.toml"
+            manifest = root / "tasks" / "task-01" / "task.toml"
             manifest.write_text(
                 manifest.read_text(encoding="utf-8").replace(
                     'path = "solutions/optimized/solution_1.py"',
@@ -1025,13 +1025,13 @@ class CliTests(unittest.TestCase):
             optimized = (
                 root
                 / "tasks"
-                / "challenge-01"
+                / "task-01"
                 / "solutions"
                 / "optimized"
                 / "solution_1.py"
             )
             optimized.write_text(FAILING_SOLUTION_SOURCE, encoding="utf-8")
-            manifest = root / "tasks" / "challenge-01" / "task.toml"
+            manifest = root / "tasks" / "task-01" / "task.toml"
             manifest.write_text(
                 manifest.read_text(encoding="utf-8").replace(
                     _sha256(SOLUTION_SOURCE),

@@ -1,0 +1,27 @@
+schema_version = 1
+id = "11"
+title = "Spin-1 Haldane-Chain VQE With String-Order Verification"
+environment = "tensorcircuit-py311"
+evaluator = "evaluator/evaluate_11.py"
+evaluator_sha256 = "de70880ec00a86a7123aed14651b33401a7f872f667fb1598bd3ba191e29353b"
+source_evaluator_sha256 = "fe2b05d62b9bd40ad233cc68a3682fd3aca6d362bf2b4a3dbb22b4f535e01300"
+timing_precision_digits = 6
+problem = "problem.md"
+module = "solution_11"
+timeout_sec = 300
+
+[[solutions]]
+name = "reference"
+path = "../../references/task-11/solution_11.py"
+module = "solution_11"
+kind = "publication-human-expert-reference"
+sha256 = "087c7a2894b4f0383bfc476f835933940cdfd2d9812f814adede3a39375b3f00"
+source_path = "tasks/task-11/solution/solution_11.py"
+
+[[solutions]]
+name = "optimized"
+path = "../../src/solutions/task-11/solution_11.py"
+module = "solution_11"
+kind = "autoresearch-optimized-candidate"
+initialized_from = "reference"
+initialized_from_sha256 = "087c7a2894b4f0383bfc476f835933940cdfd2d9812f814adede3a39375b3f00"

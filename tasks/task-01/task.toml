@@ -1,0 +1,35 @@
+schema_version = 1
+id = "01"
+title = "DMRG-MPS Input With Variational Circuit Refinement"
+environment = "tensorcircuit-py311"
+evaluator = "evaluator/evaluate_1.py"
+evaluator_sha256 = "dd143d07e9e9f7298f9263b5d34346c816e293cc5eccc9f80177f90bb608e63e"
+source_evaluator_sha256 = "c0b6bea94044e3f6cac12e5f48a54255097bec95624325861685c47adda66fb6"
+timing_precision_digits = 6
+problem = "problem.md"
+module = "solution_1"
+timeout_sec = 300
+
+[[solutions]]
+name = "reference"
+path = "../../references/task-01/solution_1.py"
+module = "solution_1"
+kind = "publication-human-expert-reference"
+sha256 = "80011df1b68a009b489982a8f5c1ec47f693a187f923a5c906fb2b6f4d51c2a1"
+source_path = "tasks/task-01/solution/solution_1.py"
+
+[[solutions]]
+name = "optimized"
+path = "../../src/solutions/task-01/solution_1.py"
+module = "solution_1"
+kind = "autoresearch-optimized-candidate"
+initialized_from = "reference"
+initialized_from_sha256 = "80011df1b68a009b489982a8f5c1ec47f693a187f923a5c906fb2b6f4d51c2a1"
+
+[[solutions]]
+name = "mpo"
+path = "../../src/solutions/task-01/variants/solution_1_mpo.py"
+module = "solution_1_mpo"
+kind = "reference-derived-variant"
+sha256 = "293b2391bc64681bdb73b8066f4fe3e5fe2521665d2571fd47608a4ac6b7b316"
+source_path = "optimized_sloutions/task-01/solution_1_mpo.py"

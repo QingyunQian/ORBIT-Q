@@ -1,0 +1,27 @@
+schema_version = 1
+id = "07"
+title = "16-Qubit Measurement-Feedback VQE"
+environment = "tensorcircuit-py311"
+evaluator = "evaluator/evaluate_7.py"
+evaluator_sha256 = "69717d98a90a7e53c31686128b3ef3e7cea3c96685ec538662a12163fe324b31"
+source_evaluator_sha256 = "c42faa56d800246340c2e3a2f5809afe60222a8c3a78bf8402705ca5a1f16986"
+timing_precision_digits = 6
+problem = "problem.md"
+module = "solution_7"
+timeout_sec = 300
+
+[[solutions]]
+name = "reference"
+path = "../../references/task-07/solution_7.py"
+module = "solution_7"
+kind = "publication-human-expert-reference"
+sha256 = "ac483319363f3c386a7646eaa867670ae3d3cd687f8517e6d4201e69240ff0a3"
+source_path = "tasks/task-07/solution/solution_7.py"
+
+[[solutions]]
+name = "optimized"
+path = "../../src/solutions/task-07/solution_7.py"
+module = "solution_7"
+kind = "autoresearch-optimized-candidate"
+initialized_from = "reference"
+initialized_from_sha256 = "ac483319363f3c386a7646eaa867670ae3d3cd687f8517e6d4201e69240ff0a3"

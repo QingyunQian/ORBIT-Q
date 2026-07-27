@@ -61,7 +61,7 @@ def _parser() -> argparse.ArgumentParser:
         "run",
         help="Run one task or the complete 12-task expert benchmark.",
     )
-    run_parser.add_argument("task", help="Task id (01, 1, challenge-01) or all.")
+    run_parser.add_argument("task", help="Task id (01, 1, task-01) or all.")
     run_parser.add_argument(
         "--solution",
         default="optimized",
@@ -101,8 +101,8 @@ def _normalize_task_selector(value: str) -> str:
     value = value.strip().lower()
     if value == "all":
         return value
-    if value.startswith("challenge-"):
-        value = value.removeprefix("challenge-")
+    if value.startswith("task-"):
+        value = value.removeprefix("task-")
     try:
         number = int(value)
     except ValueError as exc:

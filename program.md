@@ -10,8 +10,8 @@ After those gates pass, use one fresh Git worktree for one hypothesis, edit one
 file under `src/solutions/`, run it against the immutable `reference` with
 `./bench`, and maintain the worktree's tracked `LOG.md`. Before the first
 worktree, inspect the live open PRs on `sxzgroup/ORBIT-Q` and select exactly one
-challenge without an active improvement PR. Keep every worktree in this
-campaign on that challenge. Repeated passing baselines are required before
+task without an active improvement PR. Keep every worktree in this
+campaign on that task. Repeated passing baselines are required before
 promotion or an improvement claim, not before a candidate hypothesis.
 
 Treat `GOAL.md` as the authority when another launcher prompt conflicts with

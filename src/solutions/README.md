@@ -1,6 +1,6 @@
 # Optimized expert solutions
 
-Each `challenge-XX/solution_N.py` starts as a byte-for-byte copy of the frozen
+Each `task-XX/solution_N.py` starts as a byte-for-byte copy of the frozen
 human expert reference. Autoresearch agents edit one of these files in a
 task-specific Git worktree.
 

@@ -17,7 +17,7 @@ The 2026-07-28 recheck found both root checkouts clean on `main` at the commits
 above. The mixed-case path `/Users/hmyuuu/workspace/IntrQCtrl` does not exist;
 the current checkout is the lowercase `intr-qctrl` path. BooleanRazor remains
 the materialized autoresearch precedent. Current IntrQCtrl is a standalone
-challenge solution without `GOAL.md`, an autoresearch directory, a benchmark
+task solution without `GOAL.md`, an autoresearch directory, a benchmark
 runner, or a log template.
 
 ## Conventions adopted
@@ -27,7 +27,7 @@ runner, or a log template.
 - Use separate custodian, proposer, and evaluator roles.
 - Keep hidden data genuinely unreadable by proposal processes.
 - Use a fresh worktree for one falsifiable hypothesis.
-- Bind one campaign to one challenge and keep every worktree on that challenge.
+- Bind one campaign to one task and keep every worktree on that task.
 - Commit the hypothesis and code before evaluation, then commit sanitized
   evidence separately.
 - Keep `LOG.md` append-only and retain failures, timeouts, and invalid runs.
@@ -52,7 +52,7 @@ runner, or a log template.
 
 BooleanRazor has useful protocol tests and experiment-record discipline, but
 its current baseline and sealed-evaluation workflow is incomplete. IntrQCtrl's
-current main branch is a standalone challenge solution, not an autoresearch
+current main branch is a standalone task solution, not an autoresearch
 repository. Its broader blind-benchmark runner and autoresearch files were
 planned historically but were not committed as working infrastructure.
 

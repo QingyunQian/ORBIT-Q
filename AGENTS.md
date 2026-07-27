@@ -2,13 +2,13 @@
 
 Read `GOAL.md` and `program.md` before changing solution or framework code.
 
-## One campaign, one challenge
+## One campaign, one task
 
 Before the first experiment, inspect the live open pull requests on
-`sxzgroup/ORBIT-Q` and select one challenge without an active improvement PR.
+`sxzgroup/ORBIT-Q` and select one task without an active improvement PR.
 Record it in `LOG.md`. Every worktree and hypothesis in the campaign must stay
-on that challenge. Start a separate campaign instead of switching or combining
-challenges.
+on that task. Start a separate campaign instead of switching or combining
+tasks.
 
 ## Gates before optimization
 
@@ -38,14 +38,14 @@ During a solution experiment, do not edit:
 - `datasets/`;
 - validity, timing, or result-parsing rules.
 
-Edit exactly one `src/solutions/challenge-XX/solution_N.py`. Preserve
+Edit exactly one `src/solutions/task-XX/solution_N.py`. Preserve
 `run_solution(config)`, the output contract, TensorCircuit-NG semantics, and all
 required work.
 
 ## Experiment discipline
 
-Use one fresh Git worktree and `codex/orbitbreakers/challenge-XX/<opaque-id>`
-branch per hypothesis on the campaign challenge. Start from the latest accepted
+Use one fresh Git worktree and `codex/orbitbreakers/task-XX/<opaque-id>`
+branch per hypothesis on the campaign task. Start from the latest accepted
 commit. Create tracked `LOG.md` from `autoresearch/LOG_TEMPLATE.md`; keep raw
 reports, `results.tsv`, and `run.log` untracked.
 

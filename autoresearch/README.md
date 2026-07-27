@@ -34,15 +34,15 @@ small documented aggregate schema and rejects private fields. Its
 `research_ready` field controls whether candidate hypotheses may begin;
 `promotion_ready` additionally requires the repeated-baseline evidence.
 
-## Select one campaign challenge
+## Select one campaign task
 
 Inspect the live open pull requests on `sxzgroup/ORBIT-Q`. Choose exactly one
-challenge that has no active improvement, optimization, performance, or runtime
+task that has no active improvement, optimization, performance, or runtime
 PR. Record the selection and inspection time in every `LOG.md`.
 
-All worktrees in the campaign must target that same challenge. Do not switch
+All worktrees in the campaign must target that same task. Do not switch
 tasks after observing benchmark results, and do not combine tasks in a
-worktree. A different challenge requires a separate campaign.
+worktree. A different task requires a separate campaign.
 
 ## Verify and establish the references
 
@@ -68,19 +68,19 @@ gate for that task.
 ## Create one worktree for one hypothesis
 
 Run the following from the `OrbitBreakersExpertBenchmarks` repository root.
-Use the campaign challenge, a fresh opaque ID, and the latest accepted commit:
+Use the campaign task, a fresh opaque ID, and the latest accepted commit:
 
 ```bash
 git worktree add \
-  ../OrbitBreakersExpertBenchmarks-worktrees/challenge-01/<opaque-id> \
-  -b codex/orbitbreakers/challenge-01/<opaque-id> \
+  ../OrbitBreakersExpertBenchmarks-worktrees/task-01/<opaque-id> \
+  -b codex/orbitbreakers/task-01/<opaque-id> \
   <accepted-commit>
 ```
 
 Enter that worktree and bootstrap its local files:
 
 ```bash
-cd ../OrbitBreakersExpertBenchmarks-worktrees/challenge-01/<opaque-id>
+cd ../OrbitBreakersExpertBenchmarks-worktrees/task-01/<opaque-id>
 cp autoresearch/LOG_TEMPLATE.md LOG.md
 cp autoresearch/results.template.tsv results.tsv
 uv sync --index-url https://pypi.org/simple
@@ -93,12 +93,12 @@ cap in `LOG.md` before running data-backed experiments. Commit `LOG.md` and the
 single candidate change before evaluation:
 
 ```bash
-git add LOG.md src/solutions/challenge-01/solution_1.py
-git commit -m "experiment: challenge 01 <opaque-id>"
+git add LOG.md src/solutions/task-01/solution_1.py
+git commit -m "experiment: task 01 <opaque-id>"
 ```
 
 Never reuse this worktree for a second hypothesis. Never mix two tasks in it,
-and keep later campaign worktrees on the same challenge.
+and keep later campaign worktrees on the same task.
 
 ## Run one paired experiment
 
@@ -113,7 +113,7 @@ reference is under `references/`:
   --engine docker \
   --timeout 300 \
   --no-build \
-  --output results/challenge-01-<opaque-id> \
+  --output results/task-01-<opaque-id> \
   > run.log 2>&1
 ```
 

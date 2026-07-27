@@ -47,7 +47,7 @@ Download external inputs from their primary source when a task needs them. Recor
 
 ## Coverage and separation
 
-Cover challenges 01 through 12 in all three tiers. Attempt each record with the
+Cover tasks 01 through 12 in all three tiers. Attempt each record with the
 matching human expert solution in the pinned environment. If that immutable
 expert has a reproducible setup failure, retain the failure and use an
 independent trusted oracle to validate the record's scientific semantics before

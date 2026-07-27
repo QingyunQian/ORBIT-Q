@@ -1,0 +1,27 @@
+schema_version = 1
+id = "12"
+title = "Variational Circuit to MPS Overlap Optimization"
+environment = "tensorcircuit-py311"
+evaluator = "evaluator/evaluate_12.py"
+evaluator_sha256 = "08940a5fabfd88a957c467edabfbe6faa7b766f38b4d518557e50e94fcf3b277"
+source_evaluator_sha256 = "d94d0ac35da6929d2643ecf1645cff8a24eb688c241105943820b42227ec0691"
+timing_precision_digits = 6
+problem = "problem.md"
+module = "solution_12"
+timeout_sec = 300
+
+[[solutions]]
+name = "reference"
+path = "../../references/task-12/solution_12.py"
+module = "solution_12"
+kind = "publication-human-expert-reference"
+sha256 = "10cfd516bc250633f4675653e0d8986002e56f4d5916a9c2972c1085193f5d38"
+source_path = "tasks/task-12/solution/solution_12.py"
+
+[[solutions]]
+name = "optimized"
+path = "../../src/solutions/task-12/solution_12.py"
+module = "solution_12"
+kind = "autoresearch-optimized-candidate"
+initialized_from = "reference"
+initialized_from_sha256 = "10cfd516bc250633f4675653e0d8986002e56f4d5916a9c2972c1085193f5d38"

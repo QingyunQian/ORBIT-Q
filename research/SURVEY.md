@@ -23,8 +23,8 @@ reproduced comparator under matched conditions.
 Primary scope:
 
 - [Quantum Harness issue #78](https://github.com/QuantumBFS/quantum.harness/issues/78)
-- The task contracts and evaluators under `../tasks/challenge-XX/`
-- The human expert sources under `../references/challenge-XX/`
+- The task contracts and evaluators under `../tasks/task-XX/`
+- The human expert sources under `../references/task-XX/`
 
 ## Cited-evidence checklist
 
@@ -59,99 +59,99 @@ Primary scope:
 | Quimb | TODO | TODO | TODO |
 | Benchmark image | TODO | TODO | TODO |
 
-## Challenge 01: DMRG-MPS Input With Variational Circuit Refinement
+## Task 01: DMRG-MPS Input With Variational Circuit Refinement
 
-- Expert and contract: TODO, cite `../references/challenge-01/solution_1.py`,
-  `../tasks/challenge-01/problem.md`, and the evaluator.
+- Expert and contract: TODO, cite `../references/task-01/solution_1.py`,
+  `../tasks/task-01/problem.md`, and the evaluator.
 - Algorithm, complexity, and memory: TODO with cited evidence.
 - Timed framework path and compile behavior: TODO with cited source symbols.
 - Profiled bottleneck, hypotheses, and preserved semantics: TODO.
 
-## Challenge 02: Entanglement-Profile-Constrained VQE
+## Task 02: Entanglement-Profile-Constrained VQE
 
-- Expert and contract: TODO, cite `../references/challenge-02/solution_2.py`,
-  `../tasks/challenge-02/problem.md`, and the evaluator.
+- Expert and contract: TODO, cite `../references/task-02/solution_2.py`,
+  `../tasks/task-02/problem.md`, and the evaluator.
 - Algorithm, complexity, and memory: TODO with cited evidence.
 - Timed framework path and compile behavior: TODO with cited source symbols.
 - Profiled bottleneck, hypotheses, and preserved semantics: TODO.
 
-## Challenge 03: Probability-Aware Post-Selected Many-Body Cooling
+## Task 03: Probability-Aware Post-Selected Many-Body Cooling
 
-- Expert and contract: TODO, cite `../references/challenge-03/solution_3.py`,
-  `../tasks/challenge-03/problem.md`, and the evaluator.
+- Expert and contract: TODO, cite `../references/task-03/solution_3.py`,
+  `../tasks/task-03/problem.md`, and the evaluator.
 - Algorithm, complexity, and memory: TODO with cited evidence.
 - Timed framework path and compile behavior: TODO with cited source symbols.
 - Profiled bottleneck, hypotheses, and preserved semantics: TODO.
 
-## Challenge 04: Trainable Kraus Noise Calibration From Multi-Circuit Data
+## Task 04: Trainable Kraus Noise Calibration From Multi-Circuit Data
 
-- Expert and contract: TODO, cite `../references/challenge-04/solution_4.py`,
-  `../tasks/challenge-04/problem.md`, and the evaluator.
+- Expert and contract: TODO, cite `../references/task-04/solution_4.py`,
+  `../tasks/task-04/problem.md`, and the evaluator.
 - Algorithm, complexity, and memory: TODO with cited evidence.
 - Timed framework path and compile behavior: TODO with cited source symbols.
 - Profiled bottleneck, hypotheses, and preserved semantics: TODO.
 
-## Challenge 05: Custom Non-Unitary Gate Cooling
+## Task 05: Custom Non-Unitary Gate Cooling
 
-- Expert and contract: TODO, cite `../references/challenge-05/solution_5.py`,
-  `../tasks/challenge-05/problem.md`, and the evaluator.
+- Expert and contract: TODO, cite `../references/task-05/solution_5.py`,
+  `../tasks/task-05/problem.md`, and the evaluator.
 - Algorithm, complexity, and memory: TODO with cited evidence.
 - Timed framework path, OMECo path, and compile behavior: TODO with cited source
   symbols.
 - Profiled bottleneck, hypotheses, and preserved semantics: TODO.
 
-## Challenge 06: Digital-Analog Hybrid VQE With Trainable Analog Blocks
+## Task 06: Digital-Analog Hybrid VQE With Trainable Analog Blocks
 
-- Expert and contract: TODO, cite `../references/challenge-06/solution_6.py`,
-  `../tasks/challenge-06/problem.md`, and the evaluator.
+- Expert and contract: TODO, cite `../references/task-06/solution_6.py`,
+  `../tasks/task-06/problem.md`, and the evaluator.
 - Algorithm, complexity, and memory: TODO with cited evidence.
 - Timed framework path and compile behavior: TODO with cited source symbols.
 - Profiled bottleneck, hypotheses, and preserved semantics: TODO.
 
-## Challenge 07: 16-Qubit Measurement-Feedback VQE
+## Task 07: 16-Qubit Measurement-Feedback VQE
 
-- Expert and contract: TODO, cite `../references/challenge-07/solution_7.py`,
-  `../tasks/challenge-07/problem.md`, and the evaluator.
+- Expert and contract: TODO, cite `../references/task-07/solution_7.py`,
+  `../tasks/task-07/problem.md`, and the evaluator.
 - Algorithm, complexity, and memory: TODO with cited evidence.
 - Timed framework path and compile behavior: TODO with cited source symbols.
 - Profiled bottleneck, hypotheses, and preserved semantics: TODO.
 
-## Challenge 08: 7x7 Mixed-Axis Grid Tensor-Network Sampling
+## Task 08: 7x7 Mixed-Axis Grid Tensor-Network Sampling
 
-- Expert and contract: TODO, cite `../references/challenge-08/solution_8.py`,
-  `../tasks/challenge-08/problem.md`, and the evaluator.
+- Expert and contract: TODO, cite `../references/task-08/solution_8.py`,
+  `../tasks/task-08/problem.md`, and the evaluator.
 - Algorithm, contraction scaling, and memory: TODO with cited evidence.
 - Timed contractor path and compile behavior: TODO with cited source symbols.
 - Profiled bottleneck, hypotheses, and preserved semantics: TODO.
 
-## Challenge 09: Random Local Light-Cone Optimization
+## Task 09: Random Local Light-Cone Optimization
 
-- Expert and contract: TODO, cite `../references/challenge-09/solution_9.py`,
-  `../tasks/challenge-09/problem.md`, and the evaluator.
+- Expert and contract: TODO, cite `../references/task-09/solution_9.py`,
+  `../tasks/task-09/problem.md`, and the evaluator.
 - Algorithm, complexity, and memory: TODO with cited evidence.
 - Timed framework path and compile behavior: TODO with cited source symbols.
 - Profiled bottleneck, hypotheses, and preserved semantics: TODO.
 
-## Challenge 10: 22-Qubit VQE With an 18-Qubit Controlled-Z Hyperedge
+## Task 10: 22-Qubit VQE With an 18-Qubit Controlled-Z Hyperedge
 
-- Expert and contract: TODO, cite `../references/challenge-10/solution_10.py`,
-  `../tasks/challenge-10/problem.md`, and the evaluator.
+- Expert and contract: TODO, cite `../references/task-10/solution_10.py`,
+  `../tasks/task-10/problem.md`, and the evaluator.
 - Algorithm, complexity, and memory: TODO with cited evidence.
 - Timed framework path and compile behavior: TODO with cited source symbols.
 - Profiled bottleneck, hypotheses, and preserved semantics: TODO.
 
-## Challenge 11: Spin-1 Haldane-Chain VQE With String-Order Verification
+## Task 11: Spin-1 Haldane-Chain VQE With String-Order Verification
 
-- Expert and contract: TODO, cite `../references/challenge-11/solution_11.py`,
-  `../tasks/challenge-11/problem.md`, and the evaluator.
+- Expert and contract: TODO, cite `../references/task-11/solution_11.py`,
+  `../tasks/task-11/problem.md`, and the evaluator.
 - Algorithm, complexity, and memory: TODO with cited evidence.
 - Timed framework path and compile behavior: TODO with cited source symbols.
 - Profiled bottleneck, hypotheses, and preserved semantics: TODO.
 
-## Challenge 12: Variational Circuit to MPS Overlap Optimization
+## Task 12: Variational Circuit to MPS Overlap Optimization
 
-- Expert and contract: TODO, cite `../references/challenge-12/solution_12.py`,
-  `../tasks/challenge-12/problem.md`, and the evaluator.
+- Expert and contract: TODO, cite `../references/task-12/solution_12.py`,
+  `../tasks/task-12/problem.md`, and the evaluator.
 - Algorithm, complexity, and memory: TODO with cited evidence.
 - Timed framework and MPS contraction paths: TODO with cited source symbols.
 - Profiled bottleneck, hypotheses, and preserved semantics: TODO.

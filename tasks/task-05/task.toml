@@ -1,0 +1,35 @@
+schema_version = 1
+id = "05"
+title = "Custom Non-Unitary Gate Cooling"
+environment = "tensorcircuit-py311"
+evaluator = "evaluator/evaluate_5.py"
+evaluator_sha256 = "dd0742cf402827beec19328bc9cf090e80a08973cf9303fd7d524a4f4cd37402"
+source_evaluator_sha256 = "928cf131719d0c867a1cecb9f2d70fe0d8cf9908d207d1c5d2c7343753253afb"
+timing_precision_digits = 6
+problem = "problem.md"
+module = "solution_5"
+timeout_sec = 300
+
+[[solutions]]
+name = "reference"
+path = "../../references/task-05/solution_5.py"
+module = "solution_5"
+kind = "publication-human-expert-reference"
+sha256 = "ccafe626865ee39b651adaeead86b8bf6f541e3f1426da4842da92b6a0ee015f"
+source_path = "tasks/task-05/solution/solution_5.py"
+
+[[solutions]]
+name = "optimized"
+path = "../../src/solutions/task-05/solution_5.py"
+module = "solution_5"
+kind = "autoresearch-optimized-candidate"
+initialized_from = "reference"
+initialized_from_sha256 = "ccafe626865ee39b651adaeead86b8bf6f541e3f1426da4842da92b6a0ee015f"
+
+[[solutions]]
+name = "omeco"
+path = "../../src/solutions/task-05/variants/solution_5_omeco.py"
+module = "solution_5_omeco"
+kind = "reference-derived-variant"
+sha256 = "aaed11b0895b437d91ad19b8c6f27bb17515fb4748ba54a77cd7f821c5436aac"
+source_path = "optimized_sloutions/task-05/solution_5_omeco.py"

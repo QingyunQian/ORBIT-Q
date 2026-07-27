@@ -1,0 +1,27 @@
+schema_version = 1
+id = "08"
+title = "7x7 Mixed-Axis Grid Tensor-Network Sampling"
+environment = "tensorcircuit-py311"
+evaluator = "evaluator/evaluate_8.py"
+evaluator_sha256 = "bffda6b012b07fd1cb8d5a1ec8a763bba4f1b967e5adc0d2b704e6ae99de9c41"
+source_evaluator_sha256 = "15ec500489f269c8292cbeb742691a2dabb7ba9d99da706ad15fb88beebe3211"
+timing_precision_digits = 6
+problem = "problem.md"
+module = "solution_8"
+timeout_sec = 300
+
+[[solutions]]
+name = "reference"
+path = "../../references/task-08/solution_8.py"
+module = "solution_8"
+kind = "publication-human-expert-reference"
+sha256 = "0b0df74257e8f55d717ca29bb36e2edbb803206e9b2966fa423fefca9f15c311"
+source_path = "tasks/task-08/solution/solution_8.py"
+
+[[solutions]]
+name = "optimized"
+path = "../../src/solutions/task-08/solution_8.py"
+module = "solution_8"
+kind = "autoresearch-optimized-candidate"
+initialized_from = "reference"
+initialized_from_sha256 = "0b0df74257e8f55d717ca29bb36e2edbb803206e9b2966fa423fefca9f15c311"

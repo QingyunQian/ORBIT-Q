@@ -1,8 +1,8 @@
 # OrbitBreakersExpertBenchmarks
 
 This repository packages the twelve ORBIT-Q human expert TensorCircuit-NG
-solutions as a reproducible runtime benchmark. It also registers the Challenge
-01 MPO variant and Challenge 05 OMECo variant without replacing the publication
+solutions as a reproducible runtime benchmark. It also registers the Task
+01 MPO variant and Task 05 OMECo variant without replacing the publication
 references.
 
 The benchmark implements the measurement contract from
@@ -117,7 +117,7 @@ Use `--engine local` only when the active Python environment exactly matches
 | `./bench verify` | Check the 12-task inventory, paths, entrypoints, and hashes |
 | `./bench env doctor` | Inspect Docker, image availability, and resource fit |
 | `./bench env build` | Build the pinned TensorCircuit-NG image |
-| `./bench run TASK` | Run `01` through `12`, `challenge-XX`, or `all`; defaults to `optimized` |
+| `./bench run TASK` | Run `01` through `12`, `task-XX`, or `all`; defaults to `optimized` |
 
 `run` accepts `--repeat`, `--solution`, `--candidate`, `--compare-to`,
 `--timeout`, `--engine`, `--output`, `--no-build`, and `--dry-run`. The default
@@ -148,14 +148,14 @@ solutions. The reference and optimized source snapshots are staged before the
 container starts. The runner records controller wall time as diagnostic data
 and uses `End-to-end solution time` as the comparison metric.
 
-For a challenge submission, run reference and optimized sources on the same idle
+For a task submission, run reference and optimized sources on the same idle
 host, container session, image ID, CPU allocation, and repeat count. Use at least
 six paired runs. Report each timing, mean, median, sample standard deviation,
 standard error, percentage improvement, and paired speedup. A failed,
 unpaired, or timed-out candidate has no eligible runtime.
 
 All-task JSON keeps these comparison metrics per task; it does not pool runtime
-ratios or paired speedups across heterogeneous challenges.
+ratios or paired speedups across heterogeneous tasks.
 
 ## Environment
 
@@ -183,12 +183,12 @@ precision so standard errors are not rounded to 10 milliseconds.
 ```text
 bench                         single CLI
 bench.toml                    environment and runner defaults
-tasks/challenge-XX/
+tasks/task-XX/
   problem.md                  public task statement
   task.toml                   solution, evaluator, hash, and timeout registry
   evaluator/evaluate_N.py     functional evaluator; timer printed to 6 decimals
-references/challenge-XX/      immutable publication human expert
-src/solutions/challenge-XX/   editable optimization starting point
+references/task-XX/      immutable publication human expert
+src/solutions/task-XX/   editable optimization starting point
   variants/                   named reference-derived variants
 envs/tensorcircuit-py311/     Dockerfile and dependency locks
 baselines/historical.json     prior timings, for context only
@@ -210,13 +210,13 @@ See `PROVENANCE.md` for source commits and paths.
 Karpathy's [autoresearch](https://github.com/karpathy/autoresearch) uses a fixed
 evaluator, one editable program, short measured experiments, Git checkpoints,
 and an experiment ledger. `GOAL.md` maps that loop to one eligible ORBIT-Q
-challenge per campaign and one hypothesis per fresh Git worktree.
+task per campaign and one hypothesis per fresh Git worktree.
 
 Do not start optimization until the survey, workload dataset, and
 hidden-evaluation boundary required by `GOAL.md` exist. Before starting a
 campaign, inspect the open pull requests on `sxzgroup/ORBIT-Q` and choose one
-challenge that has no active improvement PR. Bind the campaign to that one
-challenge and do not switch tasks inside its worktrees. A symmetric failure of
+task that has no active improvement PR. Bind the campaign to that one
+task and do not switch tasks inside its worktrees. A symmetric failure of
 the reference and its initial byte-identical candidate is acceptable bootstrap
 evidence; repeated passing pairs are required later for promotion or any
 improvement claim. The evaluators in this repository are public. A trusted

@@ -82,8 +82,8 @@ def check_survey(root: Path) -> tuple[bool, list[str]]:
     if re.search(r"\bTODO\b", text):
         errors.append("research/SURVEY.md still contains TODO placeholders")
     for task_id in TASK_IDS:
-        if f"Challenge {task_id}:" not in text:
-            errors.append(f"research/SURVEY.md does not cover challenge {task_id}")
+        if f"Task {task_id}:" not in text:
+            errors.append(f"research/SURVEY.md does not cover task {task_id}")
     return not errors, errors
 
 
@@ -309,28 +309,28 @@ def check_baseline_report(path: Path | None) -> tuple[bool, list[str]]:
         count = len(by_task.get(task_id, []))
         if count < 6:
             errors.append(
-                f"challenge {task_id} has {count} reference runs; at least 6 required"
+                f"task {task_id} has {count} reference runs; at least 6 required"
             )
         if len(source_hashes.get(task_id, set())) > 1:
-            errors.append(f"challenge {task_id} used multiple reference hashes")
+            errors.append(f"task {task_id} used multiple reference hashes")
         if len(evaluator_hashes.get(task_id, set())) != 1:
-            errors.append(f"challenge {task_id} did not use one evaluator hash")
+            errors.append(f"task {task_id} did not use one evaluator hash")
         if len(snapshot_hashes.get(task_id, set())) != 1:
-            errors.append(f"challenge {task_id} did not use one staging snapshot")
+            errors.append(f"task {task_id} did not use one staging snapshot")
         if len(container_ids.get(task_id, set())) != 1:
-            errors.append(f"challenge {task_id} did not use one container ID")
+            errors.append(f"task {task_id} did not use one container ID")
         if len(container_names.get(task_id, set())) != 1:
-            errors.append(f"challenge {task_id} did not use one container name")
+            errors.append(f"task {task_id} did not use one container name")
         planned_values = planned_repeats.get(task_id, set())
         if len(planned_values) != 1:
-            errors.append(f"challenge {task_id} has inconsistent planned repeats")
+            errors.append(f"task {task_id} has inconsistent planned repeats")
         else:
             planned = next(iter(planned_values))
             if sorted(repeat_indices.get(task_id, [])) != list(
                 range(1, planned + 1)
             ):
                 errors.append(
-                    f"challenge {task_id} has missing or duplicate repeat indices"
+                    f"task {task_id} has missing or duplicate repeat indices"
                 )
 
     for label, values in (

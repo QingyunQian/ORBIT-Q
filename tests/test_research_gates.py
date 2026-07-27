@@ -18,7 +18,7 @@ SHA = "a" * 64
 
 def _write_ready_fixture(root: Path, external: Path) -> tuple[Path, Path]:
     (root / "research").mkdir(parents=True)
-    sections = "\n".join(f"## Challenge {task}: complete" for task in TASK_IDS)
+    sections = "\n".join(f"## Task {task}: complete" for task in TASK_IDS)
     (root / "research" / "SURVEY.md").write_text(
         f"# Survey\n\n**Status: READY**\n\n{sections}\n",
         encoding="utf-8",
