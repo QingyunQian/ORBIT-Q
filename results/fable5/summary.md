@@ -11,8 +11,8 @@
 | 07 | yes | 1.0 | 1.0 | 365.4 | 1.28 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27; runtime gated nothing thanks to the scorer sync |
 | 08 | yes | 1.0 | 1.0 | 169.4 | 2.64 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27 |
 | 09 | yes | 1.0 | 1.0 | 92.0 | 3.63 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27 |
-| 10 | yes | 1.0 | 1.0 | 372.1 | 18.06 | pending | pending | cloud precheck passed (runtime > 300s: runtime_score 0, reported only); awaiting official stamp |
-| 11 | - | - | - | - | - | - | - | |
+| 10 | yes | 1.0 | 1.0 | 330.4 | 18.06 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-28; runtime > 300s reported only |
+| 11 | yes | 1.0 | 1.0 | 134.3 | 0.74 | pending | pending | cloud precheck passed; first task faster than the expert reference |
 | 12 | - | - | - | - | - | - | - | |
 
 Runtime is the evaluator's timed `run_solution(config)` wall time from the
@@ -68,6 +68,16 @@ to unit norm after every layer, gate-level composition on disjoint supports)
 cools the energy density from -1.1720 to -1.32673, within 1.7e-4 of the exact
 ground state (criterion allows 0.5) and never below it; learned filter
 strengths grow monotonically toward the late layers.
+
+Challenge-11 physics summary (cloud precheck): native spin-1 simulation on
+the framework's QuditCircuit (dim=3, 12 sites); rotations use closed spin-1
+exponentials, bond gates are matrix exponentials of the task's 9x9 generator
+including the fixed beta (S.S)^2 biquadratic term. Energy density optimized
+from -0.0595 to -0.7048 (gap 0.069 to the exact ground state, criterion
+0.12), and the optimized state reproduces the Haldane string order:
+[-0.403, -0.354, -0.399] vs exact [-0.303, -0.318, -0.344], MAE 0.064
+(criterion 0.12). First task where the candidate artifact runs faster than
+the publication reference (T/T_ref = 0.74).
 
 Challenge-10 physics summary (cloud precheck): the fixed 18-qubit
 controlled-Z hyperedge is expressed through the framework's multicontrol
