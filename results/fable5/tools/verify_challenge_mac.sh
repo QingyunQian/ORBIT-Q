@@ -15,7 +15,7 @@
 set -euo pipefail
 
 NN="${1:?usage: verify_challenge_mac.sh <challenge number, e.g. 01>}"
-AUDIT_MODEL="${AUDIT_MODEL_NAME:-${AUDIT_MODEL:-gpt-5}}"
+AUDIT_MODEL="${AUDIT_MODEL_NAME:-${AUDIT_MODEL:-gpt-5.6-sol}}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 cd "$ROOT"
 

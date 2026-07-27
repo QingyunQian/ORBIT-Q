@@ -19,7 +19,7 @@ This directory records an agent-axis run of ORBIT-Q with **Fable 5**
   metrics (pass components, `runtime_sec`) follow the standard verifier.
 - Verification: Harbor verifier-only candidate check (`AGENTS.md`), i.e. the
   unmodified `/tests/test.sh` pipeline: functional evaluator + static policy +
-  Codex `gpt-5` LLM audit.
+  Codex `gpt-5.6-sol` LLM audit.
 
 ```text
 reward = functional_score * static_policy_score * llm_audit_score
@@ -49,7 +49,7 @@ challenge-NN/
   the maintainer's Mac (colima Docker, local Harbor env, Codex auth via
   `~/.codex/auth.json`, OpenAI reachability through a local proxy relay). The
   audit model is selected by `AUDIT_MODEL_NAME`/`AUDIT_MODEL` (default
-  `gpt-5`); use a slug your Codex login actually serves, e.g.
+  `gpt-5.6-sol`); use a slug your Codex login actually serves, e.g.
   `AUDIT_MODEL_NAME=gpt-5.6-sol`. The model used is recorded in
   `challenge-NN/stamp-info.json`.
 - `tools/proxy_relay.py`: temporary TCP relay `0.0.0.0:7891 ->
