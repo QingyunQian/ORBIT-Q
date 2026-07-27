@@ -4,16 +4,16 @@
 | ---: | :---: | :---: | :---: | ---: | ---: | :---: | :---: | --- |
 | 01 | yes | 1.0 | 1.0 | 178.5 | 3.79* | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27; cloud precheck runtime 150.4s |
 | 02 | yes | 1.0 | 1.0 | 16.1 | 2.83 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27; cloud precheck runtime 16.7s |
-| 03 | - | - | - | - | - | - | |
-| 04 | - | - | - | - | - | - | |
-| 05 | - | - | - | - | - | - | |
-| 06 | - | - | - | - | - | - | |
-| 07 | - | - | - | - | - | - | |
-| 08 | - | - | - | - | - | - | |
-| 09 | - | - | - | - | - | - | |
-| 10 | - | - | - | - | - | - | |
-| 11 | - | - | - | - | - | - | |
-| 12 | - | - | - | - | - | - | |
+| 03 | yes | 1.0 | 1.0 | 13.6 | 2.54 | pending | pending | cloud precheck passed; awaiting official stamp |
+| 04 | - | - | - | - | - | - | - | |
+| 05 | - | - | - | - | - | - | - | |
+| 06 | - | - | - | - | - | - | - | |
+| 07 | - | - | - | - | - | - | - | |
+| 08 | - | - | - | - | - | - | - | |
+| 09 | - | - | - | - | - | - | - | |
+| 10 | - | - | - | - | - | - | - | |
+| 11 | - | - | - | - | - | - | - | |
+| 12 | - | - | - | - | - | - | - | |
 
 Runtime is the evaluator's timed `run_solution(config)` wall time from the
 cloud precheck (4 vCPU x86_64); the official stamp records its own runtime in
@@ -34,6 +34,13 @@ Challenge-01 physics summary (cloud precheck): DMRG reference -41.50400741,
 initial variational energy identical to reference (diff 1.6e-13), final energy
 within 1.3e-6 of reference after the fixed 500-step Adam refinement; all five
 evaluator criteria PASS.
+
+Challenge-03 physics summary (cloud precheck): exact sparse GS energy density
+-1.17548478; cooling drives the energy density from -0.4443 to -1.0259 (gap
+0.15 to exact GS, criterion allows 1.0); loss decreased -0.4408 -> -1.0225;
+final total post-selection success probability 1.56e-2 with the required
+exp(60 * mean_log_p) consistency; the reference implementation converges to
+nearly identical final metrics, confirming protocol alignment.
 
 Challenge-02 physics summary (cloud precheck): exact sparse GS energy density
 -2.00036788; energy density optimized from -0.7412 to -1.9925 (gap 0.0079 to
