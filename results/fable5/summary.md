@@ -7,7 +7,7 @@
 | 03 | yes | 1.0 | 1.0 | 11.9 | 2.56 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27; cloud runtime 14.3s |
 | 04 | yes | 1.0 | 1.0 | 196.3 | 11.94 | 1.0 (gpt-5.6-sol) | **1.0**# | v2 (MPSCircuit vectorized-DM); stamped reward.json shows 0.8646 from the pre-fix scorer's runtime multiplier |
 | 05 | yes | 1.0 | 1.0 | 101.2 | 1.19 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27 |
-| 06 | - | - | - | - | - | - | - | |
+| 06 | yes | 1.0 | 1.0 | 72.2 | 1.09 | pending | pending | cloud precheck passed; awaiting official stamp |
 | 07 | - | - | - | - | - | - | - | |
 | 08 | - | - | - | - | - | - | - | |
 | 09 | - | - | - | - | - | - | - | |
@@ -71,6 +71,14 @@ to unit norm after every layer, gate-level composition on disjoint supports)
 cools the energy density from -1.1720 to -1.32673, within 1.7e-4 of the exact
 ground state (criterion allows 0.5) and never below it; learned filter
 strengths grow monotonically toward the late layers.
+
+Challenge-06 physics summary (cloud precheck): exact sparse GS energy density
+-1.602552 (14 qubits); the four digital-analog hybrid blocks (continuous-time
+Schrodinger evolution of the trainable analog Hamiltonian via the framework's
+ODE integrator honoring ode_rtol/ode_atol/ode_max_steps, followed by RZ-RY-RZ
+digital layers) optimize the energy density from -0.4840 to -1.2589 (gap 0.34
+to exact GS, criterion allows 1.0); learned analog times, couplings and
+detunings all inside their prescribed bounds.
 
 Challenge-02 physics summary (cloud precheck): exact sparse GS energy density
 -2.00036788; energy density optimized from -0.7412 to -1.9925 (gap 0.0079 to
