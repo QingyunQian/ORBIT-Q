@@ -3,7 +3,7 @@
 | Task | Solved | Functional | Static | Runtime (s) | T/T_ref | Codex audit | Reward | Notes |
 | ---: | :---: | :---: | :---: | ---: | ---: | :---: | :---: | --- |
 | 01 | yes | 1.0 | 1.0 | 178.5 | 3.79* | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27; cloud precheck runtime 150.4s |
-| 02 | yes | 1.0 | 1.0 | 16.7 | 2.83 | pending | pending | cloud precheck passed; awaiting official stamp |
+| 02 | yes | 1.0 | 1.0 | 16.1 | 2.83 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27; cloud precheck runtime 16.7s |
 | 03 | - | - | - | - | - | - | |
 | 04 | - | - | - | - | - | - | |
 | 05 | - | - | - | - | - | - | |
