@@ -1,0 +1,17 @@
+Challenge 1 evaluation
+Solution module: solution_1
+End-to-end solution time: 39.69s
+DMRG reference energy: -41.50387340
+Initial variational energy: -41.50393295
+Final variational energy: -41.50401306
+Initial minus DMRG reference: -5.95550249e-05
+Final minus DMRG reference: -1.39663668e-04
+Energy improvement from circuit refinement: 8.01086426e-05
+Returned NumPy keys: ['energy_history']
+Passing criteria:
+  energy history length: PASS
+  history finite: PASS
+  initial energy stays near DMRG: PASS
+  final energy stays near DMRG: PASS
+  refinement does not regress too far: PASS
+Overall: PASS

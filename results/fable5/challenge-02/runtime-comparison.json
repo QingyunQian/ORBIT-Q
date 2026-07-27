@@ -1,0 +1,11 @@
+{
+  "host": "cloud VM: 4 vCPU Intel Xeon x86_64, image challenge-benchmark-quantum-tensorcircuit:py311 (tensorcircuit-ng 1.7.0)",
+  "candidate_runtime_sec": 16.67,
+  "reference_official": {
+    "file": "tasks/challenge-02/solution/solution_2.py",
+    "runtime_sec": 5.9,
+    "result": "PASS"
+  },
+  "runtime_ratio_candidate_over_reference": 2.83,
+  "ratio_basis": "candidate (cloud precheck) / publication reference, same machine and image"
+}

@@ -32,6 +32,21 @@ reward = functional_score * static_policy_score * llm_audit_score
   - `reward.json`: the official full run including the Codex audit, produced
     on the maintainer's machine via `tools/verify_challenge_mac.sh`.
 
+## Runtime Ratio Protocol
+
+Absolute runtimes are hardware-dependent, so the paper-facing efficiency
+metric is the ratio `T_candidate / T_reference` with both sides measured on
+the same machine and the same framework image:
+
+- The candidate runtime comes from the cloud precheck.
+- The publication reference (`tasks/challenge-NN/solution/solution_N.py`) is
+  executed through the same official evaluator on the same machine, only
+  after the candidate solution is frozen; the solver never reads reference
+  source code.
+- If a reference cannot run on the pinned public image (e.g. it needs the
+  unreleased `omeco` contractor), the fallback used and any patch applied are
+  recorded explicitly in `challenge-NN/runtime-comparison.json`.
+
 ## Files per challenge
 
 ```text
@@ -41,6 +56,9 @@ challenge-NN/
   reward-cloud-precheck.json       # functional/static precheck scores
   functional-stdout-official.txt   # evaluator output from the official stamp
   reward.json                      # official reward incl. Codex audit
+  stamp-info.json                  # audit model + job provenance
+  reference-stdout-cloud.txt       # reference evaluator output (same machine)
+  runtime-comparison.json          # T_candidate / T_reference and provenance
 ```
 
 ## Tools

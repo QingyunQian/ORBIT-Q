@@ -1,9 +1,9 @@
 # Fable 5 / TensorCircuit-NG Run Summary
 
-| Task | Solved | Functional | Static | Runtime (s) | Codex audit | Reward | Notes |
-| ---: | :---: | :---: | :---: | ---: | :---: | :---: | --- |
-| 01 | yes | 1.0 | 1.0 | 178.5 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27; cloud precheck runtime 150.4s |
-| 02 | yes | 1.0 | 1.0 | 16.7 | pending | pending | cloud precheck passed; awaiting official stamp |
+| Task | Solved | Functional | Static | Runtime (s) | T/T_ref | Codex audit | Reward | Notes |
+| ---: | :---: | :---: | :---: | ---: | ---: | :---: | :---: | --- |
+| 01 | yes | 1.0 | 1.0 | 178.5 | 3.79* | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27; cloud precheck runtime 150.4s |
+| 02 | yes | 1.0 | 1.0 | 16.7 | 2.83 | pending | pending | cloud precheck passed; awaiting official stamp |
 | 03 | - | - | - | - | - | - | |
 | 04 | - | - | - | - | - | - | |
 | 05 | - | - | - | - | - | - | |
@@ -18,6 +18,17 @@
 Runtime is the evaluator's timed `run_solution(config)` wall time from the
 cloud precheck (4 vCPU x86_64); the official stamp records its own runtime in
 `challenge-NN/reward.json`.
+
+`T/T_ref` is the hardware-independent artifact-efficiency metric used by the
+paper figures: candidate runtime divided by the publication reference runtime,
+both measured on the same machine and image (details and provenance in
+`challenge-NN/runtime-comparison.json`). Lower is better; 1.0 matches the
+expert TensorCircuit-NG reference. `*` on task 01: the official reference
+requires the unreleased `omeco` contractor and cannot run on the pinned public
+image, so the ratio is taken against the repo's `solution_1_mpo` variant with
+that single line disabled (see the JSON for the full note). To avoid hinting,
+each reference is executed only after the corresponding candidate solution is
+frozen, and reference source files are never read by the solver.
 
 Challenge-01 physics summary (cloud precheck): DMRG reference -41.50400741,
 initial variational energy identical to reference (diff 1.6e-13), final energy
