@@ -8,8 +8,8 @@
 | 04 | yes | 1.0 | 1.0 | 191.1 | 11.94 | 1.0 (gpt-5.6-sol) | **1.0** | v2 (MPSCircuit vectorized-DM); re-stamped with synced scorer |
 | 05 | yes | 1.0 | 1.0 | 101.2 | 1.19 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27 |
 | 06 | yes | 1.0 | 1.0 | 81.7 | 1.09 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27 |
-| 07 | yes | 1.0 | 1.0 | 214.0 | 1.28 | pending | pending | cloud precheck passed; awaiting official stamp |
-| 08 | - | - | - | - | - | - | - | |
+| 07 | yes | 1.0 | 1.0 | 365.4 | 1.28 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27; runtime gated nothing thanks to the scorer sync |
+| 08 | yes | 1.0 | 1.0 | 183.0 | 2.64 | pending | pending | cloud precheck passed; awaiting official stamp |
 | 09 | - | - | - | - | - | - | - | |
 | 10 | - | - | - | - | - | - | - | |
 | 11 | - | - | - | - | - | - | - | |
@@ -68,6 +68,14 @@ to unit norm after every layer, gate-level composition on disjoint supports)
 cools the energy density from -1.1720 to -1.32673, within 1.7e-4 of the exact
 ground state (criterion allows 0.5) and never below it; learned filter
 strengths grow monotonically toward the late layers.
+
+Challenge-08 physics summary (cloud precheck): 8192 computational-basis
+samples drawn directly from the 49-qubit shallow 2D circuit tensor network
+(Circuit.sample with allow_state=False, omeco contraction paths; no 2^49
+statevector or dense probability vector). Cross-checked against exact
+lightcone contractions: max single-site Z error 0.012 (tol 0.03), probe
+Z-string max 0.011 / mean 0.005 (tol 0.05 / 0.015); the official hidden-set
+evaluator confirms with functional PASS.
 
 Challenge-07 physics summary (cloud precheck): trajectory-averaged
 measurement-feedback VQE over 64 fixed-uniform trajectories (projective
