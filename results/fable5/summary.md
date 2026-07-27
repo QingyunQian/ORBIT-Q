@@ -10,8 +10,8 @@
 | 06 | yes | 1.0 | 1.0 | 81.7 | 1.09 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27 |
 | 07 | yes | 1.0 | 1.0 | 365.4 | 1.28 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27; runtime gated nothing thanks to the scorer sync |
 | 08 | yes | 1.0 | 1.0 | 169.4 | 2.64 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27 |
-| 09 | yes | 1.0 | 1.0 | 131.5 | 3.63 | pending | pending | cloud precheck passed; awaiting official stamp |
-| 10 | - | - | - | - | - | - | - | |
+| 09 | yes | 1.0 | 1.0 | 92.0 | 3.63 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27 |
+| 10 | yes | 1.0 | 1.0 | 372.1 | 18.06 | pending | pending | cloud precheck passed (runtime > 300s: runtime_score 0, reported only); awaiting official stamp |
 | 11 | - | - | - | - | - | - | - | |
 | 12 | - | - | - | - | - | - | - | |
 
@@ -68,6 +68,17 @@ to unit norm after every layer, gate-level composition on disjoint supports)
 cools the energy density from -1.1720 to -1.32673, within 1.7e-4 of the exact
 ground state (criterion allows 0.5) and never below it; learned filter
 strengths grow monotonically toward the late layers.
+
+Challenge-10 physics summary (cloud precheck): the fixed 18-qubit
+controlled-Z hyperedge is expressed through the framework's multicontrol
+gate in MPO form (17 controls + Z target; no dense 2^18 matrix, no gate
+decomposition), rotations are RX-RZ-RY blocks composed at the 2x2 gate
+level, and the TFIM energy is evaluated against a bond-3 MPO (matrix-vector
+style contraction). Energy density optimized from +0.9346 to -1.2141, gap
+0.078 to the exact Lanczos reference (criterion allows 0.25). The candidate
+runs 372s (over the 300s budget; runtime is reported, not reward-gating) vs
+the 20.6s expert reference - the largest artifact-efficiency gap in this run
+(T/T_ref = 18.06).
 
 Challenge-09 physics summary (cloud precheck): the two local Pauli terms of
 the 512-qubit random ladder circuit depend only on finite backward causal
