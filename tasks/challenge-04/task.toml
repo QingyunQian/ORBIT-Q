@@ -1,0 +1,27 @@
+schema_version = 1
+id = "04"
+title = "Trainable Kraus Noise Calibration From Multi-Circuit Data"
+environment = "tensorcircuit-py311"
+evaluator = "evaluator/evaluate_4.py"
+evaluator_sha256 = "2aaa7255fe8e0aa8fee0bcb3ba2e9d1497a5683f7ced561c98a6c3d16bdf34ee"
+source_evaluator_sha256 = "5f7db300ea32dd0ba16bbfc36d59e79965151d31d46797ed4442844ec514ba59"
+timing_precision_digits = 6
+problem = "problem.md"
+module = "solution_4"
+timeout_sec = 300
+
+[[solutions]]
+name = "reference"
+path = "../../references/challenge-04/solution_4.py"
+module = "solution_4"
+kind = "publication-human-expert-reference"
+sha256 = "29fc2417465fcd3db0d6e4c4dbc008aa0fe0ac58fe3397fe3a4dc5f8e47897ec"
+source_path = "tasks/challenge-04/solution/solution_4.py"
+
+[[solutions]]
+name = "optimized"
+path = "../../src/solutions/challenge-04/solution_4.py"
+module = "solution_4"
+kind = "autoresearch-optimized-candidate"
+initialized_from = "reference"
+initialized_from_sha256 = "29fc2417465fcd3db0d6e4c4dbc008aa0fe0ac58fe3397fe3a4dc5f8e47897ec"

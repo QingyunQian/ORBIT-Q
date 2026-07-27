@@ -1,0 +1,15 @@
+schema_version = 1
+name = "OrbitBreakersExpertBenchmarks"
+default_environment = "tensorcircuit-py311"
+default_timeout_sec = 300
+default_repeats = 4
+results_dir = "results"
+
+[environments.tensorcircuit-py311]
+image = "orbitbreakers-expert-benchmarks:tensorcircuit-py311"
+dockerfile = "envs/tensorcircuit-py311/Dockerfile"
+requirements = "envs/tensorcircuit-py311/requirements.lock"
+# Pinned to the current Colima benchmark host. Change these only when starting
+# a new, explicitly versioned baseline campaign on a different host.
+cpus = 8
+memory = "9g"

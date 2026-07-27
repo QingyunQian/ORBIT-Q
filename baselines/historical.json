@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "status": "informational-only",
+  "warning": "These values came from prior ORBIT-Q records and are not a substitute for fresh paired measurements on the current host and image.",
+  "publication_reference_runtime_sec": {
+    "01": 27.22,
+    "02": 2.87,
+    "03": 2.46,
+    "04": 11.83,
+    "05": 45.50,
+    "06": 26.83,
+    "07": 63.80,
+    "08": 25.05,
+    "09": 13.74,
+    "10": 12.44,
+    "11": 68.10,
+    "12": 6.12
+  },
+  "documented_local_variants": [
+    {
+      "task": "01",
+      "solution": "mpo",
+      "runtime_sec": 19.34,
+      "result": "PASS",
+      "host": "Apple M4 Pro, 14 CPU cores, 48 GB RAM",
+      "jax": "0.10.0",
+      "jaxlib": "0.10.0",
+      "date": "2026-07-07"
+    },
+    {
+      "task": "05",
+      "solution": "omeco",
+      "runtime_sec": 34.85,
+      "result": "PASS",
+      "recorded_expert_runtime_sec": 48.27,
+      "host": "Apple M4 Pro, 14 CPU cores, 48 GB RAM",
+      "jax": "0.10.0",
+      "jaxlib": "0.10.0",
+      "date": "2026-07-07"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+schema_version = 1
+id = "06"
+title = "Digital-Analog Hybrid VQE With Trainable Analog Blocks"
+environment = "tensorcircuit-py311"
+evaluator = "evaluator/evaluate_6.py"
+evaluator_sha256 = "f38775d449cfe93741da9dd0c4c80d782f61f2cd9b8c6efb8956d20f30fac0f8"
+source_evaluator_sha256 = "eb2cd4bacd4b578ddf33fbfec276f420e59b2199a618b67e46411d7427413943"
+timing_precision_digits = 6
+problem = "problem.md"
+module = "solution_6"
+timeout_sec = 300
+
+[[solutions]]
+name = "reference"
+path = "../../references/challenge-06/solution_6.py"
+module = "solution_6"
+kind = "publication-human-expert-reference"
+sha256 = "2a3fce5cebe393d89a8afbfa700dc82147fd8c56c939ea97c10e59380d615c15"
+source_path = "tasks/challenge-06/solution/solution_6.py"
+
+[[solutions]]
+name = "optimized"
+path = "../../src/solutions/challenge-06/solution_6.py"
+module = "solution_6"
+kind = "autoresearch-optimized-candidate"
+initialized_from = "reference"
+initialized_from_sha256 = "2a3fce5cebe393d89a8afbfa700dc82147fd8c56c939ea97c10e59380d615c15"

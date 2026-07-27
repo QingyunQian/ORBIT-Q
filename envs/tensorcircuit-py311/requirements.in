@@ -1,0 +1,12 @@
+numpy==2.2.6
+scipy==1.17.1
+pytest==7.4.4
+tensorcircuit-nightly==1.7.0.dev20260618
+tensornetwork-ng==0.5.1
+jax==0.10.0
+jaxlib==0.10.0
+optax==0.2.8
+diffrax==0.7.2
+quimb==1.11.1
+omeco==0.2.4
+
