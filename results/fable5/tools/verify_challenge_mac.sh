@@ -4,12 +4,18 @@
 #
 # Usage: bash results/fable5/tools/verify_challenge_mac.sh 01
 #
-# Runs Harbor's oracle path (functional evaluator + static policy + Codex
-# gpt-5 audit via ~/.codex/auth.json) against the candidate solution stored in
+# Runs Harbor's oracle path (functional evaluator + static policy + Codex LLM
+# audit via ~/.codex/auth.json) against the candidate solution stored in
 # results/fable5/challenge-<NN>/, then copies reward.json back next to it.
+#
+# The audit model is NOT hardcoded: override with AUDIT_MODEL_NAME (preferred)
+# or AUDIT_MODEL when the ChatGPT-auth catalog does not serve the default
+# slug, e.g.:
+#   AUDIT_MODEL_NAME=gpt-5.6-sol bash results/fable5/tools/verify_challenge_mac.sh 01
 set -euo pipefail
 
 NN="${1:?usage: verify_challenge_mac.sh <challenge number, e.g. 01>}"
+AUDIT_MODEL="${AUDIT_MODEL_NAME:-${AUDIT_MODEL:-gpt-5}}"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../../.." && pwd)"
 cd "$ROOT"
 
@@ -36,13 +42,14 @@ p.write_text(t)
 EOF
 
 JOB="challenge-$NN-fable5-stamp-$(date +%m%d%H%M%S)"
+echo "Audit model: $AUDIT_MODEL"
 PYTHONPATH="$PWD" ./.conda/harbor-py312/bin/harbor run \
   -p "$PWD/$WORK" \
   --environment-import-path adapters.framework_docker:FrameworkDockerEnvironment \
   --environment-kwarg framework=tensorcircuit \
   --environment-kwarg docker_image=challenge-benchmark-quantum-tensorcircuit:py311 \
   --verifier-import-path adapters.codex_para_verifier:CodexParaVerifier \
-  --verifier-kwarg audit_model=gpt-5 \
+  --verifier-kwarg "audit_model=$AUDIT_MODEL" \
   --verifier-kwarg force_auth_json=true \
   --verifier-env REQUIRED_QUANTUM_FRAMEWORK=tensorcircuit \
   --verifier-env HTTP_PROXY=http://192.168.5.2:7891 \
@@ -55,6 +62,8 @@ REWARD="$(find "jobs/$JOB" -name reward.json | head -1)"
 cp "$REWARD" "$SOL_DIR/reward.json"
 STDOUT_LOG="$(find "jobs/$JOB" -name 'functional-stdout*' | head -1 || true)"
 [ -n "${STDOUT_LOG:-}" ] && cp "$STDOUT_LOG" "$SOL_DIR/functional-stdout-official.txt"
+printf '{"audit_model": "%s", "job": "%s", "stamped_at_utc": "%s"}\n' \
+  "$AUDIT_MODEL" "$JOB" "$(date -u +%FT%TZ)" > "$SOL_DIR/stamp-info.json"
 
 echo
 echo "=== Official reward for challenge-$NN ==="

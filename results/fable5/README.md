@@ -47,7 +47,11 @@ challenge-NN/
 
 - `tools/verify_challenge_mac.sh NN`: runs the official verifier-only check on
   the maintainer's Mac (colima Docker, local Harbor env, Codex auth via
-  `~/.codex/auth.json`, OpenAI reachability through a local proxy relay).
+  `~/.codex/auth.json`, OpenAI reachability through a local proxy relay). The
+  audit model is selected by `AUDIT_MODEL_NAME`/`AUDIT_MODEL` (default
+  `gpt-5`); use a slug your Codex login actually serves, e.g.
+  `AUDIT_MODEL_NAME=gpt-5.6-sol`. The model used is recorded in
+  `challenge-NN/stamp-info.json`.
 - `tools/proxy_relay.py`: temporary TCP relay `0.0.0.0:7891 ->
   127.0.0.1:7890` so Docker containers can reach the host-only ClashX proxy
   during the audit. Stop it after verification.
