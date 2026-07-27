@@ -12,7 +12,7 @@ Primary sources:
 ## One-task campaign scope
 
 The survey, dataset construction, environment setup, and reference bootstrap
-cover all 12 tasks. Each optimization campaign covers exactly one.
+cover only the task selected for that autoresearch campaign.
 
 Before creating the first campaign worktree:
 
@@ -64,9 +64,9 @@ reference/candidate comparison exists.
 Complete the scaffold at `research/SURVEY.md`. Cite papers, framework
 documentation, source files, issues, and benchmark records for each claim.
 
-Compare the current state of the art for each workload. Record the best reported algorithmic scaling, runtime, memory use, implementation method, hardware, and software version when a source reports them. Mark missing comparisons as open evidence gaps.
+Compare the current state of the art for the selected task's workloads. Record the best reported algorithmic scaling, runtime, memory use, implementation method, hardware, and software version when a source reports them. Mark missing comparisons as open evidence gaps.
 
-Include one section for each task from 01 through 12. Each section must identify:
+Include one section for the selected task. It must identify:
 
 - the expert algorithm and required output contract;
 - the dominant operations and expected time or memory costs;
@@ -78,52 +78,58 @@ Include one section for each task from 01 through 12. Each section must identify
 
 Inspect the installed framework source and APIs. Record the TensorCircuit-NG, JAX, JAXLIB, OMECo, TensorNetwork, and Quimb versions or commits used in the environment. Cite the inspected module paths and symbols.
 
-Add a cross-task section that compares reusable optimization methods, compilation costs, contraction choices, batching strategies, and scaling limits. Add a measurement section that defines the paired-run order and confidence rule used for promotion.
+Add a measurement section that defines the paired-run order and confidence rule used for promotion.
 
-Do not change its status to `READY` until it covers all 12 tasks and contains
-source citations.
+Do not change its status to `READY` until it covers the selected task and
+contains source citations.
 
 ### Gate 2: versioned workload dataset
 
 Build a versioned workload dataset under the policy in `datasets/README.md`.
 
-The dataset must contain:
+For the selected task, the dataset must contain:
 
 - visible public development cases;
 - a hidden tuning set that the trusted controller rotates;
 - a sealed final holdout that no proposal agent can query.
 
-Cover every task from 01 through 12. Preserve each task's scientific semantics and `run_solution(config)` contract. Validate every workload with the corresponding human expert solution before use.
+Cover only the selected task. Preserve its scientific semantics and
+`run_solution(config)` contract. Validate every workload with that task's human
+expert solution before use.
 
 If an immutable expert cannot run in the pinned setup, preserve that terminal
 result and require an independent trusted oracle to validate the workload
 semantics. Do not fabricate a passing expert result, and do not use such a task
 for a runtime-improvement claim until the promotion gate has valid pairs.
 
-The public manifest at `datasets/public/manifest.json` starts with `status: "not_built"`. Keep this gate closed until the setup maintainer adds real cases, computes hashes, assigns a version, validates task coverage, and changes the status to `ready`.
+The public manifest at `datasets/public/manifest.json` starts with
+`status: "not_built"`. Keep this gate closed until the setup maintainer adds
+real cases for the selected task, computes hashes, assigns a version, validates
+that task's coverage, and changes the status to `ready`.
 
-Store hidden tuning records, holdout records, decryption keys, seeds, paths, and populated private configuration outside the Git checkout. Use `private-data.example.toml` as a shape reference. Never /gpopulate or commit that example.
+Store hidden tuning records, holdout records, decryption keys, seeds, paths, and populated private configuration outside the Git checkout. Use `private-data.example.toml` as a shape reference. Never populate or commit that example.
 
 ### Gate 3: repeated reference baselines for promotion
 
-Run every immutable human reference at least six times on one host and one
-pinned Docker image:
+Run the selected task's immutable human reference at least six times on one
+host and one pinned Docker image:
 
 ```bash
 ./bench verify
 ./bench env doctor
 ./bench env build tensorcircuit-py311
-./bench run all \
+./bench run XX \
   --solution reference \
   --repeat 6 \
   --engine docker \
   --timeout 300 \
   --no-build \
-  --output results/reference-baseline
+  --output results/task-XX-reference-baseline
 ```
 
 Attempt the immutable reference repeatedly and preserve every terminal result.
-Use one container per task and a fresh evaluator process per measurement.
+Use one container for the selected task and a fresh evaluator process per
+measurement.
 Record the container session, host fingerprint, image digest, dependency
 hashes, evaluator hashes, solution hashes, individual `runtime_sec` values,
 mean, median, sample standard deviation, standard error, minimum, and maximum.
@@ -132,17 +138,17 @@ For an initial byte-identical smoke comparison, a matched failure or timeout is
 an acceptable setup outcome and must remain visible as missing runtime. Do not
 repair, filter, or invent a timing merely to open this gate.
 
-Keep the promotion gate closed for a task if its reference or candidate fails,
-times out, uses a mismatched environment, or lacks six eligible pairs. An
-actual optimized candidate must pass correctness and this promotion gate before
-receiving an improvement, speedup, SOTA, or scaling claim.
+Keep the promotion gate closed if the selected task's reference or candidate
+fails, times out, uses a mismatched environment, or lacks six eligible pairs.
+An actual optimized candidate must pass correctness and this promotion gate
+before receiving an improvement, speedup, SOTA, or scaling claim.
 
 ## Data boundary
 
 The proposal agent may inspect:
 
-- all 12 human expert solutions and tracked expert-derived variants;
-- task problem statements and public development records;
+- the selected task's human expert solution and tracked expert-derived variants;
+- the selected task's problem statement and public development records;
 - `research/SURVEY.md`;
 - public framework source, documentation, and APIs;
 - aggregate benchmark reports that contain no private identifiers.
