@@ -9,8 +9,8 @@
 | 05 | yes | 1.0 | 1.0 | 101.2 | 1.19 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27 |
 | 06 | yes | 1.0 | 1.0 | 81.7 | 1.09 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27 |
 | 07 | yes | 1.0 | 1.0 | 365.4 | 1.28 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27; runtime gated nothing thanks to the scorer sync |
-| 08 | yes | 1.0 | 1.0 | 183.0 | 2.64 | pending | pending | cloud precheck passed; awaiting official stamp |
-| 09 | - | - | - | - | - | - | - | |
+| 08 | yes | 1.0 | 1.0 | 169.4 | 2.64 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27 |
+| 09 | yes | 1.0 | 1.0 | 131.5 | 3.63 | pending | pending | cloud precheck passed; awaiting official stamp |
 | 10 | - | - | - | - | - | - | - | |
 | 11 | - | - | - | - | - | - | - | |
 | 12 | - | - | - | - | - | - | - | |
@@ -68,6 +68,15 @@ to unit norm after every layer, gate-level composition on disjoint supports)
 cools the energy density from -1.1720 to -1.32673, within 1.7e-4 of the exact
 ground state (criterion allows 0.5) and never below it; learned filter
 strengths grow monotonically toward the late layers.
+
+Challenge-09 physics summary (cloud precheck): the two local Pauli terms of
+the 512-qubit random ladder circuit depend only on finite backward causal
+cones (18 and 15 qubits, matching the evaluator's pauli_cone_sizes; 74 and 80
+gates out of 3897), extracted classically from the gate tape and simulated as
+small TensorCircuit-NG circuits; the cone parameter sets are disjoint so
+coordinatewise Adam on the full 3897-parameter vector decouples exactly. All
+200 vmapped restarts converge to the analytic maximum 1.56459 = 0.56459 + 1.0
+(success fraction 1.0, final variance ~0).
 
 Challenge-08 physics summary (cloud precheck): 8192 computational-basis
 samples drawn directly from the 49-qubit shallow 2D circuit tensor network
