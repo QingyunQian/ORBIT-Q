@@ -1,18 +1,26 @@
 {
-  "host": "cloud VM: 4 vCPU Intel Xeon x86_64, image challenge-benchmark-quantum-tensorcircuit:py311 (tensorcircuit-ng 1.7.0)",
-  "candidate_runtime_sec": 150.4,
-  "official_stamp_runtime_sec_mac_colima": 178.54,
-  "reference_official": {
-    "file": "tasks/challenge-01/solution/solution_1.py",
-    "status": "not runnable on the pinned public image: tc.set_contractor('omeco') requires unreleased TensorCircuit-NG"
+  "host": "cloud VM: 4 vCPU Intel Xeon x86_64",
+  "primary": {
+    "environment": "derived image py311-tc-latest (tensorcircuit-nightly upgraded so the official reference's omeco contractor works; both sides measured in this same environment)",
+    "candidate_runtime_sec": 159.69,
+    "reference_official": {
+      "file": "tasks/challenge-01/solution/solution_1.py",
+      "runtime_sec": 72.07,
+      "result": "PASS",
+      "note": "unpatched, uses tc.set_contractor('omeco')"
+    },
+    "runtime_ratio_candidate_over_reference": 2.22
   },
-  "reference_variant_patched": {
-    "file": "optimized_sloutions/challenge-01/solution_1_mpo.py",
-    "patch": "single line disabled: tc.set_contractor('omeco') -> default contractor",
-    "runtime_sec": 39.69,
-    "result": "PASS",
-    "note": "repo README records the unpatched variant at 19.34s on Apple M4 Pro with unreleased TC and omeco"
+  "secondary_pinned_image": {
+    "environment": "pinned image challenge-benchmark-quantum-tensorcircuit:py311 (tensorcircuit-nightly 1.7.0.dev20260618; official reference cannot run here because set_contractor('omeco') is not yet integrated)",
+    "candidate_runtime_sec": 150.4,
+    "reference_variant_patched": {
+      "file": "optimized_sloutions/challenge-01/solution_1_mpo.py",
+      "patch": "single line disabled: tc.set_contractor('omeco') -> default contractor",
+      "runtime_sec": 39.69,
+      "result": "PASS"
+    },
+    "runtime_ratio_candidate_over_patched_variant": 3.79
   },
-  "runtime_ratio_candidate_over_reference": 3.79,
-  "ratio_basis": "candidate (cloud precheck) / patched mpo variant, same machine and image"
+  "official_stamp_runtime_sec_mac_colima": 178.54
 }

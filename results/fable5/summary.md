@@ -2,7 +2,7 @@
 
 | Task | Solved | Functional | Static | Runtime (s) | T/T_ref | Codex audit | Reward | Notes |
 | ---: | :---: | :---: | :---: | ---: | ---: | :---: | :---: | --- |
-| 01 | yes | 1.0 | 1.0 | 178.5 | 3.79* | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27; cloud precheck runtime 150.4s |
+| 01 | yes | 1.0 | 1.0 | 178.5 | 2.22* | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27; cloud precheck runtime 150.4s |
 | 02 | yes | 1.0 | 1.0 | 16.1 | 2.83 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27; cloud precheck runtime 16.7s |
 | 03 | yes | 1.0 | 1.0 | 11.9 | 2.54 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27; cloud precheck runtime 13.6s |
 | 04 | yes | 1.0 | 1.0 | 54.9 | 3.02 | pending | pending | cloud precheck passed; awaiting official stamp |
@@ -24,11 +24,14 @@ paper figures: candidate runtime divided by the publication reference runtime,
 both measured on the same machine and image (details and provenance in
 `challenge-NN/runtime-comparison.json`). Lower is better; 1.0 matches the
 expert TensorCircuit-NG reference. `*` on task 01: the official reference
-requires the unreleased `omeco` contractor and cannot run on the pinned public
-image, so the ratio is taken against the repo's `solution_1_mpo` variant with
-that single line disabled (see the JSON for the full note). To avoid hinting,
-each reference is executed only after the corresponding candidate solution is
-frozen, and reference source files are never read by the solver.
+needs the `omeco` contractor, which the pinned image's tensorcircuit-nightly
+(2026-06-18) does not yet integrate; the ratio is therefore measured in a
+derived image with tensorcircuit-nightly upgraded (candidate and unpatched
+official reference both re-timed in that same environment, see
+`challenge-01/runtime-comparison.json`, which also keeps the pinned-image
+patched-variant measurement). To avoid hinting, each reference is executed
+only after the corresponding candidate solution is frozen, and reference
+source files are never read by the solver.
 
 Challenge-01 physics summary (cloud precheck): DMRG reference -41.50400741,
 initial variational energy identical to reference (diff 1.6e-13), final energy
