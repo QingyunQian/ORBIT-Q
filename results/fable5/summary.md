@@ -5,7 +5,7 @@
 | 01 | yes | 1.0 | 1.0 | 178.5 | 2.14 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27; cloud runtime 156.0s |
 | 02 | yes | 1.0 | 1.0 | 16.1 | 3.01 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27; cloud runtime 18.1s |
 | 03 | yes | 1.0 | 1.0 | 11.9 | 2.56 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27; cloud runtime 14.3s |
-| 04 | yes | 1.0 | 1.0 | 54.6 | 3.05 | pending | pending | cloud precheck passed; awaiting official stamp |
+| 04 | yes | 1.0 | 1.0 | 213.7 | 11.94 | pending | pending | v2 (MPSCircuit vectorized-DM) after v1 Kraus-ladder failed the audit; awaiting re-stamp |
 | 05 | - | - | - | - | - | - | - | |
 | 06 | - | - | - | - | - | - | - | |
 | 07 | - | - | - | - | - | - | - | |
@@ -44,12 +44,16 @@ exp(60 * mean_log_p) consistency; the reference implementation converges to
 nearly identical final metrics, confirming protocol alignment.
 
 Challenge-04 physics summary (cloud precheck): the asymmetric bit-flip
-channel is expressed as an explicit (3, 2, 2) Kraus stack inserted after each
-RXX entangler, and every probe observable is evaluated exactly as a ket/bra
-Kraus-ladder tensor network (validated against brute-force density-matrix
-evolution at small size). Fitted probabilities p01=0.034033, p10=0.011037
-(absolute errors 3.3e-5 and 3.7e-5, tolerance 2e-4); table MSE reduced from
-7.1e-3 to 2.5e-8; fitted Kraus set trace-preserving to 1e-16.
+channel is expressed as an explicit (3, 2, 2) Kraus stack contracted into the
+one-qubit superoperator sum_a K_a (x) K_a^*, and the 12-qubit density matrix
+is simulated in vectorized form on tc.MPSCircuit (24 sites: ket copy on site
+2q, bra copy on site 2q+1; native gates for probe preparation and RXX,
+proj_with_mps overlaps for observable traces). Numerically identical (3e-15)
+to the v1 Kraus-ladder network, which was validated against brute-force
+density-matrix evolution but rejected by the LLM audit as a raw-simulator
+bypass. Fitted probabilities p01=0.034033, p10=0.011037 (absolute errors
+3.3e-5 and 3.7e-5, tolerance 2e-4); table MSE 7.1e-3 -> 2.5e-8; fitted Kraus
+set trace-preserving to 1e-16.
 
 Challenge-02 physics summary (cloud precheck): exact sparse GS energy density
 -2.00036788; energy density optimized from -0.7412 to -1.9925 (gap 0.0079 to

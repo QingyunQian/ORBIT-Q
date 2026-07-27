@@ -1,13 +1,18 @@
 """Challenge 4: trainable Kraus noise calibration from multi-circuit data.
 
-The asymmetric bit-flip channel is expressed explicitly as Kraus tensor
-algebra (a (3, 2, 2) Kraus stack) and inserted after each fixed RXX
-entangler. Every noisy observable Tr[O K(|psi><psi|)] is evaluated exactly as
-a ket/bra Kraus-ladder tensor network built from TensorCircuit gate tensors
-and contracted by the framework's tensornetwork engine, so the whole model
-is differentiable in the two channel probabilities. The synthetic target
-table is generated first from the true probabilities with the same probe
-circuits, then the probabilities are fitted by Adam on the table MSE.
+Vectorized density-matrix simulation on TensorCircuit-NG's MPS circuit
+simulator. Qubit q of the 12-qubit register maps to two MPS sites: site 2q
+carries the ket copy and site 2q+1 the bra copy of rho. Probe states are
+prepared with framework gates (H/CNOT/X) applied to both copies, the RXX
+entanglers act through the native rxx gate (theta on the ket copy, -theta on
+the bra copy for the conjugate), and the asymmetric bit-flip channel is
+expressed as explicit Kraus tensor algebra: the (3, 2, 2) Kraus stack is
+contracted into the one-qubit superoperator sum_a K_a (x) K_a^*, which acts
+on the adjacent (ket, bra) site pair after every entangler. Observable
+traces Tr[O K(rho)] are overlaps (proj_with_mps) with product Bell-type MPS
+prepared by framework gates, normalized by the trace overlap. Everything is
+differentiable in the two channel probabilities; Adam fits them against a
+synthetic target table generated first from the true probabilities.
 """
 import numpy as np
 import tensorcircuit as tc
@@ -18,8 +23,8 @@ tc.set_dtype("complex128")
 import jax
 import jax.numpy as jnp
 import optax
-import tensornetwork as tn
-from tensorcircuit import gates as g
+
+_SPLIT = {"max_singular_values": 128}
 
 
 def _kraus_stack(p01, p10):
@@ -33,72 +38,62 @@ def _kraus_stack(p01, p10):
     return k
 
 
-def _probe_mps(which, n):
-    # (l, p, r) site tensors for the four fixed probe inputs.
+def _channel_superop(p01, p10):
+    # rho' = sum_a K_a rho K_a^dagger, vectorized on the (ket, bra) pair.
+    k = _kraus_stack(p01, p10)
+    s = jnp.einsum("aij,akl->ikjl", k, jnp.conj(k))
+    return s.reshape(4, 4)
+
+
+def _prep_probe(c, which, n):
+    # Framework gates applied to ket sites (2q) and bra sites (2q+1); all
+    # preparation matrices are real, so the bra copy uses the same gates.
     if which == "ghz":
-        first = np.zeros((1, 2, 2)); first[0, 0, 0] = first[0, 1, 1] = 1 / np.sqrt(2)
-        mid = np.zeros((2, 2, 2)); mid[0, 0, 0] = mid[1, 1, 1] = 1.0
-        last = np.zeros((2, 2, 1)); last[0, 0, 0] = last[1, 1, 0] = 1.0
-        ts = [first] + [mid] * (n - 2) + [last]
+        c.h(0)
+        c.h(1)
+        for q in range(n - 1):
+            c.cnot(2 * q, 2 * q + 2)
+            c.cnot(2 * q + 1, 2 * q + 3)
     elif which == "bell":
-        a = np.zeros((1, 2, 2)); a[0, 0, 0] = a[0, 1, 1] = 1 / np.sqrt(2)
-        b = np.zeros((2, 2, 1)); b[0, 1, 0] = b[1, 0, 0] = 1.0
-        ts = [a, b] * (n // 2)
-    elif which == "zero":
-        t = np.zeros((1, 2, 1)); t[0, 0, 0] = 1.0
-        ts = [t] * n
-    else:  # plus
-        t = np.ones((1, 2, 1)) / np.sqrt(2)
-        ts = [t] * n
-    return [jnp.asarray(t, dtype=jnp.complex128) for t in ts]
+        for a in range(0, n - 1, 2):
+            c.h(2 * a)
+            c.h(2 * a + 1)
+            c.cnot(2 * a, 2 * a + 2)
+            c.cnot(2 * a + 1, 2 * a + 3)
+            c.x(2 * a + 2)
+            c.x(2 * a + 3)
+    elif which == "plus":
+        for q in range(n):
+            c.h(2 * q)
+            c.h(2 * q + 1)
+    # "zero": |0...0> needs no gates
 
 
-def _noisy_expectation(mps, kmat, gate_t, bonds_seq, z_sites, n):
-    # Tr[(prod Z_{z_sites}) K(|psi><psi|)] as a ket/bra ladder with the Kraus
-    # index of each channel contracted between the two layers.
-    ket = [tn.Node(t) for t in mps]
-    bra = [tn.Node(jnp.conj(t)) for t in mps]
-    for a, b in zip(ket[:-1], ket[1:]):
-        a[2] ^ b[0]
-    for a, b in zip(bra[:-1], bra[1:]):
-        a[2] ^ b[0]
-    ones = lambda: tn.Node(jnp.ones(1, jnp.complex128))
-    caps = [ones() for _ in range(4)]
-    caps[0][0] ^ ket[0][0]; caps[1][0] ^ ket[-1][2]
-    caps[2][0] ^ bra[0][0]; caps[3][0] ^ bra[-1][2]
-    nodes = ket + bra + caps
-    ket_w = [nd[1] for nd in ket]
-    bra_w = [nd[1] for nd in bra]
-
-    def channel(q):
-        kk, kb = tn.Node(kmat), tn.Node(jnp.conj(kmat))
-        kk[2] ^ ket_w[q]
-        kb[2] ^ bra_w[q]
-        kk[0] ^ kb[0]
-        ket_w[q], bra_w[q] = kk[1], kb[1]
-        nodes.extend([kk, kb])
-
-    for bonds in bonds_seq:
+def _evolved(p01, p10, which, n, theta):
+    s4 = _channel_superop(p01, p10)
+    c = tc.MPSCircuit(2 * n, split=_SPLIT)
+    _prep_probe(c, which, n)
+    even = [(i, i + 1) for i in range(0, n - 1, 2)]
+    odd = [(i, i + 1) for i in range(1, n - 1, 2)]
+    for bonds in (even, odd):
         for (a, b) in bonds:
-            gk, gb = tn.Node(gate_t), tn.Node(jnp.conj(gate_t))
-            gk[2] ^ ket_w[a]; gk[3] ^ ket_w[b]
-            gb[2] ^ bra_w[a]; gb[3] ^ bra_w[b]
-            ket_w[a], ket_w[b] = gk[0], gk[1]
-            bra_w[a], bra_w[b] = gb[0], gb[1]
-            nodes.extend([gk, gb])
-            channel(a)
-            channel(b)
+            c.rxx(2 * a, 2 * b, theta=theta)  # rxx(theta) = exp(-i theta XX / 2)
+            c.rxx(2 * a + 1, 2 * b + 1, theta=-theta)  # conjugate on the bra copy
+            c.any(2 * a, 2 * a + 1, unitary=s4)
+            c.any(2 * b, 2 * b + 1, unitary=s4)
+    return c
 
-    zt = jnp.asarray(np.diag([1.0, -1.0]), dtype=jnp.complex128)
+
+def _obs_mps(z_sites, n):
+    # Product MPS encoding vec(prod Z)/2^(n/2): Bell pair per (ket, bra) site
+    # pair, with a Z on the ket site where the observable acts.
+    c = tc.MPSCircuit(2 * n, split=_SPLIT)
     for q in range(n):
+        c.h(2 * q)
+        c.cnot(2 * q, 2 * q + 1)
         if q in z_sites:
-            zn = tn.Node(zt)
-            zn[1] ^ ket_w[q]
-            zn[0] ^ bra_w[q]
-            nodes.append(zn)
-        else:
-            ket_w[q] ^ bra_w[q]
-    return tc.backend.real(tn.contractors.auto(nodes).tensor)
+            c.z(2 * q)
+    return c
 
 
 def run_solution(config):
@@ -106,19 +101,21 @@ def run_solution(config):
     theta = float(config["entangler_angle"])
     max_steps = int(config["max_steps"])
     lr = float(config["learning_rate"])
-
-    gate_t = g.rxx(theta=theta).tensor  # rxx(theta) = exp(-i theta X X / 2)
-    even = [(i, i + 1) for i in range(0, n - 1, 2)]
-    odd = [(i, i + 1) for i in range(1, n - 1, 2)]
-    mpses = [_probe_mps(w, n) for w in ("ghz", "bell", "zero", "plus")]
+    probes = ("ghz", "bell", "zero", "plus")
 
     def table(p01, p10):
-        kmat = _kraus_stack(p01, p10)
         rows = []
-        for mps in mpses:
-            obs = [_noisy_expectation(mps, kmat, gate_t, (even, odd), {i}, n) for i in range(n)]
-            obs.append(_noisy_expectation(mps, kmat, gate_t, (even, odd), set(range(n)), n))
-            rows.append(jnp.stack(obs))
+        for which in probes:
+            rho = _evolved(p01, p10, which, n, theta)
+            denom = rho.proj_with_mps(_obs_mps(set(), n))
+            vals = [
+                tc.backend.real(rho.proj_with_mps(_obs_mps({i}, n)) / denom)
+                for i in range(n)
+            ]
+            vals.append(
+                tc.backend.real(rho.proj_with_mps(_obs_mps(set(range(n)), n)) / denom)
+            )
+            rows.append(jnp.stack(vals))
         return jnp.stack(rows)
 
     table_jit = jax.jit(table)

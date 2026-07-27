@@ -1,18 +1,24 @@
 {
   "host": "cloud VM: 4 vCPU Intel Xeon x86_64",
   "environment": "canonical image challenge-benchmark-quantum-tensorcircuit:py311 (tensorcircuit-nightly 1.8.0.dev20260726)",
-  "candidate_runtime_sec": 54.55,
+  "candidate_runtime_sec": 213.69,
   "reference_official": {
     "file": "tasks/challenge-04/solution/solution_4.py",
     "runtime_sec": 17.89,
     "result": "PASS"
   },
-  "runtime_ratio_candidate_over_reference": 3.05,
+  "runtime_ratio_candidate_over_reference": 11.94,
   "history": {
     "pinned_20260618_env": {
       "candidate_runtime_sec": 54.93,
       "reference_runtime_sec": 18.18,
       "ratio": 3.02
+    },
+    "v1_kraus_ladder": {
+      "candidate_runtime_sec": 54.55,
+      "ratio": 3.05,
+      "llm_audit": "failed (judged raw-simulator bypass)"
     }
-  }
+  },
+  "note": "v2 implementation: vectorized-DM simulation on tc.MPSCircuit after the v1 Kraus-ladder failed the LLM audit as a raw-simulator bypass; v1 numbers in history"
 }
