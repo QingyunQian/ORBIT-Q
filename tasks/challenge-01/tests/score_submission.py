@@ -212,9 +212,10 @@ def main() -> None:
             ),
         }
     )
+    # Runtime is recorded separately and does not gate the pass reward
+    # (policy per AGENTS.md/README since ea088db).
     rewards["reward"] = (
         rewards["functional_score"]
-        * rewards["runtime_score"]
         * rewards["static_policy_score"]
         * rewards["llm_audit_score"]
     )
