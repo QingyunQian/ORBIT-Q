@@ -5,10 +5,10 @@
 | 01 | yes | 1.0 | 1.0 | 178.5 | 2.14 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27; cloud runtime 156.0s |
 | 02 | yes | 1.0 | 1.0 | 16.1 | 3.01 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27; cloud runtime 18.1s |
 | 03 | yes | 1.0 | 1.0 | 11.9 | 2.56 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27; cloud runtime 14.3s |
-| 04 | yes | 1.0 | 1.0 | 196.3 | 11.94 | 1.0 (gpt-5.6-sol) | **1.0**# | v2 (MPSCircuit vectorized-DM); stamped reward.json shows 0.8646 from the pre-fix scorer's runtime multiplier |
+| 04 | yes | 1.0 | 1.0 | 191.1 | 11.94 | 1.0 (gpt-5.6-sol) | **1.0** | v2 (MPSCircuit vectorized-DM); re-stamped with synced scorer |
 | 05 | yes | 1.0 | 1.0 | 101.2 | 1.19 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27 |
-| 06 | yes | 1.0 | 1.0 | 72.2 | 1.09 | pending | pending | cloud precheck passed; awaiting official stamp |
-| 07 | - | - | - | - | - | - | - | |
+| 06 | yes | 1.0 | 1.0 | 81.7 | 1.09 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27 |
+| 07 | yes | 1.0 | 1.0 | 214.0 | 1.28 | pending | pending | cloud precheck passed; awaiting official stamp |
 | 08 | - | - | - | - | - | - | - | |
 | 09 | - | - | - | - | - | - | - | |
 | 10 | - | - | - | - | - | - | - | |
@@ -19,14 +19,11 @@ Runtime is the evaluator's timed `run_solution(config)` wall time from the
 cloud precheck (4 vCPU x86_64); the official stamp records its own runtime in
 `challenge-NN/reward.json`.
 
-`#` on task 04: the stamp ran before commit cd60dd3, when
-`score_submission.py` still multiplied `runtime_score` into `reward` even
-though AGENTS.md/README had declared (since ea088db) that runtime is not a
-pass criterion; 0.8646 is exactly the runtime interpolation
-(300-196.25)/120 times an otherwise perfect 1.0 x 1.0 x 1.0. The scorer is
-now synced with the declared policy; a re-stamp would report 1.0. All three
-gating components (functional, static, audit) are 1.0, so the task counts as
-passed under the paper-facing definition.
+Task 04 was first stamped before commit cd60dd3 synced the scorer with
+the declared runtime-free reward policy (that stamp showed 0.8646 = runtime
+interpolation x otherwise perfect components); the recorded reward.json is
+from the re-stamp with the synced scorer and reads 1.0.
+
 
 `T/T_ref` is the hardware-independent artifact-efficiency metric used by the
 paper figures: candidate runtime divided by the publication reference runtime,
@@ -71,6 +68,14 @@ to unit norm after every layer, gate-level composition on disjoint supports)
 cools the energy density from -1.1720 to -1.32673, within 1.7e-4 of the exact
 ground state (criterion allows 0.5) and never below it; learned filter
 strengths grow monotonically toward the late layers.
+
+Challenge-07 physics summary (cloud precheck): trajectory-averaged
+measurement-feedback VQE over 64 fixed-uniform trajectories (projective
+mid-circuit ancilla measurements via the framework's jittable cond_measure,
+measurement-conditioned RZZ feedback); the averaged data-TFIM energy improves
+from -6.490 to -10.034 (improvement 3.54, criterion 0.3; target -8.3;
+8-qubit exact GS is about -10.15), and the optimizer converges to a nearly
+measurement-insensitive protocol (final per-trajectory energy std 3e-4).
 
 Challenge-06 physics summary (cloud precheck): exact sparse GS energy density
 -1.602552 (14 qubits); the four digital-analog hybrid blocks (continuous-time
