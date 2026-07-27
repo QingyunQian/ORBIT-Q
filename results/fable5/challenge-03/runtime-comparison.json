@@ -1,11 +1,18 @@
 {
-  "host": "cloud VM: 4 vCPU Intel Xeon x86_64, image challenge-benchmark-quantum-tensorcircuit:py311 (tensorcircuit-ng 1.7.0)",
-  "candidate_runtime_sec": 13.64,
+  "host": "cloud VM: 4 vCPU Intel Xeon x86_64",
+  "environment": "canonical image challenge-benchmark-quantum-tensorcircuit:py311 (tensorcircuit-nightly 1.8.0.dev20260726)",
+  "candidate_runtime_sec": 14.34,
   "reference_official": {
     "file": "tasks/challenge-03/solution/solution_3.py",
-    "runtime_sec": 5.36,
+    "runtime_sec": 5.6,
     "result": "PASS"
   },
-  "runtime_ratio_candidate_over_reference": 2.54,
-  "ratio_basis": "candidate (cloud precheck) / publication reference, same machine and image"
+  "runtime_ratio_candidate_over_reference": 2.56,
+  "history": {
+    "pinned_20260618_env": {
+      "candidate_runtime_sec": 13.64,
+      "reference_runtime_sec": 5.36,
+      "ratio": 2.54
+    }
+  }
 }

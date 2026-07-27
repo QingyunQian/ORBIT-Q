@@ -1,26 +1,21 @@
 {
   "host": "cloud VM: 4 vCPU Intel Xeon x86_64",
-  "primary": {
-    "environment": "derived image py311-tc-latest (tensorcircuit-nightly upgraded so the official reference's omeco contractor works; both sides measured in this same environment)",
-    "candidate_runtime_sec": 159.69,
-    "reference_official": {
-      "file": "tasks/challenge-01/solution/solution_1.py",
-      "runtime_sec": 72.07,
-      "result": "PASS",
-      "note": "unpatched, uses tc.set_contractor('omeco')"
-    },
-    "runtime_ratio_candidate_over_reference": 2.22
+  "environment": "canonical image challenge-benchmark-quantum-tensorcircuit:py311 (tensorcircuit-nightly 1.8.0.dev20260726, omeco 0.2.4 integrated)",
+  "candidate_runtime_sec": 155.99,
+  "reference_official": {
+    "file": "tasks/challenge-01/solution/solution_1.py",
+    "runtime_sec": 72.79,
+    "result": "PASS",
+    "note": "unpatched, uses tc.set_contractor('omeco')"
   },
-  "secondary_pinned_image": {
-    "environment": "pinned image challenge-benchmark-quantum-tensorcircuit:py311 (tensorcircuit-nightly 1.7.0.dev20260618; official reference cannot run here because set_contractor('omeco') is not yet integrated)",
-    "candidate_runtime_sec": 150.4,
-    "reference_variant_patched": {
-      "file": "optimized_sloutions/challenge-01/solution_1_mpo.py",
-      "patch": "single line disabled: tc.set_contractor('omeco') -> default contractor",
-      "runtime_sec": 39.69,
-      "result": "PASS"
-    },
-    "runtime_ratio_candidate_over_patched_variant": 3.79
+  "runtime_ratio_candidate_over_reference": 2.14,
+  "history": {
+    "pinned_20260618_env": {
+      "note": "earlier canonical image with tensorcircuit-nightly 1.7.0.dev20260618; the official reference could not run there (set_contractor('omeco') not yet integrated)",
+      "candidate_runtime_sec": 150.4,
+      "patched_mpo_variant_runtime_sec": 39.69,
+      "ratio_vs_patched_variant": 3.79
+    }
   },
   "official_stamp_runtime_sec_mac_colima": 178.54
 }

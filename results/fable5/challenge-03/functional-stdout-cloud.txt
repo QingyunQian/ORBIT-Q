@@ -1,6 +1,6 @@
 Challenge 3 evaluation
 Solution module: solution_3
-End-to-end solution time: 13.64s
+End-to-end solution time: 14.34s
 Exact sparse ground energy density: -1.17548439
 Initial energy density: -0.44430090
 Final energy density: -1.02593488

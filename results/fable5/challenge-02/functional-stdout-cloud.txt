@@ -1,6 +1,6 @@
 Challenge 2 evaluation
 Solution module: solution_2
-End-to-end solution time: 16.67s
+End-to-end solution time: 18.11s
 Exact sparse ground energy density: -2.00036788
 Initial energy density: -0.74119631
 Final energy density: -1.99249607
