@@ -276,3 +276,62 @@ If it is valid and faster, retain it only if the paired promotion rule passes.
 
 Append corrections below this heading. Never rewrite an earlier result after it
 has informed another experiment.
+
+- `2026-07-28T02:35:40.844503Z`: Round 1 completed with 12/12 successful
+  evaluator cells and six eligible alternating matched pairs. The pre-evaluation
+  hypothesis commit is
+  `1eb08a96b348a836fc3725e4b59c3afe40116fd9`. The shared container/session ID
+  is
+  `6304e595c776e1b5c6ae9392d196438f0cbcb9959b96170493995fa1242369da`.
+  The run-specific host fingerprint is
+  `c7e01029d3f2a95e99c9ede05b0d6b10c0a226ea6804c5e53ac6efc308e7848e`;
+  it supersedes the pre-run baseline fingerprint recorded above because the
+  benchmark fingerprint includes the experiment checkout state.
+
+- `2026-07-28T02:35:40.844503Z`: immutable report
+  `results/task-05-r01a7c9/results.json`, SHA-256
+  `57727d0214bc96f89e814b213c26abfd3fe24cbd2a434f3c373b359d092eb618`.
+  Summary SHA-256
+  `c0359c150ddabfc116ae0bbb20ab0c4fcbb43d36acc968e57bde2bbe1190f92e`;
+  raw `run.log` SHA-256
+  `165723d7838bd928e7a932ebc943c91e8264eb818966d2097d011b8fb15efd40`.
+
+  ```text
+  terminal_status: SUCCESS
+  valid: true
+  timed_out: false
+  passing_pairs: 6
+  reference_mean_runtime_sec: 129.23501633333333
+  reference_runtime_stderr_sec: 1.636560324417641
+  reference_median_runtime_sec: 130.011163
+  candidate_mean_runtime_sec: 117.75056466666666
+  candidate_runtime_stderr_sec: 1.071133075586679
+  candidate_median_runtime_sec: 118.1662445
+  improvement_pct: 8.807655093603325
+  improvement_pct_stderr: 1.4946655256492916
+  speedup: 1.0980332252567204
+  speedup_stderr: 0.017708864694580044
+  paired_speedup_ci_low: 1.052511139326026
+  paired_speedup_ci_high: 1.1435553111874148
+  ```
+
+- `2026-07-28T02:35:40.844503Z`: decision `keep`. The candidate passed all
+  correctness and framework-fidelity checks, lowered both mean and median
+  runtime, won 6/6 pairs, and its predeclared two-sided 95% Student-t lower
+  bound for paired speedup exceeds 1.0. It therefore passes the promotion rule
+  at a measured `1.0980x`, but it does not support a 10x claim. The result
+  confirms that loop dispatch is secondary; the next round must target the
+  trajectory contraction/normalization path while retaining this scan as the
+  latest accepted parent.
+
+- `2026-07-28T02:36:00Z`: post-run `./bench verify` passed. A first
+  `research/check_gates.py` invocation incorrectly supplied the paired report
+  where the command expects a reference-only baseline and therefore reported
+  expected row-role errors. This is a checker-invocation error, not benchmark
+  evidence; the frozen reference-only baseline remains
+  `results/task-05-reference-baseline-v1/results.json` in the campaign setup
+  worktree and is used for the authoritative post-run gate check.
+
+- `2026-07-28T02:36:00Z`: the authoritative post-run gate check using the
+  frozen reference-only baseline passed with `research_ready: true` and
+  `promotion_ready: true`.
