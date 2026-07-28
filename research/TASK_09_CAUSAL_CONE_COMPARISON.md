@@ -392,6 +392,64 @@ git diff --check
 The candidate contains 155 non-empty, non-comment lines, below the task's
 200-line policy limit.
 
+### 5. Static gate-method specialization
+
+We tested whether resolving each gate name to an unbound `tc.Circuit` method
+during cone extraction would reduce tracing overhead:
+
+```python
+# Existing compact representation and trace-time call
+compact_gate = (gate_name, qubit, parameter_index)
+getattr(circuit, compact_gate[0])(
+    compact_gate[1],
+    theta=params[position],
+)
+
+# Tested representation and trace-time call
+compact_gate = (
+    getattr(tc.Circuit, gate_name),
+    qubit,
+    parameter_index,
+)
+compact_gate[0](
+    circuit,
+    compact_gate[1],
+    theta=params[position],
+)
+```
+
+The current candidate scans the 3,897-entry tape once per observable before
+JAX tracing. A 1,000-iteration microbenchmark measured `0.383707 ms` for both
+cone extractions, or about `49.23 ns` per visited tape entry. The candidate
+retains 74 and 80 gates, so the string-based `getattr` path runs 154 times
+during tracing rather than during the 20,000 optimizer updates.
+
+All 12 method-specialization evaluator cells passed. We measured six
+counterbalanced pairs in one pinned Docker container, with a fresh Python
+process for each cell:
+
+| Pair | Order | String dispatch | Method specialization | Baseline / specialized |
+| ---: | --- | ---: | ---: | ---: |
+| 1 | string → method | 7.783336 s | 7.206295 s | 1.080075x |
+| 2 | method → string | 7.704271 s | 7.893952 s | 0.975971x |
+| 3 | string → method | 8.321220 s | 9.376603 s | 0.887445x |
+| 4 | method → string | 8.832963 s | 10.846111 s | 0.814390x |
+| 5 | string → method | 9.670592 s | 10.374776 s | 0.932125x |
+| 6 | method → string | 10.043432 s | 10.672198 s | 0.941084x |
+
+| Summary | String dispatch | Method specialization |
+| --- | ---: | ---: |
+| Mean | 8.725969 s | 9.394989 s |
+| Median | 8.577092 s | 9.875690 s |
+| Pair wins | 5/6 | 1/6 |
+
+The mean paired speedup was `0.938515x` with standard error `0.036288`.
+Mean paired improvement was `-7.344123%`, so the prototype regressed. We
+discarded it and restored the string-based compact gate representation. The
+measurements support two conclusions: the full-tape scan costs less than one
+millisecond, and pre-resolving 154 method objects does not reduce end-to-end
+runtime in this environment.
+
 ## Main findings
 
 ### Prune before graph construction
@@ -427,6 +485,13 @@ public qubit positions, cone sizes, or separation result.
 The reference invokes one jitted step from Python 100 times. The candidate
 places the complete Adam trajectory inside one jitted scan and returns the
 stacked pre-update history.
+
+### Keep gate names in the compact static tape
+
+JAX traces the 154 compact gate calls once. It does not dispatch them during
+each restart or optimizer update. Pre-resolving those strings into unbound
+methods lost five of six matched pairs and increased mean runtime by 7.34%.
+The candidate therefore keeps the simpler string representation.
 
 ## Attribution limits and next checks
 
