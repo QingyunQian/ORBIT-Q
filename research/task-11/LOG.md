@@ -151,7 +151,7 @@ Hypothesis commit: `3dbe4a4c662335600fd014126d775344445d4aad`
 Candidate file: `src/solutions/task-11/solution_11.py`
 
 Candidate SHA-256:
-`bca046d2e1c6e6824fce51022967c21f364c2e0d515ca2b0583f389276eb17f2`
+`a787e7579bbe969f25e3ca9bea0b7f25b028e6e0bd7f8d54a6969940de1149c5`
 
 Diff SHA-256:
 `3c6da28ef2f60be4abd390e1c5d9b0244e649fa23ff0d15a0c9dce0262dbef5c`
@@ -276,3 +276,16 @@ the framework-fidelity rules).
 ## Append-only corrections
 
 None.
+
+## Append-only corrections
+
+Date: 2026-07-28
+
+Style-only revision of `src/solutions/task-11/solution_11.py` (no protocol
+change): restore the immutable reference module docstring verbatim, and replace
+direct `jax` / `jax.numpy` imports with TensorCircuit backend primitives
+(`K.einsum`, `K.stack`, `K.solve`, `K.jit`, `K.jaxy_scan`, etc.). Candidate
+SHA-256 updated to `a787e7579bbe969f25e3ca9bea0b7f25b028e6e0bd7f8d54a6969940de1149c5`. Smoke re-check under the same pinned local
+engine: 1/1 PASS at 114.687 s (inside the prior paired-session band). The
+six-pair statistics recorded above remain the campaign evidence; this revision
+does not reopen a new paired session.

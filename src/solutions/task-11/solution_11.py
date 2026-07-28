@@ -1,31 +1,17 @@
 """
 Task Suite Problem 11: spin-1 Haldane-chain VQE.
 
-Autoresearch candidate (campaign task-11, experiment e01). The protocol is
-unchanged from the immutable reference: identical parameter layout, seeded initialization, layer structure,
-Adam schedule, energy density, and returned quantities. Restructured for
-speed: (1) exact gate fusion - the per-site rz/ry/rz rotations are composed
-into one 3x3 unitary and absorbed into the even-bond entanglers, so every
-layer applies 11 two-qudit unitaries instead of 47 gate applications;
-(2) all 9x9 entangler exponentials of a layer are built in one batched fixed
-2^5 scaling-and-squaring diagonal Pade(3,3) pass (exactly unitary for
-anti-Hermitian input, error below the complex64 noise floor here);
-(3) the diagonal single-ion observable is evaluated with one precomputed
-per-basis-state coefficient vector instead of 12 expectation contractions;
-(4) the 500 Adam updates run in one jax.lax.scan and the post-training
-readout block is jit-compiled.
+The TensorCircuit-NG baseline uses QuditCircuit and direct qudit unitary APIs for
+all variational gates. Repeated layers are staged through scan to reduce JIT
+tracing overhead.
 """
 
 import numpy as np
 import optax
-
 import tensorcircuit as tc
 
 K = tc.set_backend("jax")
 tc.set_dtype("complex64")
-
-import jax
-import jax.numpy as jnp
 
 DIM = 3
 SQRT2 = np.sqrt(2.0).astype(np.float32)
@@ -94,66 +80,66 @@ def basis_digit_table(n_sites):
 
 
 def rz_batch(theta):
-    theta = theta.astype(jnp.complex64)
-    zero, one = jnp.zeros_like(theta), jnp.ones_like(theta)
+    theta = K.cast(theta, "complex64")
+    zero, one = K.zeros_like(theta), K.ones_like(theta)
     rows = [
-        jnp.stack([jnp.exp(-1j * theta), zero, zero], axis=-1),
-        jnp.stack([zero, one, zero], axis=-1),
-        jnp.stack([zero, zero, jnp.exp(1j * theta)], axis=-1),
+        K.stack([K.exp(-1j * theta), zero, zero], axis=-1),
+        K.stack([zero, one, zero], axis=-1),
+        K.stack([zero, zero, K.exp(1j * theta)], axis=-1),
     ]
-    return jnp.stack(rows, axis=-2)
+    return K.stack(rows, axis=-2)
 
 
 def ry_batch(theta):
-    c, s = jnp.cos(theta), jnp.sin(theta)
+    c, s = K.cos(theta), K.sin(theta)
     rows = [
-        jnp.stack([(1.0 + c) / 2.0, -s / SQRT2, (1.0 - c) / 2.0], axis=-1),
-        jnp.stack([s / SQRT2, c, -s / SQRT2], axis=-1),
-        jnp.stack([(1.0 - c) / 2.0, s / SQRT2, (1.0 + c) / 2.0], axis=-1),
+        K.stack([(1.0 + c) / 2.0, -s / SQRT2, (1.0 - c) / 2.0], axis=-1),
+        K.stack([s / SQRT2, c, -s / SQRT2], axis=-1),
+        K.stack([(1.0 - c) / 2.0, s / SQRT2, (1.0 + c) / 2.0], axis=-1),
     ]
-    return jnp.stack(rows, axis=-2).astype(jnp.complex64)
+    return K.cast(K.stack(rows, axis=-2), "complex64")
 
 
 def expm_pade33_fixed(a, s=5):
-    """Batched fixed scaling-and-squaring diagonal Pade(3,3) exponential."""
-    eye = jnp.eye(a.shape[-1], dtype=a.dtype)
+    eye = K.eye(a.shape[-1], dtype=a.dtype)
     a = a / (2**s)
     a2 = a @ a
     odd = a @ (a2 + 60.0 * eye)
     even = 12.0 * a2 + 120.0 * eye
-    r = jnp.linalg.solve(even - odd, even + odd)
+    r = K.solve(even - odd, even + odd)
     for _ in range(s):
         r = r @ r
     return r
 
 
 def entangler_batch(theta, phi, beta):
+    beta_c = K.cast(beta, "complex64")
     generator = (
-        theta[:, None, None].astype(jnp.complex64) * DOT_BOND
-        + (phi - theta)[:, None, None].astype(jnp.complex64) * ZZ_BOND
-        + jnp.complex64(beta) * DOT_BOND_SQUARED
+        K.cast(theta, "complex64")[:, None, None] * DOT_BOND
+        + K.cast(phi - theta, "complex64")[:, None, None] * ZZ_BOND
+        + beta_c * DOT_BOND_SQUARED
     )
     return expm_pade33_fixed(-1j * generator)
 
 
 def apply_layer(state, lp, config):
-    singles = jnp.einsum(
+    singles = K.einsum(
         "sab,sbc,scd->sad",
         rz_batch(lp["single_rz2"]),
         ry_batch(lp["single_ry"]),
         rz_batch(lp["single_rz1"]),
     )
-    pair = jnp.einsum("kac,kbd->kabcd", singles[0::2], singles[1::2])
-    pair = pair.reshape(-1, DIM * DIM, DIM * DIM)
+    pair = K.einsum("kac,kbd->kabcd", singles[0::2], singles[1::2])
+    pair = K.reshape(pair, [-1, DIM * DIM, DIM * DIM])
     even = entangler_batch(lp["even_theta"], lp["even_phi"], config["beta"]) @ pair
     odd = entangler_batch(lp["odd_theta"], lp["odd_phi"], config["beta"])
 
     circuit = tc.QuditCircuit(config["n_sites"], dim=DIM, inputs=state)
     for k in range(even.shape[0]):
-        gate = tc.gates.Gate(even[k].reshape((DIM,) * 4))
+        gate = tc.gates.Gate(K.reshape(even[k], (DIM,) * 4))
         circuit.unitary(2 * k, 2 * k + 1, unitary=gate, name="spin1_even_fused")
     for k in range(odd.shape[0]):
-        gate = tc.gates.Gate(odd[k].reshape((DIM,) * 4))
+        gate = tc.gates.Gate(K.reshape(odd[k], (DIM,) * 4))
         circuit.unitary(2 * k + 1, 2 * k + 2, unitary=gate, name="spin1_odd")
     return circuit.state()
 
@@ -167,14 +153,15 @@ def build_state(params, config):
 def make_energy_from_state(config):
     bond_gate = tc.gates.Gate(
         K.reshape(
-            DOT_BOND + jnp.complex64(config["beta"]) * DOT_BOND_SQUARED,
+            DOT_BOND + K.cast(config["beta"], "complex64") * DOT_BOND_SQUARED,
             (DIM,) * 4,
         )
     )
     digits = basis_digit_table(config["n_sites"])
-    onsite_coeffs = jnp.asarray(
-        config["single_ion_anisotropy"] * SZ2_DIAG[digits].sum(axis=1),
-        dtype=jnp.float32,
+    onsite_coeffs = K.convert_to_tensor(
+        (config["single_ion_anisotropy"] * SZ2_DIAG[digits].sum(axis=1)).astype(
+            np.float32
+        )
     )
 
     def energy_from_state(state):
@@ -182,7 +169,7 @@ def make_energy_from_state(config):
         energy = K.cast(0.0, "complex64")
         for left in range(config["n_sites"] - 1):
             energy += circuit.expectation((bond_gate, [left, left + 1]))
-        onsite = jnp.sum(onsite_coeffs * jnp.abs(state) ** 2)
+        onsite = K.sum(onsite_coeffs * K.abs(state) ** 2)
         return (K.real(energy) + onsite) / config["n_sites"]
 
     return energy_from_state
@@ -215,14 +202,16 @@ def run_solution(config):
         updates, state = optimizer.update(grads, state, p)
         return (optax.apply_updates(p, updates), state), value
 
-    @jax.jit
     def train(p, state):
-        return jax.lax.scan(train_step, (p, state), None, length=config["max_steps"])
+        xs = K.zeros([config["max_steps"]])
+        return K.jaxy_scan(train_step, (p, state), xs)
 
-    @jax.jit
     def finalize(p):
         state = build_state(p, config)
         return energy_from_state(state), string_orders_from_state(state, config)
+
+    train = K.jit(train)
+    finalize = K.jit(finalize)
 
     (params, _), history = train(params, opt_state)
     final_energy_density, final_string_orders = finalize(params)
