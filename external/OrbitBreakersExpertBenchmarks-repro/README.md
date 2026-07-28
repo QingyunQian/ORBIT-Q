@@ -8,13 +8,21 @@ work is bundled here for retrieval.
 
 ## Headline result
 
-| Task | Reference (s) | Fable 5 candidate (s) | Speedup | Verdict |
-| ---: | ---: | ---: | ---: | --- |
-| 11 | 179.59 ± 1.81 | 120.02 ± 0.71 | **1.50×** | speedup confirmed (matched precision) |
-| 06 | unavailable | 70.44 ± 0.42 | n/a | repo reference broken on public TC |
+Two measurement rounds — Docker paired (repo method) and a local matched-env
+cross-check. **Only task-11 is a genuine speedup; task-06 is not.**
 
-The repo image sets `JAX_ENABLE_X64=0`, so both sides run complex64 — an
-inherently matched-precision comparison. Full write-up in `REPORT.md`.
+| Task | Round | Reference (s) | Candidate (s) | Speedup | Verdict |
+| ---: | --- | ---: | ---: | ---: | --- |
+| 11 | Docker | 179.59 ± 1.81 | 120.02 ± 0.71 | **1.50×** | candidate faster |
+| 11 | local | 232.43 ± 10.83 | 128.32 ± 3.13 | **1.81×** | candidate faster |
+| 06 | Docker | unavailable* | 70.44 ± 0.42 | n/a | reference fails on jax-0.10.0 pin |
+| 06 | local | 71.83 ± 0.09 | 79.39 ± 2.28 | 0.905× | **reference faster ~10.5%** |
+
+`*` the task-06 reference is not fundamentally broken; it fails only under the
+image's pinned `jax 0.10.0`. With `jax 0.11.0` + diffrax it runs (~72 s), and
+then it is *faster* than the candidate. See `LOCAL_RESULTS.md` for the full
+correction. The repo image sets `JAX_ENABLE_X64=0`, so both sides are complex64
+(matched precision) in both rounds.
 
 ## Contents
 
