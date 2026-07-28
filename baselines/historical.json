@@ -61,6 +61,18 @@
       "jax": "0.10.0",
       "jaxlib": "0.10.0",
       "date": "2026-07-28"
+    },
+    {
+      "task": "11",
+      "solution": "fused (campaign candidate e01)",
+      "runtime_sec": 114.97,
+      "result": "PASS",
+      "recorded_expert_runtime_sec": 168.36,
+      "host": "cloud Linux VM, 4 vCPU Intel Xeon x86_64, 15 GB RAM",
+      "engine": "bench local (no Docker on host), lock-pinned venv",
+      "jax": "0.10.0",
+      "jaxlib": "0.10.0",
+      "date": "2026-07-28"
     }
   ]
 }

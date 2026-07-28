@@ -1,0 +1,24 @@
+{
+  "generated_by": "research/task-11/profile_reference.py",
+  "environment_lock": "envs/tensorcircuit-py311/requirements.lock",
+  "reference": {
+    "module": "reference_11",
+    "jit_trace_sec": 1.318,
+    "xla_compile_sec": 2.733,
+    "stablehlo_line_count": 8135,
+    "train_step_ms": 323.07,
+    "loop_500_estimate_sec": 161.5,
+    "forward_build_state_ms": 80.98,
+    "forward_energy_ms": 36.44
+  },
+  "candidate": {
+    "module": "candidate_11",
+    "jit_trace_sec": 0.353,
+    "xla_compile_sec": 1.191,
+    "stablehlo_line_count": 2426,
+    "train_step_ms": 268.09,
+    "loop_500_estimate_sec": 134.0,
+    "forward_build_state_ms": 73.78,
+    "forward_energy_ms": 17.54
+  }
+}

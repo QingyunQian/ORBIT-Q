@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "dataset_version": "orbitq-workloads-v20260728.3",
+  "tier": "public-development",
+  "task_id": "11",
+  "case_id": "task-11-canonical-fixed-v1",
+  "description": "Canonical fixed Task 11 spin-1 Haldane-chain VQE with string-order verification.",
+  "input_config": {
+    "n_sites": 12,
+    "n_layers": 5,
+    "beta": 0.2,
+    "single_ion_anisotropy": 0.15,
+    "max_steps": 500,
+    "learning_rate": 0.03,
+    "initial_parameter_scale": 0.05,
+    "seed": 2041,
+    "minimum_energy_improvement": 0.005,
+    "maximum_energy_density_gap": 0.12,
+    "maximum_string_order_mae": 0.12
+  },
+  "seed": 2041,
+  "randomness": "fixed seed 2041 for the float32 parameter initialization; the sparse exact ground state is deterministic",
+  "expected_result_contract": {
+    "energy_density_history": {
+      "shape": [
+        500
+      ],
+      "meaning": "Pre-update energy density for each of exactly 500 Adam updates."
+    },
+    "final_energy_density": {
+      "shape": [],
+      "meaning": "Energy density of the final variational state after the 500th update."
+    },
+    "final_string_orders": {
+      "shape": [
+        3
+      ],
+      "meaning": "Three string correlators O^z(i,j) for pairs (0,11), (1,10), (2,9)."
+    }
+  },
+  "functional_thresholds": {
+    "energy_must_improve_by": 0.005,
+    "maximum_energy_density_gap": 0.12,
+    "maximum_string_order_mae": 0.12
+  },
+  "variation_support": {
+    "reduced_smoke_case": false,
+    "scale_probe": false,
+    "reason": "The public Task 11 contract fixes 12 sites, five layers, seed 2041, and exactly 500 Adam updates; changing any of them would not exercise the campaign workload."
+  },
+  "source_provenance": {
+    "repository_commit": "ed382bf042ecb1c87b399acaadec6bce74368649",
+    "problem_path": "tasks/task-11/problem.md",
+    "problem_sha256": "06f57943894e0455fcc5935216bcb0d3706628a38f81c5c7143ec5b95104ad78",
+    "evaluator_path": "tasks/task-11/evaluator/evaluate_11.py",
+    "evaluator_sha256": "de70880ec00a86a7123aed14651b33401a7f872f667fb1598bd3ba191e29353b",
+    "expert_path": "references/task-11/solution_11.py",
+    "expert_sha256": "087c7a2894b4f0383bfc476f835933940cdfd2d9812f814adede3a39375b3f00"
+  },
+  "expert_validation": {
+    "status": "PASS",
+    "validated_at_utc": "2026-07-28T14:53:00Z",
+    "engine": "local",
+    "environment_image_id": null,
+    "environment_lock_sha256": "cd5ac5cb2102ea7b40bd46dc81320cc59e0ce0671ab88c597f81d82b384a824b",
+    "environment_note": "No Docker daemon on the campaign host; validated with ./bench --engine local in a virtual environment installed exactly from envs/tensorcircuit-py311/requirements.lock (Python 3.12.3), sitecustomize on PYTHONPATH, NUMBA_DISABLE_JIT=1.",
+    "host_fingerprint_sha256": "748423c1790b38ddbdd8eb77499b222a173b313f350e3bc35402ee8889a49dc4",
+    "evaluator_runtime_sec": 166.834263,
+    "initial_energy_density": -0.0546756797,
+    "final_energy_density": -0.7045340538,
+    "exact_ground_energy_density": -0.7736449389,
+    "energy_density_gap": 0.0691108851,
+    "string_order_mae": 0.0551719887,
+    "report_sha256": "b4ce3d311a0d4ba74ec094b8330824d07135a82f5a23c44aece9a3e2d25f7d91",
+    "summary_sha256": "62f85a13ce89a20c50f26b19e294827fd8736100e1aed4003937a5702903f7e5",
+    "stdout_sha256": "0a9fa604d4aae126f530de195f52bcb04c6a1607c65cf0854fda062660f01db8"
+  }
+}
