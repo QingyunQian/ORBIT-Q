@@ -1,0 +1,39 @@
+{
+  "generated_by": "research/task-12/profile_expm.py",
+  "environment_lock": "envs/tensorcircuit-py311/requirements.lock",
+  "accuracy_vs_float64_scipy": [
+    {
+      "theta_scale": 0.05,
+      "max_generator_norm_bound": 0.919,
+      "jexpm_max_abs_err": 1.7127096142602416e-07,
+      "pade33_s5_max_abs_err": 5.277466592479941e-06,
+      "pade33_s5_max_unitarity_defect": 1.055002212524414e-05
+    },
+    {
+      "theta_scale": 0.5,
+      "max_generator_norm_bound": 7.892,
+      "jexpm_max_abs_err": 2.13937326610061e-07,
+      "pade33_s5_max_abs_err": 4.836887262698418e-06,
+      "pade33_s5_max_unitarity_defect": 1.0311603546142578e-05
+    },
+    {
+      "theta_scale": 1.0,
+      "max_generator_norm_bound": 18.238,
+      "jexpm_max_abs_err": 1.0629713454831844e-05,
+      "pade33_s5_max_abs_err": 3.2686023539371067e-06,
+      "pade33_s5_max_unitarity_defect": 7.510185241699219e-06
+    },
+    {
+      "theta_scale": 2.0,
+      "max_generator_norm_bound": 33.564,
+      "jexpm_max_abs_err": 6.245178907907371e-06,
+      "pade33_s5_max_abs_err": 3.230430040574948e-06,
+      "pade33_s5_max_unitarity_defect": 8.344650268554688e-06
+    }
+  ],
+  "scan_step_with_grad_and_adam_ms": {
+    "jax_scipy_expm_pade13_adaptive": 0.3808,
+    "fixed_pade33_s5_candidate": 0.1225
+  },
+  "note": "Both rows time one scan step containing only the batched 31-gate construction, its gradient, and an Adam update; the candidate kernel is the exact function used by solution_12._su4_batch."
+}
