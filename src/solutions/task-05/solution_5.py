@@ -8,12 +8,25 @@ angles. The solution returns only NumPy values consumed by evaluate_5.py.
 import jax
 import numpy as np
 import optax
+import cotengra as ctg
 
 import tensorcircuit as tc
 
 K = tc.set_backend("jax")
 tc.set_dtype("complex64")
-tc.set_contractor("omeco")
+PATH_OPTIMIZER = ctg.ReusableHyperOptimizer(
+    methods=["greedy"],
+    minimize="combo",
+    max_time=1,
+    max_repeats=1,
+    parallel=False,
+    progbar=False,
+)
+tc.set_contractor(
+    "custom",
+    optimizer=PATH_OPTIMIZER,
+    preprocessing=True,
+)
 
 
 def initial_parameters(config):

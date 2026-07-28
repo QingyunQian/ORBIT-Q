@@ -477,3 +477,52 @@ Append corrections below; never rewrite evidence used by a later round.
   `23dcf1b1ea32a416830fdbb6d85a7f81d75ec08ffaadc25e40f9044a3d3dc51a`;
   full evidence archive:
   `/Users/hmyuuu/forge/OrbitBreakersCampaignArchive/task-05/r05e9b3`.
+
+## Experiment `r06f1c7`
+
+Task/branch/worktree: `task-05` /
+`codex/orbitbreakers/task-05/r06f1c7` /
+`/Users/hmyuuu/forge/ORBIT-Q-worktrees/orbitbreakers/task-05/r06f1c7`.
+The live PR inspection remains `2026-07-27T18:15:35Z`, with no Task 05
+improvement PR; all campaign worktrees remain Task 05 only.
+
+### Hypothesis
+
+A deterministic `cotengra.ReusableHyperOptimizer` restricted to one greedy
+trial, with a one-second bound and TensorCircuit preprocessing enabled, will
+cache a reusable contraction path across the repeated circuit shapes in one
+evaluator. It preserves the accepted dense TensorCircuit gates,
+normalizations, gradients, and 600 updates while testing whether reusable path
+lookup reduces OMECo planning/execution overhead.
+
+### Frozen pre-evaluation record
+
+Parent `a5266905ee29b32f2e49437966095e5d955ccaed`; hypothesis commit pending.
+Candidate SHA-256
+`6245d59510412fd0ffcc083f3a9653e7d245edc5ae827b56dc4fc39894691307`;
+diff SHA-256
+`aea1b103f9c2edac53795f3ac54daf2867e294a8ce7fb4fcd80d9ca9e49cbf9b`.
+Public dataset `orbitq-workloads-v20260728.1`, manifest SHA-256
+`f65a63b01238b569de0a1cea62af5dd0923ee1b52e9a4a7ada50c88fd8815485`.
+Reference/evaluator SHA-256:
+`ccafe626865ee39b651adaeead86b8bf6f541e3f1426da4842da92b6a0ee015f` /
+`dd0742cf402827beec19328bc9cf090e80a08973cf9303fd7d524a4f4cd37402`.
+Pinned image
+`sha256:623dc47116d71b5f4e2879a61def7beada982438cb2df45de8367d92f7ec242c`,
+Cotengra `0.8.2`, JAX/JAXLIB `0.10.0`, 8 CPUs, 9 GiB, and 300 seconds per
+evaluator.
+
+Command: `./bench run 05 --solution optimized --compare-to reference --repeat
+6 --engine docker --timeout 300 --no-build --output
+results/task-05-r06f1c7`. Canonical public case; odd pairs reference-first,
+even pairs candidate-first. Session and run fingerprint pending.
+
+### Result and decision
+
+Pending committed-candidate smoke check and immutable paired evaluation.
+Promotion requires the frozen paired rule and improvement over the current
+OMECo best.
+
+### Append-only experiment corrections
+
+Append corrections below; never rewrite prior evidence.
