@@ -414,3 +414,45 @@ keep it; otherwise preserve the result and restore Round 1.
 ### Append-only experiment corrections
 
 Append corrections below; never rewrite evidence used by a later round.
+
+- `2026-07-28T03:48:02.080893Z`: Round 3 completed with 12/12 successful
+  cells and six eligible matched pairs. Hypothesis commit
+  `7e7d162453364592b5aa9e0ee5a3217395a9e454`; shared session
+  `6ede20f4e0125ffec365dfed37077c062f494362f54ce35def74e16a7bfbf8e6`;
+  host fingerprint
+  `c7e01029d3f2a95e99c9ede05b0d6b10c0a226ea6804c5e53ac6efc308e7848e`.
+  Immutable report `results/task-05-r03c8f2/results.json`, SHA-256
+  `5e55997445cecba86b9ed05338618461aefb3b17b16471475eb8117f72fb7916`;
+  summary SHA-256
+  `466e7ad77f979ae229777151b546ff842374256e3df34e5376a9c40270402c6f`;
+  raw log SHA-256
+  `277074b780333eb4a5d18bad85d224b0ef185aab31cf578598ff42d24decb6b0`.
+
+  ```text
+  terminal_status: SUCCESS
+  valid: true
+  timed_out: false
+  passing_pairs: 6
+  reference_mean_runtime_sec: 141.1573155
+  reference_runtime_stderr_sec: 3.2482550983735736
+  reference_median_runtime_sec: 139.6248845
+  candidate_mean_runtime_sec: 94.51216283333333
+  candidate_runtime_stderr_sec: 3.951687432662029
+  candidate_median_runtime_sec: 92.2143155
+  improvement_pct: 32.918769645208826
+  improvement_pct_stderr: 2.9668817384846737
+  speedup: 1.5047045246309303
+  speedup_stderr: 0.06362408292718186
+  paired_speedup_ci_low: 1.3411536126879844
+  paired_speedup_ci_high: 1.6682554365738762
+  ```
+
+- `2026-07-28T03:48:02.080893Z`: decision `keep`. OMECo preserved
+  correctness and TensorCircuit-NG fidelity, lowered mean and median, won all
+  six pairs, and its 95% lower speedup bound is above 1.0. This establishes a
+  promoted `1.5047x` paired improvement over the immutable reference, not a
+  10x result. The next accepted parent includes both whole-training scan and
+  OMECo.
+
+- `2026-07-28T03:48:02.080893Z`: post-run `./bench verify` and authoritative
+  public gate check passed with `research_ready` and `promotion_ready` true.
