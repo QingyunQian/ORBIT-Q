@@ -34,9 +34,8 @@ tc.set_dtype("complex64")
 
 import jax
 import jax.numpy as jnp
-from jax.scipy.linalg import expm as jexpm
-
 import solution_12  # campaign candidate; provides _GENERATORS and _su4_batch
+from jax.scipy.linalg import expm as jexpm
 
 GENS = solution_12._GENERATORS
 GENS_J = jnp.asarray(GENS, dtype=jnp.complex64)

@@ -33,7 +33,6 @@ tc.set_contractor("omeco")
 
 import jax
 import jax.numpy as jnp
-
 import solution_12  # campaign candidate
 
 N = 32
@@ -61,7 +60,7 @@ def scan_losses(objective, steps, extra=None):
 
     def body(carry, _):
         p, s = carry
-        (loss, aux), grads = K.value_and_grad(objective, has_aux=True)(p)
+        (loss, _aux), grads = K.value_and_grad(objective, has_aux=True)(p)
         upd, s = opt.update(grads, s, p)
         ys = (loss,) if extra is None else (loss, extra(p))
         return (optax.apply_updates(p, upd), s), ys

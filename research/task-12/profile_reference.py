@@ -119,11 +119,11 @@ def profile_reference(dmrg_state, n_measure=1000):
 
     p, s = params, opt_state
     for _ in range(20):
-        p, s, loss, aux = compiled(p, s)
+        p, s, loss, _aux = compiled(p, s)
     jax.block_until_ready(loss)
     t0 = time.perf_counter()
     for _ in range(n_measure):
-        p, s, loss, aux = compiled(p, s)
+        p, s, loss, _aux = compiled(p, s)
     jax.block_until_ready(loss)
     per_step = (time.perf_counter() - t0) / n_measure
 
