@@ -580,3 +580,32 @@ Append corrections below; never rewrite prior evidence.
   `8a080acd9f82e5b0ff8fa26be3d8e78f553e254506fa4aa2f5c9189d5e52acf9`;
   full evidence archive:
   `/Users/hmyuuu/forge/OrbitBreakersCampaignArchive/task-05/r07a3d8`.
+
+- `2026-07-28T06:29:36.992344Z`: experiment `r08b7e4` tested a single-array
+  parameter layout. All six pairs passed and the 95% paired-speedup interval
+  was `[1.2367243464x, 1.6635767533x]`, but candidate mean `91.990646 s`
+  regressed from accepted Round 6's `83.153831 s`. Decision `discard`;
+  immutable report SHA-256
+  `0f158ffd565c6d1958e875c666409c03b97763d21a967f68a3c06995ec1d9728`;
+  full evidence archive:
+  `/Users/hmyuuu/forge/OrbitBreakersCampaignArchive/task-05/r08b7e4`.
+
+- `2026-07-28T06:30:00Z`: the user requested campaign wrap-up and PR
+  preparation. The campaign stops after eight isolated rounds rather than the
+  originally requested twenty. Round 6 remains the campaign-best validated
+  candidate. No 10x claim is made.
+
+- `2026-07-28T06:46:44.914992Z`: the required fresh final paired rerun of
+  accepted Round 6 was attempted and preserved as invalid evidence. Pair 1
+  passed at `197.383894 s` reference and `108.605428 s` candidate. Pair 2's
+  candidate passed at `143.108553 s`, but its immutable reference exceeded
+  the `300 s` limit; the shared container stopped and no later cells ran.
+  No final-rerun speedup is claimed. Report
+  `results/task-05-final-r06-20260728/results.json`, SHA-256
+  `89397cd1c7f791ea0ceee5f9013f1269dab99b1cd6c9377c71c1b61f6c9a4d8f`;
+  summary SHA-256
+  `e6b3e8cdc77cee7635580acf376b07f9f3be116e169f8a8340a9a7d3f2fa604f`;
+  shared session
+  `074abb0b87daa91252a5923cf34214f5ec963fe6ba4da6613315ef10f4233448`.
+  The earlier complete Round 6 promotion report remains the campaign's
+  eligible evidence.
