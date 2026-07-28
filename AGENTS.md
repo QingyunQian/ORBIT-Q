@@ -2,18 +2,29 @@
 
 Read `GOAL.md` and `program.md` before changing solution or framework code.
 
-## Task eligibility
+## One campaign, one task
 
-Every task is eligible for optimization, including tasks covered by open
-upstream pull requests. No live-PR inspection or exclusivity check is required.
+Before the first experiment, inspect the live open pull requests on
+`sxzgroup/ORBIT-Q` and select one task without an active improvement PR.
+Record it in `research/task-XX/LOG.md`. Every worktree and hypothesis in the
+campaign must stay on that task. Start a separate campaign instead of switching
+or combining tasks.
 
-The survey, public dataset, controller attestation, hidden tuning rotations,
-sealed holdout, and repeated baselines are optional supporting evidence. Their
-absence or incomplete status must never block editing, profiling, testing,
-benchmarking, reviewing, or promoting a candidate.
+## Gates before optimization
 
-Use one task and one falsifiable hypothesis per worktree so evidence remains
-auditable. A later worktree may target any task.
+Do not edit `src/solutions/` until:
+
+- `research/task-XX/SURVEY.md` is complete and marked `READY`;
+- `datasets/public/manifest.json` contains a validated public workload for the
+  selected task and is marked `ready`.
+
+Placeholders do not satisfy a gate.
+
+Repeated passing reference measurements are a promotion gate, not a prerequisite
+for proposing a candidate. A symmetric failure of the immutable reference and
+its initial byte-identical `optimized` copy is valid bootstrap evidence. Do not
+report runtime improvement for that task until reference and candidate both
+pass at least six matched pairs.
 
 ## Immutable benchmark surface
 
@@ -33,15 +44,18 @@ required work.
 ## Experiment discipline
 
 Use one fresh Git worktree and `codex/orbitbreakers/task-XX/<opaque-id>`
-branch per hypothesis. Start from the latest accepted commit. Create tracked
-`LOG.md` from `autoresearch/LOG_TEMPLATE.md`; keep raw reports, `results.tsv`,
-and `run.log` untracked.
+branch per hypothesis on the campaign task. Start from the latest accepted
+commit. Keep the tracked append-only ledger at
+`research/task-XX/LOG.md`, initialized from `autoresearch/LOG_TEMPLATE.md`,
+and maintain distilled lessons in `research/task-XX/INSIGHTS.md`, initialized
+from `autoresearch/INSIGHTS_TEMPLATE.md`. Keep raw reports,
+`research/task-XX/results.tsv`, and `research/task-XX/run.log` untracked.
 
 Commit the hypothesis and code before evaluation. Commit sanitized evidence
 separately. Preserve failures and timeouts until their report hashes and lessons
 are consolidated. Promote reviewed improvements by cherry-pick.
 
-For a claim-quality runtime comparison, use paired Docker runs:
+Use paired Docker runs:
 
 ```bash
 ./bench run XX \
@@ -55,13 +69,14 @@ For a claim-quality runtime comparison, use paired Docker runs:
 
 Use one Docker container per task, a fresh evaluator process per cell, and
 alternating pair order. The evaluator runtime is primary; wrapper wall time is
-diagnostic. Exploratory runs may use fewer repeats, but must state their sample
-size. Report mean and standard error when the sample supports them. Correctness
-and framework fidelity are required for a runtime claim. Never claim a speedup
-from a failed, timed-out, mismatched, or unpaired result.
+diagnostic. Report mean and standard error. Treat correctness and framework
+fidelity as hard gates. Never claim a speedup from a failed, timed-out,
+mismatched, or unpaired result.
 
-## Hidden-data boundary when private data is used
+## Public evaluation boundary
 
-Private tuning or holdout infrastructure is optional. When it is used, proposal
-agents must not gain filesystem, credential, command, log, or query access to
-private records. Return only sanitized aggregate fields.
+All workload configurations, seeds, evaluators, and validity rules used by a
+campaign must be versioned public artifacts. Hidden tuning records, sealed
+holdouts, and controller attestations are not required. Preserve a final paired
+benchmark on the immutable public workload. If optimization continues after
+that final run, record it as a new experiment and rerun the final benchmark.

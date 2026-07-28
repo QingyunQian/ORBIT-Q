@@ -2,16 +2,18 @@
 
 Read `GOAL.md` in full and follow it.
 
-Every task is immediately eligible, including a task covered by an open
-upstream pull request. The survey, workload dataset, controller attestation,
-hidden tuning, holdout, and repeated baselines are optional supporting
-evidence, not prerequisites.
+Do not edit candidate or framework code until the selected-task survey and
+public workload-dataset gates in `GOAL.md` pass. When one is open, work only on
+its missing evidence.
 
-Use one fresh Git worktree for one hypothesis, edit one task file under
-`src/solutions/`, run it against the immutable `reference` with `./bench`, and
-maintain the worktree's tracked `LOG.md`. A later worktree may target any task.
-Use matched passing comparisons for runtime claims, while allowing exploratory
-runs with any stated positive repeat count.
+After those gates pass, use one fresh Git worktree for one hypothesis, edit one
+file under `src/solutions/`, run it against the immutable `reference` with
+`./bench`, and maintain the worktree's tracked
+`research/task-XX/LOG.md` and `research/task-XX/INSIGHTS.md`. Before the first
+worktree, inspect the live open PRs on `sxzgroup/ORBIT-Q` and select exactly
+one task without an active improvement PR. Keep every worktree in this
+campaign on that task. Repeated passing baselines are required before
+promotion or an improvement claim, not before a candidate hypothesis.
 
 Treat `GOAL.md` as the authority when another launcher prompt conflicts with
 it.
