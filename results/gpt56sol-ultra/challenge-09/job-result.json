@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "task_name": "challenge-09",
+  "trial_name": "challenge-09__RnnKW6T",
+  "agent": {
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "ultra",
+    "input_tokens": 1765946,
+    "cache_tokens": 1675008,
+    "output_tokens": 18055,
+    "cost_usd": 1.8338439999999998,
+    "execution_started_at": "2026-07-28T15:40:25.980261Z",
+    "execution_finished_at": "2026-07-28T15:50:49.490135Z",
+    "wall_sec": 623.51
+  },
+  "verifier": {
+    "problem_id": 9,
+    "reward": 1,
+    "functional_score": 1,
+    "static_policy_score": 1,
+    "llm_audit_score": 1,
+    "runtime_sec": 7.18
+  },
+  "candidate_sha256": "f99736e619f79159d522db658452f93d29d006f700d2396e79fd4cae6a5ee170"
+}

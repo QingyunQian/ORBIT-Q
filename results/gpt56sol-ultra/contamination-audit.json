@@ -1,0 +1,123 @@
+{
+  "schema_version": 1,
+  "conclusion": "No evidence that any ultra solver saw the high-run branch, results, audit rationale, host jobs directory, or scratch directory",
+  "branch": "codex/gpt-5.6-sol-ultra-clean-benchmark",
+  "base_commit": "0201238ec2983907e2891f5319f5fff2d00844d5",
+  "execution_task_root": "/private/tmp/orbitq-gpt56sol-ultra-clean-20260728.4vqkrt",
+  "task_copy_matches_high_protocol": true,
+  "task_copy_mismatch_count": 0,
+  "aggregate_task_copy_sha256": "c404ed272d55d85b23820182781ae8f43299c3409bf5c254624f49a33884d66a",
+  "host_only_paths_not_mounted": [
+    "jobs/",
+    ".scratch/",
+    "results/gpt56sol-high/"
+  ],
+  "solver_transcript_exact_case_insensitive_match_counts": {
+    "gpt56sol-high": 0,
+    "gpt-5.6-sol-high-orbit-q": 0,
+    "results/gpt56sol-high": 0,
+    "/Users/qqy/Desktop/2026Project/ORBIT-Q/jobs": 0,
+    "/Users/qqy/Desktop/2026Project/ORBIT-Q/.scratch": 0,
+    "challenge-05/audit-adjudication": 0,
+    "half-angle": 0
+  },
+  "task_checks": [
+    {
+      "task": 1,
+      "fresh_task_path": "/private/tmp/orbitq-gpt56sol-ultra-clean-20260728.4vqkrt/challenge-01",
+      "resume_trajectory": false,
+      "skills": [],
+      "mcp_servers": [],
+      "extra_environment_mounts": null
+    },
+    {
+      "task": 2,
+      "fresh_task_path": "/private/tmp/orbitq-gpt56sol-ultra-clean-20260728.4vqkrt/challenge-02",
+      "resume_trajectory": false,
+      "skills": [],
+      "mcp_servers": [],
+      "extra_environment_mounts": null
+    },
+    {
+      "task": 3,
+      "fresh_task_path": "/private/tmp/orbitq-gpt56sol-ultra-clean-20260728.4vqkrt/challenge-03",
+      "resume_trajectory": false,
+      "skills": [],
+      "mcp_servers": [],
+      "extra_environment_mounts": null
+    },
+    {
+      "task": 4,
+      "fresh_task_path": "/private/tmp/orbitq-gpt56sol-ultra-clean-20260728.4vqkrt/challenge-04",
+      "resume_trajectory": false,
+      "skills": [],
+      "mcp_servers": [],
+      "extra_environment_mounts": null
+    },
+    {
+      "task": 5,
+      "fresh_task_path": "/private/tmp/orbitq-gpt56sol-ultra-clean-20260728.4vqkrt/challenge-05",
+      "resume_trajectory": false,
+      "skills": [],
+      "mcp_servers": [],
+      "extra_environment_mounts": null
+    },
+    {
+      "task": 6,
+      "fresh_task_path": "/private/tmp/orbitq-gpt56sol-ultra-clean-20260728.4vqkrt/challenge-06",
+      "resume_trajectory": false,
+      "skills": [],
+      "mcp_servers": [],
+      "extra_environment_mounts": null
+    },
+    {
+      "task": 7,
+      "fresh_task_path": "/private/tmp/orbitq-gpt56sol-ultra-clean-20260728.4vqkrt/challenge-07",
+      "resume_trajectory": false,
+      "skills": [],
+      "mcp_servers": [],
+      "extra_environment_mounts": null
+    },
+    {
+      "task": 8,
+      "fresh_task_path": "/private/tmp/orbitq-gpt56sol-ultra-clean-20260728.4vqkrt/challenge-08",
+      "resume_trajectory": false,
+      "skills": [],
+      "mcp_servers": [],
+      "extra_environment_mounts": null
+    },
+    {
+      "task": 9,
+      "fresh_task_path": "/private/tmp/orbitq-gpt56sol-ultra-clean-20260728.4vqkrt/challenge-09",
+      "resume_trajectory": false,
+      "skills": [],
+      "mcp_servers": [],
+      "extra_environment_mounts": null
+    },
+    {
+      "task": 10,
+      "fresh_task_path": "/private/tmp/orbitq-gpt56sol-ultra-clean-20260728.4vqkrt/challenge-10",
+      "resume_trajectory": false,
+      "skills": [],
+      "mcp_servers": [],
+      "extra_environment_mounts": null
+    },
+    {
+      "task": 11,
+      "fresh_task_path": "/private/tmp/orbitq-gpt56sol-ultra-clean-20260728.4vqkrt/challenge-11",
+      "resume_trajectory": false,
+      "skills": [],
+      "mcp_servers": [],
+      "extra_environment_mounts": null
+    },
+    {
+      "task": 12,
+      "fresh_task_path": "/private/tmp/orbitq-gpt56sol-ultra-clean-20260728.4vqkrt/challenge-12",
+      "resume_trajectory": false,
+      "skills": [],
+      "mcp_servers": [],
+      "extra_environment_mounts": null
+    }
+  ],
+  "interpretation": "The solver was free to inspect installed TensorCircuit source and examples, as explicitly encouraged by the framework prompt; that is environment inspection, not prior-run contamination"
+}
