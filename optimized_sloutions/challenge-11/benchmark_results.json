@@ -1,0 +1,63 @@
+{
+  "timestamp_utc": "2026-07-28T14:29:43+00:00",
+  "cpu_model": "Intel(R) Xeon(R) Processor",
+  "python": "3.12.3",
+  "protocol": "official evaluate_11.py, 500 steps, fresh process per trial, alternating",
+  "trials": {
+    "reference": {
+      "times_sec": [
+        170.25,
+        167.31,
+        167.35,
+        168.48,
+        169.48
+      ],
+      "mean_sec": 168.574,
+      "stdev_sec": 1.298,
+      "min_sec": 167.31,
+      "max_sec": 170.25,
+      "energy_gaps": [
+        0.0691108851,
+        0.0691108851,
+        0.0691108851,
+        0.0691108851,
+        0.0691108851
+      ],
+      "string_maes": [
+        0.0551719886,
+        0.0551719896,
+        0.0551719889,
+        0.0551719902,
+        0.0551719887
+      ]
+    },
+    "optimized_fused": {
+      "times_sec": [
+        115.73,
+        116.68,
+        114.45,
+        120.77,
+        123.37
+      ],
+      "mean_sec": 118.2,
+      "stdev_sec": 3.735,
+      "min_sec": 114.45,
+      "max_sec": 123.37,
+      "energy_gaps": [
+        0.0691801457,
+        0.0691801457,
+        0.0691801457,
+        0.0691801457,
+        0.0691801457
+      ],
+      "string_maes": [
+        0.0551374954,
+        0.0551374979,
+        0.0551374957,
+        0.0551374962,
+        0.0551374944
+      ]
+    }
+  },
+  "mean_speedup_reference_over_optimized": 1.426
+}

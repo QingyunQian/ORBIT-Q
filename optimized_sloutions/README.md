@@ -19,3 +19,17 @@ Host: MacBook Pro with Apple M4 Pro, 14-core CPU, 48 GB memory. Software: JAX 0.
 | --- | --- | --- | ---: | --- |
 | `challenge-01/solution_1_mpo.py` | 2026-07-07 | `evaluate_1.py --solution solution_1_mpo --max-steps 500` | 19.34s | PASS |
 | `challenge-05/solution_5_omeco.py` | 2026-07-07 | `evaluate_5.py --solution solution_5_omeco --max-steps 600` (reference baseline 48.27s) | 34.85s | PASS |
+
+## Cloud VM Runtime Records (challenge-11)
+
+Host: cloud Linux VM, 4 vCPU Intel Xeon x86_64, 15 GB memory. Software:
+Python 3.12.3 venv with the pinned `frameworks/tensorcircuit/requirements.txt`
+set (tensorcircuit-nightly 1.8.0.dev20260726, JAX 0.10.0). Full official
+`evaluate_11.py`, 500 steps, fresh process per trial, mean of 5 interleaved
+trials. Details, profiling, and per-run data: `challenge-11/REPORT.md` and
+`challenge-11/benchmark_results.json`.
+
+| File | Date | End-to-end time (mean of 5) | Speedup vs reference | Result |
+| --- | --- | ---: | ---: | --- |
+| `tasks/challenge-11/solution/solution_11.py` (reference baseline) | 2026-07-28 | 168.57s | 1.00 | PASS |
+| `challenge-11/solution_11_fused.py` | 2026-07-28 | 118.20s | 1.43 | PASS |
