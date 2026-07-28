@@ -2,11 +2,11 @@
   "schema_version": 1,
   "dataset_id": "orbitbreakers-public-dev",
   "status": "ready",
-  "version": "orbitq-workloads-v20260728.2",
-  "created_at": "2026-07-28T13:14:47Z",
-  "generator_commit": "690ffbac51715afd0a3e80718eeb6de20f11863a",
+  "version": "orbitq-workloads-v20260728.3",
+  "created_at": "2026-07-28T14:53:00Z",
+  "generator_commit": "ed382bf042ecb1c87b399acaadec6bce74368649",
   "environment_image_digest": null,
-  "selected_task_id": "12",
+  "selected_task_id": "11",
   "coverage_requirements": {
     "canonical_case": 1,
     "reduced_smoke_case_when_supported": 1,
@@ -22,6 +22,11 @@
       "task_id": "12",
       "reduced_smoke_case": "The contract fixes exactly 5000 Adam updates and seed 2039.",
       "scale_probe": "The contract fixes 32 qubits and two brickwork layers."
+    },
+    {
+      "task_id": "11",
+      "reduced_smoke_case": "The contract fixes exactly 500 Adam updates and seed 2041.",
+      "scale_probe": "The contract fixes 12 spin-1 sites and five brickwork layers."
     }
   ],
   "cases": [
@@ -42,7 +47,16 @@
       "provenance": "Canonical public configuration from tasks/task-12/problem.md and tasks/task-12/evaluator/evaluate_12.py at commit 690ffbac51715afd0a3e80718eeb6de20f11863a.",
       "expert_validation_status": "PASS",
       "expert_validation_report_sha256": "6d15f64bdf03097f1423fa16e0f434c97b2d1e44dafd5973abec0e08df004975"
+    },
+    {
+      "task_id": "11",
+      "case_id": "task-11-canonical-fixed-v1",
+      "path": "task-11/canonical.json",
+      "sha256": "f00772e6a2f597de01b9d390f4fb616a5ff95e267a4b1e154081a431fa98d76d",
+      "provenance": "Canonical public configuration from tasks/task-11/problem.md and tasks/task-11/evaluator/evaluate_11.py at commit ed382bf042ecb1c87b399acaadec6bce74368649.",
+      "expert_validation_status": "PASS",
+      "expert_validation_report_sha256": "b4ce3d311a0d4ba74ec094b8330824d07135a82f5a23c44aece9a3e2d25f7d91"
     }
   ],
-  "environment_note": "Task 12 coverage was validated with ./bench --engine local in a virtual environment installed exactly from envs/tensorcircuit-py311/requirements.lock (no Docker daemon on the campaign host); the task-05 case retains its original Docker-image validation record."
+  "environment_note": "Task 11 coverage was validated with ./bench --engine local in a virtual environment installed exactly from envs/tensorcircuit-py311/requirements.lock (no Docker daemon on the campaign host); earlier task cases retain their original validation records."
 }
