@@ -13,7 +13,7 @@
 | 09 | yes | 1.0 | 1.0 | 92.0 | 3.63 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27 |
 | 10 | yes | 1.0 | 1.0 | 330.4 | 18.06 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-28; runtime > 300s reported only |
 | 11 | yes | 1.0 | 1.0 | 109.3 | 0.74 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-28; faster than the expert reference |
-| 12 | yes | 1.0 | 1.0 | 21.6 | 2.22 | pending | pending | cloud precheck passed; awaiting official stamp |
+| 12 | yes | 1.0 | 1.0 | 18.9 | 2.22 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-28; full suite complete |
 
 Runtime is the evaluator's timed `run_solution(config)` wall time from the
 cloud precheck (4 vCPU x86_64); the official stamp records its own runtime in
