@@ -7,9 +7,10 @@ returns NumPy values only; external validation lives in evaluate_1.py.
 
 import numpy as np
 import optax
+import quimb.tensor as qtn
 
 import tensorcircuit as tc
-from tensorcircuit.templates.measurements import parameterized_measurements
+from tensorcircuit.templates.measurements import mpo_expectation
 
 K = tc.set_backend("jax")
 tc.set_dtype("complex64")
@@ -30,27 +31,11 @@ def initial_parameters(config):
     return K.convert_to_tensor(params)
 
 
-def tfim_measurement_data(config):
-    patterns = []
-    weights = []
-
-    for i in range(config["n_qubits"] - 1):
-        pattern = [0] * config["n_qubits"]
-        pattern[i] = 3
-        pattern[i + 1] = 3
-        patterns.append(pattern)
-        weights.append(-1.0)
-
-    for i in range(config["n_qubits"]):
-        pattern = [0] * config["n_qubits"]
-        pattern[i] = 1
-        patterns.append(pattern)
-        weights.append(-config["field"])
-
-    return (
-        K.convert_to_tensor(np.array(patterns, dtype=np.int32)),
-        K.convert_to_tensor(np.array(weights, dtype=np.float32)),
-    )
+def tfim_mpo(config):
+    hamiltonian = qtn.SpinHam1D(S=0.5)
+    hamiltonian += -4.0, "Z", "Z"
+    hamiltonian += -2.0 * config["field"], "X"
+    return tc.quantum.quimb2qop(hamiltonian.build_mpo(config["n_qubits"]))
 
 
 def apply_variational_layers(circuit, params, config):
@@ -69,24 +54,19 @@ def apply_variational_layers(circuit, params, config):
             offset += 3
 
 
-def circuit_energy(params, mps_input, config, patterns, weights):
+def circuit_energy(params, mps_input, config, mpo):
     circuit = tc.Circuit(config["n_qubits"], mps_inputs=mps_input)
     apply_variational_layers(circuit, params, config)
-
-    def measure(pattern):
-        return parameterized_measurements(circuit, pattern, onehot=True, reuse=False)
-
-    expectations = K.vmap(measure, vectorized_argnums=0)(patterns)
-    return K.sum(expectations * weights)
+    return mpo_expectation(circuit, mpo)
 
 
 def run_solution(config):
     mps_input = tc.quantum.quimb2qop(config["dmrg_state"])
     params = initial_parameters(config)
-    patterns, weights = tfim_measurement_data(config)
+    mpo = tfim_mpo(config)
     optimizer = optax.adam(config["learning_rate"])
     opt_state = optimizer.init(params)
-    energy_fn = lambda p, m: circuit_energy(p, m, config, patterns, weights)
+    energy_fn = lambda p, m: circuit_energy(p, m, config, mpo)
 
     def train_step(p, state, m):
         energy, grads = K.value_and_grad(energy_fn)(p, m)
