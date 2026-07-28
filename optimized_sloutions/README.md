@@ -19,3 +19,11 @@ Host: MacBook Pro with Apple M4 Pro, 14-core CPU, 48 GB memory. Software: JAX 0.
 | --- | --- | --- | ---: | --- |
 | `challenge-01/solution_1_mpo.py` | 2026-07-07 | `evaluate_1.py --solution solution_1_mpo --max-steps 500` | 19.34s | PASS |
 | `challenge-05/solution_5_omeco.py` | 2026-07-07 | `evaluate_5.py --solution solution_5_omeco --max-steps 600` (reference baseline 48.27s) | 34.85s | PASS |
+
+### Cloud VM records (4 vCPU Intel Xeon, TensorCircuit-NG nightly)
+
+| File | Date | Notes | End-to-end mean | Result |
+| --- | --- | --- | ---: | --- |
+| `challenge-09/solution_9_cones.py` | 2026-07-28 | 5 interleaved trials vs reference 40.655s → **3.82x** | 10.634s | PASS |
+| `challenge-11/solution_11_fused.py` | 2026-07-28 | 5 interleaved trials vs reference 168.574s → **1.43x** | 118.200s | PASS |
+| `challenge-12/solution_12_batched.py` | 2026-07-28 | 5 interleaved trials vs reference ~9.0s → **~3.9x** | ~2.32s | PASS |
