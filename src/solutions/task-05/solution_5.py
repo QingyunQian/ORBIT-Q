@@ -13,6 +13,7 @@ import tensorcircuit as tc
 
 K = tc.set_backend("jax")
 tc.set_dtype("complex64")
+tc.set_contractor("omeco")
 
 
 def initial_parameters(config):

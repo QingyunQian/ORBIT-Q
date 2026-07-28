@@ -346,3 +346,71 @@ has informed another experiment.
   `d2db4e0172416eb737b22f419fc736772dc5c57bba0693a894eedc1da851d52c`;
   full evidence archive:
   `/Users/hmyuuu/forge/OrbitBreakersCampaignArchive/task-05/r02b4e1`.
+
+## Experiment `r03c8f2`
+
+Task/branch: `task-05` /
+`codex/orbitbreakers/task-05/r03c8f2`
+
+Worktree:
+`/Users/hmyuuu/forge/ORBIT-Q-worktrees/orbitbreakers/task-05/r03c8f2`
+
+Live PR inspection remains `2026-07-27T18:15:35Z`; no Task 05 improvement PR
+was open, and all campaign worktrees target only Task 05.
+
+### Hypothesis
+
+Selecting the pinned TensorCircuit-NG OMECo contractor with
+`tc.set_contractor("omeco")` on top of accepted whole-training scan will find
+lower-memory/lower-cost tensor contraction paths for the ten normalized
+RX/RZZ layers. It preserves every gate, normalization, gradient, and Adam
+update. Historical unpaired evidence reported 34.85 s versus 48.27 s on a
+different host, so a repeatable improvement is plausible but a standalone 10x
+gain is not.
+
+### Frozen pre-evaluation record
+
+Parent:
+`0bfd6e22a1b5341f07d7ea2d71cd0bac9d98a24f`
+
+Hypothesis commit: pending.
+
+Candidate path/SHA-256:
+`src/solutions/task-05/solution_5.py` /
+`e5d5b8c82b4664ad0e6ac55901767501c87247a2be71f181d2c977da93b7a009`
+
+Diff SHA-256:
+`b65ce1fca0a0a16cce1ef9e001e42de3156bf0e3f7249b379095bea2f71465a9`
+
+Public dataset/version/manifest:
+`orbitq-workloads-v20260728.1` /
+`f65a63b01238b569de0a1cea62af5dd0923ee1b52e9a4a7ada50c88fd8815485`
+
+Reference SHA-256:
+`ccafe626865ee39b651adaeead86b8bf6f541e3f1426da4842da92b6a0ee015f`
+
+Evaluator SHA-256:
+`dd0742cf402827beec19328bc9cf090e80a08973cf9303fd7d524a4f4cd37402`
+
+Image:
+`sha256:623dc47116d71b5f4e2879a61def7beada982438cb2df45de8367d92f7ec242c`;
+TensorCircuit-NG pinned image, OMECo `0.2.4`, JAX/JAXLIB `0.10.0`.
+
+Command:
+
+`./bench run 05 --solution optimized --compare-to reference --repeat 6
+--engine docker --timeout 300 --no-build --output
+results/task-05-r03c8f2`
+
+Canonical public deterministic case; odd pairs reference-first, even pairs
+candidate-first; 8 CPUs, 9 GiB, 300 seconds per evaluator. Session and
+run-specific host fingerprint pending.
+
+### Result and decision
+
+Pending immutable paired evaluation. If OMECo passes the frozen promotion rule,
+keep it; otherwise preserve the result and restore Round 1.
+
+### Append-only experiment corrections
+
+Append corrections below; never rewrite evidence used by a later round.
