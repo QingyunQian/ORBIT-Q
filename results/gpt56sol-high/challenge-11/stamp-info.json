@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "challenge": "challenge-11",
+  "run_date": "2026-07-28",
+  "base_commit": "0201238ec2983907e2891f5319f5fff2d00844d5",
+  "framework": "tensorcircuit",
+  "docker_image": "challenge-benchmark-quantum-tensorcircuit:py311",
+  "solver": {
+    "agent": "codex",
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "auth_source": "host ~/.codex/auth.json"
+  },
+  "audit": {
+    "model": "gpt-5.6-sol",
+    "reasoning_effort": "high",
+    "verifier": "adapters.codex_para_verifier:CodexParaVerifier"
+  },
+  "harbor": {
+    "job_name": "challenge-11-tensorcircuit-gpt-5.6-sol-high-20260728",
+    "trial_id": "challenge-11__gYhKo8V",
+    "n_trials": 1,
+    "n_retries": 0,
+    "exception": null,
+    "input_tokens": 2870375,
+    "cache_tokens": 2684160,
+    "output_tokens": 16708,
+    "cost_usd": 2.774395
+  },
+  "task": {
+    "canonical_path": "tasks/challenge-11",
+    "execution_copy": ".scratch/gpt56sol-high-20260728/challenge-11",
+    "canonical_task_unchanged": true,
+    "resource_adapter": {
+      "cpus": 6,
+      "memory_mb": 10240,
+      "storage_mb": 16384
+    }
+  },
+  "network": {
+    "proxy_relay": true
+  }
+}
