@@ -456,3 +456,14 @@ Append corrections below; never rewrite evidence used by a later round.
 
 - `2026-07-28T03:48:02.080893Z`: post-run `./bench verify` and authoritative
   public gate check passed with `research_ready` and `promotion_ready` true.
+
+- `2026-07-28T04:01:35.565855Z`: experiment `r04d2a6` tested exact
+  TensorCircuit-NG `MPSCircuit` on accepted Round 3. A two-update public smoke
+  test passed in `114.385935 s`, but the first canonical 600-update candidate
+  cell timed out after `300 s` following a `131.699338 s` passing reference.
+  Decision `timeout`; no runtime claim. Differentiable exact SVD/QR overhead is
+  not viable on the pinned CPU/JAX image, so Round 3 remains accepted.
+  Immutable report SHA-256
+  `581907e1940bd29430d554dce6f6bb0638ed99ed6e48ad6fb49f029b45444e78`;
+  full evidence archive:
+  `/Users/hmyuuu/forge/OrbitBreakersCampaignArchive/task-05/r04d2a6`.
