@@ -37,6 +37,51 @@ term. The reference also keeps 3,897 parameters and two Adam moment arrays for
 each of 200 restarts. A Python loop dispatches the jitted optimizer step 100
 times.
 
+The reference constructs the full circuit before TensorCircuit sees an
+observable:
+
+```python
+# references/task-09/solution_9.py
+circuit = tc.Circuit(config["n_qubits"])
+for qubit in range(config["n_qubits"]):
+    circuit.h(qubit)
+
+for gate in gate_tape:
+    if len(gate) == 3:
+        getattr(circuit, gate[0])(gate[1], theta=params[gate[2]])
+    else:
+        getattr(circuit, gate[0])(
+            gate[1], gate[2], theta=params[gate[3]]
+        )
+```
+
+It then evaluates both terms from that 512-qubit circuit:
+
+```python
+for coeff, (xs, ys, zs) in pauli_data:
+    total += coeff * K.real(
+        circuit.expectation_ps(
+            x=xs,
+            y=ys,
+            z=zs,
+            enable_lightcone=True,
+        )
+    )
+```
+
+For an observable \(O\), TensorCircuit contracts the expectation network:
+
+$$
+\langle O \rangle = \langle 0 | U^\dagger O U | 0 \rangle.
+$$
+
+The network contains a ket copy of \(U\) and a conjugate bra copy of
+\(U^\dagger\). With `enable_lightcone=True`, TensorCircuit cancels matching
+gate pairs outside the backward influence of \(O\). Those pairs contribute
+\(G^\dagger G = I\), so their removal preserves the expectation value. In the
+reference, TensorCircuit performs this cancellation after Python has created
+all 512 qubits and 3,897 gates.
+
 The [candidate](../src/solutions/task-09/solution_9.py#L32) changes that path:
 
 1. `extract_cone` scans the supplied gate tape backward from each measured
@@ -53,6 +98,68 @@ The [candidate](../src/solutions/task-09/solution_9.py#L32) changes that path:
 6. One jitted `jax.lax.scan` executes all 100 Adam updates for each parameter
    group.
 7. TensorCircuit still applies `enable_lightcone=True` to each compact circuit.
+
+The candidate performs the first pruning pass on the framework-neutral tape:
+
+```python
+# src/solutions/task-09/solution_9.py
+support = {qubit for _, qubit in term}
+retained = []
+
+for gate in reversed(gate_tape):
+    if len(gate) == 3:
+        relevant = gate[1] in support
+    elif len(gate) == 4:
+        relevant = gate[1] in support or gate[2] in support
+        if relevant:
+            support.update((gate[1], gate[2]))
+    else:
+        raise ValueError(f"Invalid gate-tape entry: {gate}")
+    if relevant:
+        retained.append(gate)
+```
+
+It constructs a TensorCircuit circuit from the retained gates and asks
+TensorCircuit to simplify the remaining expectation network:
+
+```python
+total = 0.0
+for cone in cones:
+    circuit = tc.Circuit(cone["n_qubits"])
+    for qubit in range(cone["n_qubits"]):
+        circuit.h(qubit)
+    for gate in cone["gates"]:
+        if len(gate) == 3:
+            getattr(circuit, gate[0])(
+                gate[1], theta=params[positions[gate[2]]]
+            )
+        else:
+            getattr(circuit, gate[0])(
+                gate[1], gate[2], theta=params[positions[gate[3]]]
+            )
+    xs, ys, zs = cone["paulis"]
+    total += cone["coeff"] * K.real(
+        circuit.expectation_ps(
+            x=xs,
+            y=ys,
+            z=zs,
+            enable_lightcone=True,
+        )
+    )
+```
+
+The two code paths use separate cancellation stages:
+
+| Stage | Code owner | Removed work |
+| --- | --- | --- |
+| Backward gate-tape scan | Candidate | Gates and qubits outside the connectivity cone, before TensorCircuit graph construction |
+| `enable_lightcone=True` | TensorCircuit | Redundant bra-ket structure in the compact expectation network, before contraction |
+
+Removing `enable_lightcone=True` from the second code block produced the
+300-second timeout recorded below. The explicit tape scan cuts graph
+construction from 3,897 gates to 74 and 80 gates. TensorCircuit's cancellation
+then makes the remaining doubled networks cheap enough for 200 restarts and
+100 optimizer steps.
 
 The public tape produces these structures:
 
