@@ -335,3 +335,14 @@ has informed another experiment.
 - `2026-07-28T02:36:00Z`: the authoritative post-run gate check using the
   frozen reference-only baseline passed with `research_ready: true` and
   `promotion_ready: true`.
+
+- `2026-07-28T03:20:30.606241Z`: experiment `r02b4e1` tested the
+  TensorCircuit backend `K.jaxy_scan` wrapper from accepted Round 1 commit
+  `63e2712cb9f92fc15fb99667d4de5b492aea4edc`. All six pairs passed, but paired
+  speedup `1.1023220198x ± 0.0451853212x` had a predeclared 95% Student-t
+  interval `[0.9861694540x, 1.2184745857x]`; decision `discard`. Pinned source
+  inspection confirmed the wrapper delegates to direct `jax.lax.scan`, so
+  Round 1 remains accepted. Immutable report SHA-256
+  `d2db4e0172416eb737b22f419fc736772dc5c57bba0693a894eedc1da851d52c`;
+  full evidence archive:
+  `/Users/hmyuuu/forge/OrbitBreakersCampaignArchive/task-05/r02b4e1`.
