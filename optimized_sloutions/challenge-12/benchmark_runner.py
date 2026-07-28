@@ -21,9 +21,14 @@ HERE = Path(__file__).resolve().parent
 
 SOLUTIONS = {
     "reference": str(REPO / "tasks/challenge-12/solution"),
+    "optimized_batched": str(HERE),
     "optimized_fused": str(HERE),
 }
-MODULES = {"reference": "solution_12", "optimized_fused": "solution_12_fused"}
+MODULES = {
+    "reference": "solution_12",
+    "optimized_batched": "solution_12_batched",
+    "optimized_fused": "solution_12_fused",
+}
 
 TIME_RE = re.compile(r"End-to-end solution time: ([0-9.]+)s")
 FID_RE = re.compile(r"Final fidelity: ([0-9.e+-]+)")
@@ -75,7 +80,11 @@ def main():
             "max_sec": max(times),
             "final_fidelities": [r["final_fidelity"] for r in rows],
         }
-    speedup = summary["reference"]["mean_sec"] / summary["optimized_fused"]["mean_sec"]
+    speedups = {
+        kind: round(summary["reference"]["mean_sec"] / summary[kind]["mean_sec"], 3)
+        for kind in SOLUTIONS
+        if kind != "reference"
+    }
     result = {
         "timestamp_utc": datetime.now(timezone.utc).isoformat(timespec="seconds"),
         "machine": platform.processor() or platform.machine(),
@@ -83,7 +92,7 @@ def main():
         "python": platform.python_version(),
         "protocol": "official evaluate_12.py, 5000 steps, fresh process per trial, alternating",
         "trials": summary,
-        "mean_speedup_reference_over_optimized": round(speedup, 3),
+        "mean_speedup_vs_reference": speedups,
     }
     out_path = HERE / "benchmark_results.json"
     out_path.write_text(json.dumps(result, indent=2) + "\n")

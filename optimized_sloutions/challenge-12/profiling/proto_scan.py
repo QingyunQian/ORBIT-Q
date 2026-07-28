@@ -105,6 +105,40 @@ def make_ref_objective(target_bra):
     return objective
 
 
+def expm_pade33_fixed(a, s=5):
+    a = a / (2**s)
+    eye = jnp.eye(4, dtype=a.dtype)
+    a2 = a @ a
+    u = a @ (a2 + 60.0 * eye)
+    v = 12.0 * a2 + 120.0 * eye
+    r = jnp.linalg.solve(v - u, v + u)
+    for _ in range(s):
+        r = r @ r
+    return r
+
+
+def make_v2p_objective(target_bra):
+    """Unfused 32-qubit network + batched fixed-order Pade expm."""
+
+    def objective(p):
+        h = jnp.einsum("gi,iab->gab",
+                       p.reshape(N_GATES, 15).astype(jnp.complex64), GENS_J)
+        u = expm_pade33_fixed(-1j * h)
+        c = tc.Circuit(N)
+        for i in range(1, N, 2):
+            c.x(i)
+        k = 0
+        for layer in range(N_LAYERS):
+            for i in LAYER_BONDS[layer]:
+                c.any(i, i + 1, unitary=u[k])
+                k += 1
+        ov = (target_bra @ c.quvector()).eval()
+        fid = K.real(K.conj(ov) * ov)
+        return 1.0 - fid, (fid, ov)
+
+    return objective
+
+
 def make_v3_objective(bra_f):
     def objective(p):
         u = su4_batch(p.reshape(N_GATES, 15))
@@ -298,6 +332,9 @@ def main():
         run_scan(obj3a, params, "v3a-absorb")
     elif args.mode == "gatesonly":
         run_scan(make_gates_only_objective(), params, "gates-only")
+    elif args.mode == "v2p":
+        target_bra = tc.quantum.quimb2qop(dmrg_state).adjoint()
+        run_scan(make_v2p_objective(target_bra), params, "v2p(pade+scan,unfused)")
     elif args.mode == "v3scan":
         run_scan(make_v3_objective(fused_bra(dmrg_state, 2)), params, "v3scan")
     elif args.mode == "v3scan-u4":
