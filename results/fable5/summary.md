@@ -12,8 +12,8 @@
 | 08 | yes | 1.0 | 1.0 | 169.4 | 2.64 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27 |
 | 09 | yes | 1.0 | 1.0 | 92.0 | 3.63 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-27 |
 | 10 | yes | 1.0 | 1.0 | 330.4 | 18.06 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-28; runtime > 300s reported only |
-| 11 | yes | 1.0 | 1.0 | 134.3 | 0.74 | pending | pending | cloud precheck passed; first task faster than the expert reference |
-| 12 | - | - | - | - | - | - | - | |
+| 11 | yes | 1.0 | 1.0 | 109.3 | 0.74 | 1.0 (gpt-5.6-sol) | **1.0** | official stamp 2026-07-28; faster than the expert reference |
+| 12 | yes | 1.0 | 1.0 | 21.6 | 2.22 | pending | pending | cloud precheck passed; awaiting official stamp |
 
 Runtime is the evaluator's timed `run_solution(config)` wall time from the
 cloud precheck (4 vCPU x86_64); the official stamp records its own runtime in
@@ -68,6 +68,16 @@ to unit norm after every layer, gate-level composition on disjoint supports)
 cools the energy density from -1.1720 to -1.32673, within 1.7e-4 of the exact
 ground state (criterion allows 0.5) and never below it; learned filter
 strengths grow monotonically toward the late layers.
+
+Challenge-12 physics summary (cloud precheck): the two-layer SU4 brickwork
+circuit (each gate the matrix exponential of the 15 su(4) Pauli generators)
+is simulated exactly on the framework MPS simulator (bond <= 8), and the
+loss is the direct tensor-network overlap with the evaluator's quimb
+DMRG-MPS target loaded as framework MPS site tensors (never converted to a
+preparation circuit). Official evaluator: fidelity 1.9e-9 -> 0.8699
+(threshold 0.85) over exactly 5000 Adam updates; the near-zero initial
+overlap is intrinsic (the staggered field pins the target on the Neel
+pattern opposite to the prescribed |0101...> start).
 
 Challenge-11 physics summary (cloud precheck): native spin-1 simulation on
 the framework's QuditCircuit (dim=3, 12 sites); rotations use closed spin-1
