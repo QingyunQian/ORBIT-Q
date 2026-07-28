@@ -526,3 +526,47 @@ OMECo best.
 ### Append-only experiment corrections
 
 Append corrections below; never rewrite prior evidence.
+
+- `2026-07-28T05:07:55Z`: committed-candidate two-update smoke evaluation
+  passed all public criteria in `3.488492 s`; compatibility evidence only.
+
+- `2026-07-28T05:30:23.442376Z`: Round 6 completed 12/12 successful cells
+  and six eligible pairs. Hypothesis commit
+  `b90448438efa611855c75832d4b0e7568e3d3225`; shared session
+  `ced0deee78a3125c1520bd2ab7a1c8be0d56140189fc243a01b182a698f01e31`;
+  host fingerprint
+  `c7e01029d3f2a95e99c9ede05b0d6b10c0a226ea6804c5e53ac6efc308e7848e`.
+  Immutable report `results/task-05-r06f1c7/results.json`, SHA-256
+  `77678d2fa07f5af69b9f7bc0ba14cec45ced4023d72cbc43c8bb31a4f4f9437d`;
+  summary SHA-256
+  `7f52cfc682db3c8710cab2f9ee897470f1fef9f565440d7d3c7f4e389acdfdf9`;
+  raw log SHA-256
+  `ba64ede99065a6d39e74ab4386be7731d9a08213045ee6a5889ab3d5f282d3dc`.
+
+  ```text
+  terminal_status: SUCCESS
+  valid: true
+  timed_out: false
+  passing_pairs: 6
+  reference_mean_runtime_sec: 121.443233
+  reference_runtime_stderr_sec: 1.3499482750363672
+  reference_median_runtime_sec: 121.020838
+  candidate_mean_runtime_sec: 83.15383133333333
+  candidate_runtime_stderr_sec: 0.7544856525500757
+  candidate_median_runtime_sec: 83.11883900000001
+  improvement_pct: 31.464737160327417
+  improvement_pct_stderr: 1.2496001647278938
+  speedup: 1.461524325541453
+  speedup_stderr: 0.02658791609962549
+  paired_speedup_ci_low: 1.393177911342711
+  paired_speedup_ci_high: 1.529870739740195
+  ```
+
+- `2026-07-28T05:30:23.442376Z`: decision `keep`. The deterministic reusable
+  greedy contractor passed all promotion gates and all six pairs. Its absolute
+  candidate mean `83.153831 s` is `12.0%` lower than promoted OMECo Round 3's
+  `94.512163 s`, with substantially lower variance, so it becomes the latest
+  accepted parent. The paired result is `1.4615x`, not 10x.
+
+- `2026-07-28T05:30:23.442376Z`: post-run benchmark verification and public
+  gate check passed with `research_ready` and `promotion_ready` true.
