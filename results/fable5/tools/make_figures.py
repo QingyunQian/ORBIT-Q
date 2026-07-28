@@ -71,7 +71,7 @@ for i, nn in enumerate(range(1, 13)):
         ax.scatter([i], [mc["matched_precision_ratio"]], marker="D", s=42,
                    color="white", edgecolor="#264653", linewidth=1.4, zorder=4)
     elif mc:
-        ax.annotate("c64\nfails", (i, 0.55), ha="center", fontsize=7, color="#e76f51")
+        ax.annotate("c64 fails", (i, 0.47), ha="center", fontsize=8, color="white", fontweight="bold")
 ax.scatter([], [], marker="D", s=42, color="white", edgecolor="#264653",
            linewidth=1.4, label="complex64 control (matched precision)")
 ax.legend(loc="upper left", fontsize=8, framealpha=0.9)
