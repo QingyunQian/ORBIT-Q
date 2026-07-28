@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "dataset_version": "orbitq-workloads-v20260728.2",
+  "tier": "public-development",
+  "task_id": "12",
+  "case_id": "task-12-canonical-fixed-v1",
+  "description": "Canonical fixed Task 12 variational-circuit-to-MPS overlap workload.",
+  "input_config": {
+    "n_qubits": 32,
+    "zz_anisotropy": 1.4,
+    "staggered_field": 0.2,
+    "dmrg_chi": 8,
+    "dmrg_sweeps": 4,
+    "dmrg_tolerance": 1e-07,
+    "n_layers": 2,
+    "max_steps": 5000,
+    "learning_rate": 0.02,
+    "initial_parameter_scale": 0.02,
+    "seed": 2039,
+    "fidelity_threshold": 0.85
+  },
+  "seed": 2039,
+  "randomness": "fixed seed 2039 for the float32 parameter initialization; the evaluator-side DMRG target is deterministic",
+  "runtime_injected_keys": {
+    "dmrg_state": "Normalized chi-8 quimb DMRG MPS built by the evaluator before timing and passed into run_solution(config)."
+  },
+  "expected_result_contract": {
+    "loss_history": {
+      "shape": [5000],
+      "meaning": "Pre-update loss 1 - F for each of exactly 5000 Adam updates."
+    },
+    "fidelity_history": {
+      "shape": [5000],
+      "meaning": "Pre-update fidelity F = |<psi_MPS|psi_circuit>|^2 per update."
+    },
+    "final_parameters": {
+      "shape": [465],
+      "meaning": "All 31 x 15 su(4) angles after the 5000th update."
+    },
+    "final_overlap_phase": {
+      "shape": [],
+      "meaning": "Phase of the complex overlap at the last recorded step."
+    }
+  },
+  "functional_thresholds": {
+    "fidelity_must_improve": true,
+    "loss_must_improve": true,
+    "minimum_final_fidelity": 0.85,
+    "fidelity_upper_bound_tolerance": 1e-05,
+    "target_bond_dimension_maximum": 8
+  },
+  "variation_support": {
+    "reduced_smoke_case": false,
+    "scale_probe": false,
+    "reason": "The public Task 12 contract fixes 32 qubits, two brickwork layers, seed 2039, and exactly 5000 Adam updates; the evaluator exposes no distinct public configuration or seed."
+  },
+  "source_provenance": {
+    "repository_commit": "690ffbac51715afd0a3e80718eeb6de20f11863a",
+    "problem_path": "tasks/task-12/problem.md",
+    "problem_sha256": "cd795bbbd5fcf2beb0000528e1e169fa09a4f20bdbc829381b2bbf7810c36fec",
+    "evaluator_path": "tasks/task-12/evaluator/evaluate_12.py",
+    "evaluator_sha256": "08940a5fabfd88a957c467edabfbe6faa7b766f38b4d518557e50e94fcf3b277",
+    "expert_path": "references/task-12/solution_12.py",
+    "expert_sha256": "10cfd516bc250633f4675653e0d8986002e56f4d5916a9c2972c1085193f5d38"
+  },
+  "expert_validation": {
+    "status": "PASS",
+    "validated_at_utc": "2026-07-28T13:14:47Z",
+    "engine": "local",
+    "environment_image_id": null,
+    "environment_lock_sha256": "cd5ac5cb2102ea7b40bd46dc81320cc59e0ce0671ab88c597f81d82b384a824b",
+    "environment_note": "No Docker daemon on the campaign host; validated with ./bench --engine local in a virtual environment installed exactly from envs/tensorcircuit-py311/requirements.lock (Python 3.12.3), sitecustomize on PYTHONPATH, NUMBA_DISABLE_JIT=1.",
+    "host_fingerprint_sha256": "748423c1790b38ddbdd8eb77499b222a173b313f350e3bc35402ee8889a49dc4",
+    "evaluator_runtime_sec": 9.113186,
+    "initial_fidelity": 1.92008320e-09,
+    "final_fidelity": 0.869789958,
+    "final_overlap_phase": -1.380885,
+    "report_sha256": "6d15f64bdf03097f1423fa16e0f434c97b2d1e44dafd5973abec0e08df004975",
+    "summary_sha256": "600753c2e09b9561afdfd6f79e9c795a7a7d626d4b906bb6149b530a0c2164fe",
+    "stdout_sha256": "979da5ba5dd541546c7fe7e91d3d535a62c7951875111255c128e075b5def585"
+  }
+}

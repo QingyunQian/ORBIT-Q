@@ -2,21 +2,28 @@
   "schema_version": 1,
   "dataset_id": "orbitbreakers-public-dev",
   "status": "ready",
-  "version": "orbitq-workloads-v20260728.1",
-  "created_at": "2026-07-28T01:09:03Z",
-  "generator_commit": "b42d2e1f5c94e5a305d3965a0813c79d72084500",
-  "environment_image_digest": "sha256:623dc47116d71b5f4e2879a61def7beada982438cb2df45de8367d92f7ec242c",
-  "selected_task_id": "05",
+  "version": "orbitq-workloads-v20260728.2",
+  "created_at": "2026-07-28T13:14:47Z",
+  "generator_commit": "690ffbac51715afd0a3e80718eeb6de20f11863a",
+  "environment_image_digest": null,
+  "selected_task_id": "12",
   "coverage_requirements": {
     "canonical_case": 1,
     "reduced_smoke_case_when_supported": 1,
     "scale_probe_when_supported": 1
   },
-  "unsupported_optional_coverage": {
-    "task_id": "05",
-    "reduced_smoke_case": "The contract fixes exactly 600 Adam updates.",
-    "scale_probe": "The contract fixes 18 qubits and ten layers."
-  },
+  "unsupported_optional_coverage": [
+    {
+      "task_id": "05",
+      "reduced_smoke_case": "The contract fixes exactly 600 Adam updates.",
+      "scale_probe": "The contract fixes 18 qubits and ten layers."
+    },
+    {
+      "task_id": "12",
+      "reduced_smoke_case": "The contract fixes exactly 5000 Adam updates and seed 2039.",
+      "scale_probe": "The contract fixes 32 qubits and two brickwork layers."
+    }
+  ],
   "cases": [
     {
       "task_id": "05",
@@ -26,6 +33,16 @@
       "provenance": "Canonical public configuration from tasks/task-05/problem.md and tasks/task-05/evaluator/evaluate_5.py at commit 46d6636881500fa8f70618b74f89353a2b6702b4.",
       "expert_validation_status": "PASS",
       "expert_validation_report_sha256": "b5defee28534cb68cb274563a4f8c1075acc38ed2d1b6e8cb13acf401e8011b4"
+    },
+    {
+      "task_id": "12",
+      "case_id": "task-12-canonical-fixed-v1",
+      "path": "task-12/canonical.json",
+      "sha256": "8d2cdcee73aba45bf1db37e91f0b67b1b3699e7c2f4eaead2303025aeffa0336",
+      "provenance": "Canonical public configuration from tasks/task-12/problem.md and tasks/task-12/evaluator/evaluate_12.py at commit 690ffbac51715afd0a3e80718eeb6de20f11863a.",
+      "expert_validation_status": "PASS",
+      "expert_validation_report_sha256": "6d15f64bdf03097f1423fa16e0f434c97b2d1e44dafd5973abec0e08df004975"
     }
-  ]
+  ],
+  "environment_note": "Task 12 coverage was validated with ./bench --engine local in a virtual environment installed exactly from envs/tensorcircuit-py311/requirements.lock (no Docker daemon on the campaign host); the task-05 case retains its original Docker-image validation record."
 }
