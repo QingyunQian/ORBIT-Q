@@ -73,6 +73,18 @@
       "jax": "0.10.0",
       "jaxlib": "0.10.0",
       "date": "2026-07-28"
+    },
+    {
+      "task": "09",
+      "solution": "compact causal cones (TC-native remeasure)",
+      "runtime_sec": 8.77,
+      "result": "PASS",
+      "recorded_expert_runtime_sec": 33.5,
+      "host": "cloud Linux VM, 4 vCPU Intel Xeon x86_64, 15 GB RAM",
+      "engine": "bench local (no Docker on host), lock-pinned venv",
+      "jax": "0.10.0",
+      "jaxlib": "0.10.0",
+      "date": "2026-07-28"
     }
   ]
 }

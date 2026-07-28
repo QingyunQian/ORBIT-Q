@@ -523,3 +523,49 @@ measure:
 | JAX/JAXLIB | `0.10.0` |
 | CPU and memory limits | 8 CPUs, 9 GiB |
 | Evaluator timeout | 300 seconds |
+
+## Follow-up: TC-native APIs + six-pair local remeasure (2026-07-28)
+
+Branch: `cursor/task-09-tc-native-remeasure-f598`
+
+Style-only execution change relative to the merged compact-cone candidate:
+replace direct `import jax` / `jax.lax.scan` with TensorCircuit backend
+primitives `K.jit` and `K.jaxy_scan`. The cone extraction, active-parameter
+packing, disjoint-group Adam protocol, and module docstring are unchanged.
+
+Candidate SHA-256:
+`4f95bc939b89c9a1810c7c3e8c8195df11a3d754022bb539004acfd070a76efa`
+
+Host fingerprint matches the Task 11/12 local campaigns
+(`748423c1790b38ddbdd8eb77499b222a173b313f350e3bc35402ee8889a49dc4`;
+4 vCPU, pinned `envs/tensorcircuit-py311/requirements.lock`,
+`--engine local`, no Docker daemon).
+
+Command:
+
+```bash
+./bench run 9 --solution optimized --compare-to reference --repeat 6 \
+  --engine local --timeout 300 \
+  --output results/task-09-tc-native-pairs-local
+```
+
+Immutable report SHA-256:
+`8199194e197ebae969a51b454620afcc95ececf0dc2b9e78107ff5de2aaf0cba`
+
+Summary SHA-256:
+`60c858f0d36df7fa84c1b2d77ce8544642337671e10de640ef1e8ddd29046dff`
+
+```text
+terminal_status: SUCCESS x 12
+valid: 12/12
+passing_pairs: 6/6
+reference_mean_runtime_sec: 33.503727
+candidate_mean_runtime_sec: 8.766516
+speedup: 3.821725
+speedup_stderr: 0.035825
+paired_speedup_ci_low: 3.729633
+paired_speedup_ci_high: 3.913817
+```
+
+Decision: `keep` as a TC-native refresh of the merged candidate. The formal
+Docker Gate-3 promotion protocol remains deferred on this host.
