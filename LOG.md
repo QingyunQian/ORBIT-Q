@@ -139,3 +139,140 @@ has informed an experiment.
 - Correction recorded `2026-07-28T02:05:22Z`: the authoritative timestamp for
   the preceding merge/readiness event is `2026-07-28T02:05:22Z`, not
   `2026-07-28T01:50:00Z`.
+
+## Experiment `r01a7c9`
+
+Task: `task-05`
+
+Branch: `codex/orbitbreakers/task-05/r01a7c9`
+
+Worktree:
+`/Users/hmyuuu/forge/ORBIT-Q-worktrees/orbitbreakers/task-05/r01a7c9`
+
+Campaign task: `task-05`
+
+Live upstream PR list inspected at: `2026-07-27T18:15:35Z`
+
+No open improvement PR targets this task: confirmed.
+
+Every prior worktree in this campaign targets the same task: confirmed.
+
+### Hypothesis
+
+Putting the entire fixed 600-update Adam training process in one
+`jax.lax.scan`, compiled once with `K.jit`, will remove Python-to-JAX dispatch
+between updates while preserving the ten normalized TensorCircuit-NG layers,
+the reverse-mode gradient, every optimizer update, and the pre-update energy
+history. The reference profile attributes most runtime to compiled trajectory
+work, so this is expected to be a valid diagnostic improvement rather than a
+10x result.
+
+### Parent commit and diff digest
+
+Latest accepted parent commit:
+`77d858cc082e6d8237faf756b5d3eb2493e2e9c0`
+
+Hypothesis commit: pending pre-evaluation commit.
+
+Candidate file: `src/solutions/task-05/solution_5.py`
+
+Candidate SHA-256:
+`c5a3a7a118ea86e42771df03ff842e9a446a8e84490a4569183bbd43ec466410`
+
+Diff SHA-256:
+`4c1d83a55c5bae57a3702a12307df987263b1f81eadcd6eb0ad4cd94ce08db14`
+
+### Permitted data
+
+Public dataset version: `orbitq-workloads-v20260728.1`
+
+Public manifest SHA-256:
+`f65a63b01238b569de0a1cea62af5dd0923ee1b52e9a4a7ada50c88fd8815485`
+
+All benchmark workloads and validity rules are versioned public artifacts:
+confirmed. No hidden or private evaluation data is used.
+
+### Command, seed, and environment
+
+Benchmark command:
+
+`./bench run 05 --solution optimized --compare-to reference --repeat 6
+--engine docker --timeout 300 --no-build --output
+results/task-05-r01a7c9`
+
+Public case selector: deterministic canonical Task 05 workload in
+`datasets/public/task-05/canonical.json`.
+
+Reference SHA-256:
+`ccafe626865ee39b651adaeead86b8bf6f541e3f1426da4842da92b6a0ee015f`
+
+Evaluator SHA-256:
+`dd0742cf402827beec19328bc9cf090e80a08973cf9303fd7d524a4f4cd37402`
+
+Docker image ID:
+`sha256:623dc47116d71b5f4e2879a61def7beada982438cb2df45de8367d92f7ec242c`
+
+Container session ID: pending.
+
+Pair-order pattern: odd pairs reference then candidate; even pairs candidate
+then reference.
+
+TensorCircuit-NG commit/version: pinned `tensorcircuit-py311` image specified by
+the repository environment lock.
+
+JAX/JAXLIB versions: `0.10.0` / `0.10.0`.
+
+### Hardware and five-minute cap
+
+Host fingerprint:
+`d72d96a55e39ff10c67a820a30902dbd1b919a8f41fb4dbf95c855eac59f0013`
+
+CPU allocation: `8`
+
+Memory allocation: `9g`
+
+Timeout: `300 seconds`
+
+Measured region: evaluator-reported solution runtime.
+
+### Result: validity, runtime, and improvement
+
+Immutable report: pending.
+
+Report SHA-256: pending.
+
+```text
+terminal_status: pending
+valid: pending
+timed_out: pending
+passing_pairs: pending
+reference_mean_runtime_sec: pending
+reference_runtime_stderr_sec: pending
+reference_median_runtime_sec: pending
+candidate_mean_runtime_sec: pending
+candidate_runtime_stderr_sec: pending
+candidate_median_runtime_sec: pending
+improvement_pct: pending
+improvement_pct_stderr: pending
+speedup: pending
+speedup_stderr: pending
+paired_speedup_ci_low: pending
+paired_speedup_ci_high: pending
+```
+
+Decision: pending
+
+### Failure signal and interpretation
+
+Pending evaluation.
+
+### Next pivot
+
+If scan compilation or execution is invalid or slower, return to per-update
+compilation and target the profiled trajectory contraction/normalization path.
+If it is valid and faster, retain it only if the paired promotion rule passes.
+
+### Append-only experiment corrections
+
+Append corrections below this heading. Never rewrite an earlier result after it
+has informed another experiment.

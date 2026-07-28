@@ -100,15 +100,24 @@ def run_solution(config):
         p = optax.apply_updates(p, updates)
         return p, state, energy
 
-    train_step = K.jit(train_step)
+    def train_loop(p, state):
+        def scan_step(carry, _):
+            p, state = carry
+            p, state, energy = train_step(p, state)
+            return (p, state), energy
 
-    energy_density_history = []
-    for _ in range(config["max_steps"]):
-        params, opt_state, energy = train_step(params, opt_state)
-        energy_density_history.append(energy)
+        return jax.lax.scan(
+            scan_step,
+            (p, state),
+            xs=None,
+            length=config["max_steps"],
+        )
+
+    train_loop = K.jit(train_loop)
+    (params, opt_state), energy_density_history = train_loop(params, opt_state)
 
     return {
         "final_a": K.numpy(params["a"]),
         "final_b": K.numpy(params["b"]),
-        "energy_density_history": K.numpy(K.stack(energy_density_history)),
+        "energy_density_history": K.numpy(energy_density_history),
     }
