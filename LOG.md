@@ -84,3 +84,33 @@ has informed an experiment.
 - Correction recorded `2026-07-28T01:19:00Z`: the preceding baseline event's
   authoritative completion time is `2026-07-28T01:18:25.118354Z`, not
   `2026-07-28T01:16:00Z`.
+
+- `2026-07-28T01:24:06Z`: immutable-reference profiling completed after
+  preserving two failed profiler attempts. The first attempt called an
+  ahead-of-time executable after the MVP closure's mutable cache changed its
+  signature (`compiled for 29 inputs but called with 7`). The second reused
+  one `PauliStringSum2MVP` closure across independent JAX traces and produced
+  `UnexpectedTracerError`. The successful profiler used a fresh public MVP
+  closure per independent trace and did not modify the expert.
+
+- `2026-07-28T01:24:06Z`: successful profile report
+  `research/profiles/task-05-reference-profile.json`, SHA-256
+  `812469668c2a571cbf0119ee30f041a225a1d4721b89ddd34ded5210b727ad67`.
+  Eight steady update executions averaged `0.1818234792 s`, projecting to
+  `109.0940875 s` for 600 updates. XLA reported about `209,987,840` FLOPs,
+  `1,187,454,208` bytes accessed, and `289,466,256` temporary bytes per update.
+  Update lowering/compilation took `0.637576/1.324448 s`. Interpretation:
+  steady TensorCircuit gradient execution, not compilation or Python dispatch,
+  is the primary 10x barrier.
+
+- Correction recorded `2026-07-28T01:26:02Z`: the profiler was rerun after
+  finalizing its output filter so the executed script bytes match profiler
+  SHA-256
+  `921c302a46e2d394022a658c574c62f8c3adb7913019531932aea4a164895f91`.
+  The authoritative report is still
+  `research/profiles/task-05-reference-profile.json`, now SHA-256
+  `be24858b7693ff10c1c153a7fb27ba73a2b60fa7eae5e74ea16be9aa74e6473c`.
+  Its steady update mean is `0.1697164166 s`, projected 600-update execution
+  `101.82984997 s`, and lowering/compilation times
+  `0.5897331670/1.2868244170 s`. The XLA operation/traffic estimates and
+  interpretation are unchanged.

@@ -124,8 +124,7 @@ For a dense exact state, a local gate, norm, or Pauli-term application is
 `O((L n + T) 2^n)` for `L=10` layers and `T=35` Hamiltonian terms, with a
 constant-factor reverse-mode pass for the scalar loss. The live-memory lower
 bound is `O(2^n)`; reverse-mode differentiation may retain or recompute
-layer/gate intermediates depending on JAX/XLA lowering. This campaign does not
-assert a measured peak-memory figure until a profiler report records one.
+layer/gate intermediates depending on JAX/XLA lowering.
 
 Local bootstrap evidence in `baselines/bootstrap-2026-07-27.md` reports two
 byte-identical Task 05 pairs at `116.277 ± 3.728 s` for the reference and
@@ -136,12 +135,29 @@ runtime of 45.5 s and an unmatched local OMECo variant at 34.85 s versus a
 48.27 s expert record. Both records are hypothesis evidence, not current SOTA
 or promotion evidence.
 
-The principal source-supported bottlenecks are:
+The immutable-reference profile
+`research/profiles/task-05-reference-profile.json`
+(`sha256:be24858b7693ff10c1c153a7fb27ba73a2b60fa7eae5e74ea16be9aa74e6473c`)
+measured an eight-step steady mean of `0.169716 s`, projecting to `101.830 s`
+for 600 executions versus the six-run evaluator mean of `117.776 s`. The
+compiled update's XLA analysis reports about 210.0 million FLOPs, 1.187 GB of
+memory traffic, and 289.5 MB of temporary storage per step. Lowering and
+compilation took `0.590 s` and `1.287 s`; the first compile-plus-execute call
+took `1.982 s`. Thus steady gradient/update execution accounts for roughly
+86.5% of the baseline, and compilation or Python dispatch alone cannot produce
+a 10x result.
+
+The profile also exposed a framework hazard: `PauliStringSum2MVP` keeps a
+mutable dtype cache. Reusing one MVP closure across independent JAX traces
+caused a tracer leak. A candidate must use one stable transformed loss or a
+fresh MVP closure per independent trace.
+
+The principal source- and profile-supported bottlenecks are:
 
 - 600 scalar-loss reverse-mode evaluations over dense `2^18` states;
 - repeated tensor-network construction/contraction for each normalized layer;
 - a 35-term full-state Hamiltonian MVP;
-- compilation and Python-to-JAX dispatch inside the evaluator-timed call; and
+- approximately 1.187 GB of XLA-estimated memory traffic per gradient/update;
 - full-state reverse-mode storage/recomputation.
 
 JAX recommends placing `jax.jit` on the outermost useful function in its
@@ -165,7 +181,9 @@ precision, or hidden-data access is rejected before implementation and remains
 recorded as a failed/rejected round.
 
 1. **Whole-training scan:** JIT one `lax.scan` over all 600 Adam updates to
-   reduce Python dispatch while returning every pre-update energy.
+   reduce Python dispatch while returning every pre-update energy. The
+   reference profile makes this a diagnostic/secondary hypothesis rather than
+   a plausible standalone 10x route.
 2. **TensorCircuit backend scan:** express the same loop with
    `K.jaxy_scan`/`K.scan` to test whether the framework wrapper lowers more
    cleanly than direct JAX.
@@ -269,8 +287,9 @@ per-record result contributes to a runtime claim.
 - No matched external implementation publishes runtime for this exact Task 05
   configuration, output history, TensorCircuit-NG version, CPU allocation, and
   evaluator timer. Global SOTA remains unestablished.
-- Peak memory, XLA HLO cost, compilation share, and per-kernel profile are not
-  yet measured for the pinned image.
+- Process peak RSS and per-kernel CPU profile are not yet measured. XLA cost,
+  temporary-buffer size, and compilation share are measured by the public
+  immutable-reference profile.
 - OMECo's historical local gain is unmatched and predates this frozen paired
   protocol.
 - The trusted controller must independently attest hidden tuning rotations and
