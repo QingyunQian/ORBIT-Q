@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "measurement_date": "2026-07-28",
   "candidate_commit": "e0cf56bb6c66412a38a2e0247284cd871e60a3af",
   "metric": "geometric mean of candidate_runtime_sec / expert_reference_runtime_sec over reward-passing tasks",
@@ -12,14 +12,16 @@
     "audit_reasoning_effort": "high",
     "host": "Mac arm64, Colima, 6 CPUs, 8 GiB",
     "image": "challenge-benchmark-quantum-tensorcircuit:py311",
-    "passes": 9,
-    "failures": 3,
-    "failure_rate_pct": 25.0,
-    "passed_task_geometric_mean_slowdown": 1.4470691985,
+    "result_basis": "Final reward after challenge-05 API adjudication",
+    "passes": 10,
+    "failures": 2,
+    "failure_rate_pct": 16.6666666667,
+    "passed_task_geometric_mean_slowdown": 1.4283074948,
     "included_tasks": [
       2,
       3,
       4,
+      5,
       6,
       7,
       9,
@@ -62,11 +64,12 @@
       },
       {
         "task": 5,
-        "reward": 0.0,
+        "reward": 1.0,
         "candidate_runtime_sec": 124.92,
         "expert_reference_runtime_sec": 98.36,
         "runtime_ratio": 1.270028467,
-        "included_in_geometric_mean": false
+        "included_in_geometric_mean": true,
+        "result_status": "post_hoc_api_adjudicated"
       },
       {
         "task": 6,
@@ -222,5 +225,11 @@
       }
     ]
   },
-  "comparison_caveat": "Each candidate/reference pair is same-machine and same-image within its run, but GPT-5.5 and GPT-5.6 were run on different hosts and benchmark revisions. The normalized comparison is informative, not a fully controlled model-only experiment."
+  "adjudication": {
+    "challenge": 5,
+    "status": "llm_audit_false_negative_corrected",
+    "evidence": "challenge-05/audit-adjudication.json",
+    "effect": "Challenge 05 is included in the passed-task geometric mean."
+  },
+  "comparison_caveat": "Each candidate/reference pair is same-machine and same-image within its run, but GPT-5.5 and GPT-5.6 were run on different hosts and benchmark revisions. Challenge 05 uses a documented post-hoc API adjudication after the original LLM audit misstated TensorCircuit exp1 semantics. The normalized comparison is informative, not a fully controlled model-only experiment."
 }

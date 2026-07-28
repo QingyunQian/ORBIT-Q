@@ -1,29 +1,30 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "metric_definition": {
     "agent_wall_sec": "Harbor agent_execution.finished_at minus agent_execution.started_at; excludes environment setup and verifier time",
     "non_cache_input_tokens": "input_tokens minus cache_tokens",
     "total_tokens": "input_tokens plus output_tokens",
-    "cost_per_valid_solution_usd": "total recorded solver cost divided by reward-passing task count",
-    "solve_time_per_valid_solution_min": "total agent wall time divided by reward-passing task count"
+    "cost_per_valid_solution_usd": "total recorded solver cost divided by final reward-passing task count after documented adjudication",
+    "solve_time_per_valid_solution_min": "total agent wall time divided by final reward-passing task count after documented adjudication"
   },
   "gpt56_sol_high": {
     "label": "GPT-5.6 Sol high",
     "model": "gpt-5.6-sol",
     "reasoning_effort": "high",
-    "passes": 9,
-    "failures": 3,
+    "result_basis": "Final reward after challenge-05 API adjudication",
+    "passes": 10,
+    "failures": 2,
     "agent_wall_sec": 11861.715963,
-    "passed_task_agent_wall_sec": 8614.448597,
-    "failed_task_agent_wall_sec": 3247.267366,
+    "passed_task_agent_wall_sec": 9220.29013,
+    "failed_task_agent_wall_sec": 2641.425833,
     "input_tokens": 25908116,
     "cache_tokens": 24198656,
     "non_cache_input_tokens": 1709460,
     "output_tokens": 162693,
     "total_tokens": 26070809,
     "cost_usd": 25.527418,
-    "cost_per_valid_solution_usd": 2.8363797778,
-    "solve_time_per_valid_solution_min": 21.9661406722,
+    "cost_per_valid_solution_usd": 2.5527418,
+    "solve_time_per_valid_solution_min": 19.769526605,
     "tasks": [
       {
         "task": 1,
@@ -79,7 +80,8 @@
       },
       {
         "task": 5,
-        "passed": false,
+        "passed": true,
+        "result_status": "post_hoc_api_adjudicated",
         "agent_started_at": "2026-07-28T06:53:43.289872Z",
         "agent_finished_at": "2026-07-28T07:03:49.131405Z",
         "agent_wall_sec": 605.841533,
@@ -209,6 +211,7 @@
     "gpt56_task_wall_time_source": "local Harbor trial result.json agent_execution timestamps for the committed job names in challenge-*/stamp-info.json",
     "gpt56_token_and_cost_source": "committed challenge-*/stamp-info.json Harbor fields",
     "gpt55_source": "ORBIT-Q arXiv:2607.03105 supplementary configuration-level benchmark summary",
-    "gpt55_source_url": "https://arxiv.org/abs/2607.03105"
+    "gpt55_source_url": "https://arxiv.org/abs/2607.03105",
+    "adjudication": "Challenge 05 is counted as passed according to challenge-05/audit-adjudication.json; original LLM and Harbor artifacts remain preserved."
   }
 }

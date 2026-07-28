@@ -16,6 +16,17 @@
     "reasoning_effort": "high",
     "verifier": "adapters.codex_para_verifier:CodexParaVerifier"
   },
+  "adjudication": {
+    "status": "llm_audit_false_negative_corrected",
+    "date": "2026-07-28",
+    "original_llm_audit_score": 0.0,
+    "final_adjudicated_audit_score": 1.0,
+    "original_reward": 0.0,
+    "final_reward": 1.0,
+    "evidence_file": "audit-adjudication.json",
+    "original_audit_preserved_in": "audit-details.json",
+    "original_harbor_result_preserved_in": "job-result.json"
+  },
   "harbor": {
     "job_name": "challenge-05-tensorcircuit-gpt-5.6-sol-high-20260728",
     "trial_id": "challenge-05__HJi9Eyc",

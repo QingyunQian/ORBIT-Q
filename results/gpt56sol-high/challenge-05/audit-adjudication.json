@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "problem_id": 5,
+  "adjudication_date": "2026-07-28",
+  "status": "llm_audit_false_negative_corrected",
+  "scope": "Post-hoc source- and runtime-API-grounded adjudication",
+  "original_decision": {
+    "llm_audit_score": 0.0,
+    "reward": 0.0,
+    "stated_issue": "The audit claimed that TensorCircuit exp1 applies exp(-i * theta * U / 2), making the candidate filter strengths too small by a factor of two."
+  },
+  "final_decision": {
+    "llm_audit_score": 1.0,
+    "reward": 1.0,
+    "faithfully_implements_problem": true,
+    "obvious_implementation_error": false
+  },
+  "environment": {
+    "docker_image": "challenge-benchmark-quantum-tensorcircuit:py311",
+    "tensorcircuit_package": "tensorcircuit-nightly",
+    "tensorcircuit_version": "1.8.0.dev20260726",
+    "requirements_commit": "0201238ec2983907e2891f5319f5fff2d00844d5"
+  },
+  "api_evidence": {
+    "definition": "tensorcircuit.gates.exponential_gate_unity computes cos(theta) * I - i * sin(theta) * U and defaults half=False",
+    "half_angle_behavior": "theta is divided by two only when half=True; rxx, ryy, and rzz are half=True partials, while the candidate calls Circuit.exp1 with the default half=False",
+    "candidate_x_filter": "theta=1j*a therefore gives cosh(a) * I + sinh(a) * X = exp(a*X)",
+    "candidate_zz_filter": "theta=1j*b therefore gives cosh(b) * I + sinh(b) * ZZ = exp(b*ZZ)",
+    "numeric_check_parameter": 0.2,
+    "numeric_frobenius_errors": {
+      "exp1_i_a_x_vs_exp_a_x": 2.7657460435829046e-08,
+      "exp1_i_a_x_vs_exp_half_a_x": 0.1446519992482661,
+      "exp1_i_a_zz_vs_exp_a_zz": 5.8830817645738946e-08,
+      "exp1_i_a_zz_vs_exp_half_a_zz": 0.20456884863868532
+    }
+  },
+  "candidate_fidelity_review": {
+    "ten_cooling_layers": true,
+    "correct_even_odd_brickwork_bonds": true,
+    "correct_one_qubit_filters": true,
+    "correct_two_qubit_filters": true,
+    "normalizes_after_every_layer": true,
+    "differentiates_through_normalization": true,
+    "initializes_all_filter_strengths_to_0_01": true,
+    "adam_updates": 600,
+    "records_pre_update_history": true,
+    "return_shapes_correct": true
+  },
+  "functional_evidence": {
+    "functional_score": 1.0,
+    "runtime_sec": 124.92,
+    "exact_ground_energy_density": -1.3268988132,
+    "initial_energy_density": -1.171859026,
+    "final_energy_density": -1.3267844915
+  },
+  "provenance": {
+    "candidate_unchanged": true,
+    "canonical_task_unchanged": true,
+    "expert_solution_source_read": false,
+    "original_audit_artifact": "audit-details.json",
+    "original_harbor_aggregate": "job-result.json",
+    "final_machine_readable_score": "reward.json"
+  }
+}

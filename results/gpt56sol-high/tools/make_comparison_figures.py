@@ -146,11 +146,18 @@ ax1.legend(frameon=False, loc="upper left")
 ax1.grid(alpha=0.25, axis="y", which="both")
 
 fig.suptitle(
-    "ORBIT-Q TensorCircuit agent comparison: GPT-5.5 high vs GPT-5.6 Sol high",
+    "ORBIT-Q TensorCircuit: GPT-5.5 high vs GPT-5.6 Sol high (adjudicated)",
     y=1.01,
     fontsize=12,
 )
-fig.tight_layout()
+fig.text(
+    0.5,
+    0.005,
+    "Challenge 05 corrected after source- and runtime-API-grounded adjudication.",
+    ha="center",
+    fontsize=8,
+)
+fig.tight_layout(rect=(0, 0.035, 1, 1))
 out = FIGS / "gpt55-vs-gpt56-comparison.png"
 fig.savefig(out, dpi=200, bbox_inches="tight")
 print(out)

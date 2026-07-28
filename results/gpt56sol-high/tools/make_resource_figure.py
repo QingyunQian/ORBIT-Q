@@ -4,6 +4,9 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import matplotlib
+
+matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Patch
@@ -187,7 +190,7 @@ def main() -> None:
         ax.spines["bottom"].set_linewidth(1.1)
 
     fig.suptitle(
-        "GPT-5.6 Sol high agent-side resource use",
+        "GPT-5.6 Sol high agent-side resource use (adjudicated)",
         fontsize=15,
         fontweight="bold",
         y=1.01,
