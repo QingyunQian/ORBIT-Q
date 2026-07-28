@@ -570,3 +570,13 @@ Append corrections below; never rewrite prior evidence.
 
 - `2026-07-28T05:30:23.442376Z`: post-run benchmark verification and public
   gate check passed with `research_ready` and `promotion_ready` true.
+
+- `2026-07-28T05:57:41.516745Z`: experiment `r07a3d8` enabled
+  TensorCircuit algebraic contraction primitives on accepted Round 6. All six
+  pairs passed and the 95% paired-speedup interval was
+  `[1.2283702752x, 1.4251983788x]`, but candidate mean `91.053881 s`
+  regressed from the accepted `83.153831 s`. Decision `discard`. Immutable
+  report SHA-256
+  `8a080acd9f82e5b0ff8fa26be3d8e78f553e254506fa4aa2f5c9189d5e52acf9`;
+  full evidence archive:
+  `/Users/hmyuuu/forge/OrbitBreakersCampaignArchive/task-05/r07a3d8`.
