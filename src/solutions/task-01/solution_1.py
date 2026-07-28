@@ -9,7 +9,7 @@ import numpy as np
 import optax
 
 import tensorcircuit as tc
-from tensorcircuit.templates.measurements import parameterized_measurements
+from tensorcircuit.templates.measurements import mpo_expectation
 
 K = tc.set_backend("jax")
 tc.set_dtype("complex64")
@@ -30,26 +30,27 @@ def initial_parameters(config):
     return K.convert_to_tensor(params)
 
 
-def tfim_measurement_data(config):
-    patterns = []
-    weights = []
+def tfim_mpo(config):
+    eye = np.eye(2, dtype=np.complex64)
+    x_gate = np.array([[0, 1], [1, 0]], dtype=np.complex64)
+    z_gate = np.array([[1, 0], [0, -1]], dtype=np.complex64)
+    bulk = np.zeros((3, 3, 2, 2), dtype=np.complex64)
+    bulk[0, 0] = eye
+    bulk[1, 0] = z_gate
+    bulk[2, 0] = -config["field"] * x_gate
+    bulk[2, 1] = -z_gate
+    bulk[2, 2] = eye
 
+    tensors = [bulk[2:3]] + [bulk] * (config["n_qubits"] - 2) + [bulk[:, 0:1]]
+    nodes = [tc.quantum.Node(K.convert_to_tensor(tensor)) for tensor in tensors]
     for i in range(config["n_qubits"] - 1):
-        pattern = [0] * config["n_qubits"]
-        pattern[i] = 3
-        pattern[i + 1] = 3
-        patterns.append(pattern)
-        weights.append(-1.0)
+        nodes[i][1] ^ nodes[i + 1][0]
 
-    for i in range(config["n_qubits"]):
-        pattern = [0] * config["n_qubits"]
-        pattern[i] = 1
-        patterns.append(pattern)
-        weights.append(-config["field"])
-
-    return (
-        K.convert_to_tensor(np.array(patterns, dtype=np.int32)),
-        K.convert_to_tensor(np.array(weights, dtype=np.float32)),
+    return tc.quantum.QuOperator(
+        out_edges=[node[2] for node in nodes],
+        in_edges=[node[3] for node in nodes],
+        ref_nodes=nodes,
+        ignore_edges=[nodes[0][0], nodes[-1][1]],
     )
 
 
@@ -69,24 +70,19 @@ def apply_variational_layers(circuit, params, config):
             offset += 3
 
 
-def circuit_energy(params, mps_input, config, patterns, weights):
+def circuit_energy(params, mps_input, config, mpo):
     circuit = tc.Circuit(config["n_qubits"], mps_inputs=mps_input)
     apply_variational_layers(circuit, params, config)
-
-    def measure(pattern):
-        return parameterized_measurements(circuit, pattern, onehot=True, reuse=False)
-
-    expectations = K.vmap(measure, vectorized_argnums=0)(patterns)
-    return K.sum(expectations * weights)
+    return mpo_expectation(circuit, mpo)
 
 
 def run_solution(config):
     mps_input = tc.quantum.quimb2qop(config["dmrg_state"])
     params = initial_parameters(config)
-    patterns, weights = tfim_measurement_data(config)
+    mpo = tfim_mpo(config)
     optimizer = optax.adam(config["learning_rate"])
     opt_state = optimizer.init(params)
-    energy_fn = lambda p, m: circuit_energy(p, m, config, patterns, weights)
+    energy_fn = lambda p, m: circuit_energy(p, m, config, mpo)
 
     def train_step(p, state, m):
         energy, grads = K.value_and_grad(energy_fn)(p, m)
