@@ -59,3 +59,28 @@ per-case output, or controller logs may enter this worktree.
 
 Append corrections below this heading. Never rewrite an earlier result after it
 has informed an experiment.
+
+- `2026-07-27T18:18:21Z`: canonical public-workload validation completed.
+  Immutable expert status `SUCCESS`, `Overall: PASS`; evaluator runtime
+  `135.503222 s`; initial/final/exact energy densities
+  `-1.1720402241`, `-1.3267312050`, and `-1.3268985748`. Report SHA-256
+  `b5defee28534cb68cb274563a4f8c1075acc38ed2d1b6e8cb13acf401e8011b4`.
+  This one run validates the public record but is not a performance baseline.
+
+- `2026-07-28T01:16:00Z`: six-run immutable-reference promotion baseline
+  completed in one pinned Docker container. All six runs passed. Runtimes:
+  `101.547164`, `106.278911`, `114.090078`, `139.061275`, `122.631583`,
+  `123.046707` seconds. Mean `117.775953 s`; median `118.3608305 s`;
+  sample standard deviation `13.5171310916 s`; standard error
+  `5.5183456601 s`; min/max `101.547164/139.061275 s`. Host fingerprint
+  `d72d96a55e39ff10c67a820a30902dbd1b919a8f41fb4dbf95c855eac59f0013`;
+  image ID
+  `sha256:623dc47116d71b5f4e2879a61def7beada982438cb2df45de8367d92f7ec242c`.
+  Report SHA-256
+  `529a1839c67c55bece0b89b82ffd3583868a082192c2f357a819566ac1463b76`.
+  The repeated-reference gate passes for Task 05. No improvement is claimed
+  without matched candidate pairs.
+
+- Correction recorded `2026-07-28T01:19:00Z`: the preceding baseline event's
+  authoritative completion time is `2026-07-28T01:18:25.118354Z`, not
+  `2026-07-28T01:16:00Z`.
