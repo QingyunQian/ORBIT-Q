@@ -1,29 +1,34 @@
 {
   "schema_version": 1,
   "dataset_id": "orbitbreakers-public-dev",
-  "status": "not_built",
-  "version": null,
-  "created_at": null,
-  "generator_commit": null,
-  "environment_image_digest": null,
+  "status": "ready",
+  "version": "orbitq-workloads-v20260728.1",
+  "created_at": "2026-07-28T01:09:03Z",
+  "generator_commit": "b42d2e1f5c94e5a305d3965a0813c79d72084500",
+  "environment_image_digest": "sha256:623dc47116d71b5f4e2879a61def7beada982438cb2df45de8367d92f7ec242c",
+  "campaign_task_id": "05",
   "required_task_ids": [
-    "01",
-    "02",
-    "03",
-    "04",
-    "05",
-    "06",
-    "07",
-    "08",
-    "09",
-    "10",
-    "11",
-    "12"
+    "05"
   ],
   "coverage_requirements": {
-    "canonical_case_per_task": 1,
-    "reduced_smoke_case_per_task_when_supported": 1,
-    "scale_probe_per_task_when_supported": 1
+    "canonical_case_per_campaign_task": 1,
+    "reduced_smoke_case_per_campaign_task_when_supported": 1,
+    "scale_probe_per_campaign_task_when_supported": 1
   },
-  "cases": []
+  "unsupported_optional_coverage": {
+    "task_id": "05",
+    "reduced_smoke_case": "The contract fixes exactly 600 Adam updates.",
+    "scale_probe": "The contract fixes 18 qubits and ten layers."
+  },
+  "cases": [
+    {
+      "task_id": "05",
+      "case_id": "task-05-canonical-fixed-v1",
+      "path": "task-05/canonical.json",
+      "sha256": "db2a18c0e532bc5c0256869a4ccb5a959f0ea76d22d98c3309e2eac6858cf9f0",
+      "provenance": "Canonical public configuration from tasks/task-05/problem.md and tasks/task-05/evaluator/evaluate_5.py at commit 46d6636881500fa8f70618b74f89353a2b6702b4.",
+      "expert_validation_status": "PASS",
+      "expert_validation_report_sha256": "b5defee28534cb68cb274563a4f8c1075acc38ed2d1b6e8cb13acf401e8011b4"
+    }
+  ]
 }
