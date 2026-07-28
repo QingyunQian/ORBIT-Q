@@ -2,9 +2,9 @@
 
 Read `GOAL.md` in full and follow it.
 
-Do not edit candidate or framework code until the survey, workload-dataset, and
-trusted-controller isolation gates in `GOAL.md` pass. When one is open, work
-only on its missing evidence.
+Do not edit candidate or framework code until the selected-task survey and
+public workload-dataset gates in `GOAL.md` pass. When one is open, work only on
+its missing evidence.
 
 After those gates pass, use one fresh Git worktree for one hypothesis, edit one
 file under `src/solutions/`, run it against the immutable `reference` with

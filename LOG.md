@@ -114,3 +114,28 @@ has informed an experiment.
   `101.82984997 s`, and lowering/compilation times
   `0.5897331670/1.2868244170 s`. The XLA operation/traffic estimates and
   interpretation are unchanged.
+
+- `2026-07-28T01:28:18Z`: immutable forward-component profile completed.
+  Report `research/profiles/task-05-component-profile.json`, SHA-256
+  `9096f74abc7d1f3b3a9ba902f70e467c530020a050194bc05b72e3392e482bee`;
+  profiler SHA-256
+  `a3d902878d1fd95c5d80869a0b1f36a5ac7ea94a842448ba68a4719e3b39f4b1`.
+  The separately compiled ten-layer trajectory and 35-term Hamiltonian energy
+  had steady medians `0.0490012920 s` and `0.0023978540 s`. The trajectory is
+  95.3% of their median sum, so circuit contraction, normalization, and its
+  reverse-mode path take priority over a Hamiltonian-only rewrite.
+
+- `2026-07-28T01:50:00Z`: merged upstream policy commit
+  `d612cd3ae752a8d16fd0b59c717d19abd4fb5f38`, which removes hidden-controller
+  and holdout requirements and explicitly permits one canonical public case
+  for a fixed deterministic task. Resolved overlapping gate documentation in
+  favor of the upstream public-evaluation policy while preserving the
+  validated Task 05 manifest and profiler evidence. All 35 tests passed.
+  `python3 research/check_gates.py --task 05 --baseline-report
+  results/task-05-reference-baseline-v1/results.json --json` reported
+  `research_ready: true` and `promotion_ready: true`. Candidate rounds are now
+  authorized.
+
+- Correction recorded `2026-07-28T02:05:22Z`: the authoritative timestamp for
+  the preceding merge/readiness event is `2026-07-28T02:05:22Z`, not
+  `2026-07-28T01:50:00Z`.

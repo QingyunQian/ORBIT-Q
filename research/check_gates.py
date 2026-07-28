@@ -1,19 +1,10 @@
 #!/usr/bin/env python3
-"""Fail-closed validation for research-readiness and promotion gates.
+"""Fail-closed validation for selected-task research and promotion gates.
 
-The trusted controller attestation must be a JSON object stored outside the
-benchmark checkout with exactly these keys:
-
-    schema_version
-    status
-    public_dataset_version
-    hidden_tuning_ready
-    sealed_holdout_ready
-    controller_protocol_version
-    attested_at_utc
-
-The attestation is deliberately small and must not contain paths, record IDs,
-seeds, hashes, credentials, case results, or nested values.
+Research readiness requires a cited survey and a versioned public dataset for
+the selected task. Promotion additionally requires repeated passing reference
+measurements. Hidden tuning data, controller attestations, and sealed holdouts
+are intentionally outside this policy.
 """
 
 from __future__ import annotations
@@ -30,15 +21,6 @@ from typing import Any, Sequence
 
 TASK_IDS = tuple(f"{number:02d}" for number in range(1, 13))
 SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
-CONTROLLER_KEYS = {
-    "schema_version",
-    "status",
-    "public_dataset_version",
-    "hidden_tuning_ready",
-    "sealed_holdout_ready",
-    "controller_protocol_version",
-    "attested_at_utc",
-}
 
 
 def _read_json(path: Path, label: str, errors: list[str]) -> Any | None:
@@ -49,14 +31,6 @@ def _read_json(path: Path, label: str, errors: list[str]) -> Any | None:
     except (OSError, json.JSONDecodeError) as exc:
         errors.append(f"{label} is unreadable or invalid JSON: {exc}")
     return None
-
-
-def _inside(path: Path, root: Path) -> bool:
-    try:
-        path.resolve().relative_to(root.resolve())
-    except ValueError:
-        return False
-    return True
 
 
 def _command_option(command: object, option: str) -> str | None:
@@ -70,10 +44,7 @@ def _command_option(command: object, option: str) -> str | None:
     return values[index + 1] if index + 1 < len(values) else None
 
 
-def check_survey(
-    root: Path,
-    campaign_task_ids: Sequence[str],
-) -> tuple[bool, list[str]]:
+def check_survey(root: Path, task_id: str) -> tuple[bool, list[str]]:
     errors: list[str] = []
     path = root / "research" / "SURVEY.md"
     try:
@@ -82,17 +53,25 @@ def check_survey(
         return False, ["research/SURVEY.md is missing or unreadable"]
     if "**Status: READY**" not in text:
         errors.append("research/SURVEY.md is not marked READY")
-    if re.search(r"\bTODO\b", text):
-        errors.append("research/SURVEY.md still contains TODO placeholders")
-    for task_id in campaign_task_ids:
-        if f"Task {task_id}:" not in text:
-            errors.append(f"research/SURVEY.md does not cover task {task_id}")
+    marker = f"## Task {task_id}:"
+    if marker not in text:
+        errors.append(f"research/SURVEY.md does not cover task {task_id}")
+    else:
+        section = text.split(marker, 1)[1]
+        next_task = re.search(r"^## Task \d{2}:", section, re.MULTILINE)
+        if next_task is not None:
+            section = section[: next_task.start()]
+        if re.search(r"\bTODO\b", section):
+            errors.append(
+                f"research/SURVEY.md task {task_id} still contains TODO placeholders"
+            )
     return not errors, errors
 
 
 def check_public_dataset(
     root: Path,
-) -> tuple[bool, str | None, tuple[str, ...], list[str]]:
+    task_id: str,
+) -> tuple[bool, str | None, list[str]]:
     errors: list[str] = []
     payload = _read_json(
         root / "datasets" / "public" / "manifest.json",
@@ -100,28 +79,14 @@ def check_public_dataset(
         errors,
     )
     if not isinstance(payload, dict):
-        return (
-            False,
-            None,
-            (),
-            errors or ["public dataset manifest must be an object"],
-        )
-
-    campaign_task_id = str(payload.get("campaign_task_id", ""))
-    if campaign_task_id not in TASK_IDS:
-        errors.append("public dataset manifest has no valid campaign_task_id")
-        campaign_task_ids: tuple[str, ...] = ()
-    else:
-        campaign_task_ids = (campaign_task_id,)
-
-    required_task_ids = payload.get("required_task_ids")
-    if required_task_ids != list(campaign_task_ids):
-        errors.append(
-            "public dataset required_task_ids must contain only campaign_task_id"
-        )
+        return False, None, errors or ["public dataset manifest must be an object"]
 
     if payload.get("status") != "ready":
         errors.append("public dataset manifest is not marked ready")
+    if payload.get("selected_task_id") != task_id:
+        errors.append(
+            f"public dataset manifest is not bound to selected task {task_id}"
+        )
     version = payload.get("version")
     if not isinstance(version, str) or not version.strip():
         errors.append("public dataset manifest has no version")
@@ -145,34 +110,27 @@ def check_public_dataset(
             errors.append(
                 f"public dataset case {index} lacks {', '.join(missing)}"
             )
-        task_id = str(case.get("task_id", ""))
-        if task_id in campaign_task_ids:
-            covered.add(task_id)
-        elif task_id in TASK_IDS:
-            errors.append(
-                f"public dataset case {index} is outside the campaign task"
-            )
+        case_task_id = str(case.get("task_id", ""))
+        if case_task_id in TASK_IDS:
+            covered.add(case_task_id)
         else:
             errors.append(f"public dataset case {index} has invalid task_id")
         sha256 = case.get("sha256")
         if sha256 not in (None, "") and not SHA256_RE.fullmatch(str(sha256)):
             errors.append(f"public dataset case {index} has invalid sha256")
 
-    missing_tasks = sorted(set(campaign_task_ids) - covered)
-    if missing_tasks:
-        errors.append(
-            "public dataset lacks task coverage: " + ", ".join(missing_tasks)
-        )
-    return not errors, version, campaign_task_ids, errors
+    if task_id not in covered:
+        errors.append(f"public dataset lacks selected task coverage: {task_id}")
+    return not errors, version, errors
 
 
 def check_baseline_report(
     path: Path | None,
-    campaign_task_ids: Sequence[str],
+    task_id: str,
 ) -> tuple[bool, list[str]]:
     errors: list[str] = []
     if path is None:
-        return False, ["a full reference baseline report was not supplied"]
+        return False, ["a selected-task reference baseline report was not supplied"]
     payload = _read_json(path, "reference baseline report", errors)
     if not isinstance(payload, dict):
         return False, errors or ["reference baseline report must be an object"]
@@ -206,11 +164,13 @@ def check_baseline_report(
             errors.append(f"baseline row {index} is not an object")
             continue
         row: dict[str, Any] = raw_row
-        task_id = str(row.get("task_id", ""))
-        if task_id not in campaign_task_ids:
+        row_task_id = str(row.get("task_id", ""))
+        if row_task_id not in TASK_IDS:
             errors.append(f"baseline row {index} has invalid task_id")
             continue
-        by_task[task_id].append(row)
+        if row_task_id != task_id:
+            continue
+        by_task[row_task_id].append(row)
         if row.get("solution") != "reference":
             errors.append(f"baseline row {index} is not a reference run")
         runtime = row.get("runtime_sec")
@@ -248,18 +208,18 @@ def check_baseline_report(
             timeouts.add(timeout)
         source_hash = row.get("source_sha256")
         if isinstance(source_hash, str) and SHA256_RE.fullmatch(source_hash):
-            source_hashes[task_id].add(source_hash)
+            source_hashes[row_task_id].add(source_hash)
         else:
             errors.append(f"baseline row {index} lacks a valid source hash")
 
         evaluator_hash = row.get("evaluator_sha256")
         if isinstance(evaluator_hash, str) and SHA256_RE.fullmatch(evaluator_hash):
-            evaluator_hashes[task_id].add(evaluator_hash)
+            evaluator_hashes[row_task_id].add(evaluator_hash)
         else:
             errors.append(f"baseline row {index} lacks a valid evaluator hash")
         snapshot_hash = row.get("staging_snapshot_sha256")
         if isinstance(snapshot_hash, str) and SHA256_RE.fullmatch(snapshot_hash):
-            snapshot_hashes[task_id].add(snapshot_hash)
+            snapshot_hashes[row_task_id].add(snapshot_hash)
         else:
             errors.append(f"baseline row {index} lacks a valid staging snapshot hash")
         compatibility_hash = row.get("compatibility_sha256")
@@ -274,11 +234,11 @@ def check_baseline_report(
         container_id = row.get("shared_container_id")
         container_name = row.get("shared_container_name")
         if isinstance(container_id, str) and container_id:
-            container_ids[task_id].add(container_id)
+            container_ids[row_task_id].add(container_id)
         else:
             errors.append(f"baseline row {index} lacks a shared container ID")
         if isinstance(container_name, str) and container_name:
-            container_names[task_id].add(container_name)
+            container_names[row_task_id].add(container_name)
         else:
             errors.append(f"baseline row {index} lacks a shared container name")
 
@@ -289,7 +249,7 @@ def check_baseline_report(
             and not isinstance(repeat, bool)
             and repeat > 0
         ):
-            repeat_indices[task_id].append(repeat)
+            repeat_indices[row_task_id].append(repeat)
         else:
             errors.append(f"baseline row {index} has an invalid repeat index")
         if (
@@ -297,7 +257,7 @@ def check_baseline_report(
             and not isinstance(planned, bool)
             and planned >= 6
         ):
-            planned_repeats[task_id].add(planned)
+            planned_repeats[row_task_id].add(planned)
         else:
             errors.append(
                 f"baseline row {index} has fewer than 6 planned repeats"
@@ -333,33 +293,32 @@ def check_baseline_report(
                 f"baseline row {index} lacks a read-only shared staging mount"
             )
 
-    for task_id in campaign_task_ids:
-        count = len(by_task.get(task_id, []))
-        if count < 6:
+    count = len(by_task.get(task_id, []))
+    if count < 6:
+        errors.append(
+            f"task {task_id} has {count} reference runs; at least 6 required"
+        )
+    if len(source_hashes.get(task_id, set())) > 1:
+        errors.append(f"task {task_id} used multiple reference hashes")
+    if len(evaluator_hashes.get(task_id, set())) != 1:
+        errors.append(f"task {task_id} did not use one evaluator hash")
+    if len(snapshot_hashes.get(task_id, set())) != 1:
+        errors.append(f"task {task_id} did not use one staging snapshot")
+    if len(container_ids.get(task_id, set())) != 1:
+        errors.append(f"task {task_id} did not use one container ID")
+    if len(container_names.get(task_id, set())) != 1:
+        errors.append(f"task {task_id} did not use one container name")
+    planned_values = planned_repeats.get(task_id, set())
+    if len(planned_values) != 1:
+        errors.append(f"task {task_id} has inconsistent planned repeats")
+    else:
+        planned = next(iter(planned_values))
+        if sorted(repeat_indices.get(task_id, [])) != list(
+            range(1, planned + 1)
+        ):
             errors.append(
-                f"task {task_id} has {count} reference runs; at least 6 required"
+                f"task {task_id} has missing or duplicate repeat indices"
             )
-        if len(source_hashes.get(task_id, set())) > 1:
-            errors.append(f"task {task_id} used multiple reference hashes")
-        if len(evaluator_hashes.get(task_id, set())) != 1:
-            errors.append(f"task {task_id} did not use one evaluator hash")
-        if len(snapshot_hashes.get(task_id, set())) != 1:
-            errors.append(f"task {task_id} did not use one staging snapshot")
-        if len(container_ids.get(task_id, set())) != 1:
-            errors.append(f"task {task_id} did not use one container ID")
-        if len(container_names.get(task_id, set())) != 1:
-            errors.append(f"task {task_id} did not use one container name")
-        planned_values = planned_repeats.get(task_id, set())
-        if len(planned_values) != 1:
-            errors.append(f"task {task_id} has inconsistent planned repeats")
-        else:
-            planned = next(iter(planned_values))
-            if sorted(repeat_indices.get(task_id, [])) != list(
-                range(1, planned + 1)
-            ):
-                errors.append(
-                    f"task {task_id} has missing or duplicate repeat indices"
-                )
 
     for label, values in (
         ("Docker image IDs", image_ids),
@@ -374,101 +333,47 @@ def check_baseline_report(
     return not errors, errors
 
 
-def check_controller_attestation(
-    root: Path,
-    path: Path | None,
-    public_version: str | None,
-) -> tuple[bool, list[str]]:
-    errors: list[str] = []
-    if path is None:
-        return False, ["an external controller attestation was not supplied"]
-    resolved = path.expanduser().resolve()
-    if _inside(resolved, root):
-        errors.append("controller attestation must be outside the benchmark checkout")
-        return False, errors
-    payload = _read_json(resolved, "controller attestation", errors)
-    if not isinstance(payload, dict):
-        return False, errors or ["controller attestation must be an object"]
-    unknown = sorted(set(payload) - CONTROLLER_KEYS)
-    missing = sorted(CONTROLLER_KEYS - set(payload))
-    if unknown:
-        errors.append(
-            "controller attestation contains forbidden fields: "
-            + ", ".join(unknown)
-        )
-    if missing:
-        errors.append(
-            "controller attestation lacks fields: " + ", ".join(missing)
-        )
-    if any(isinstance(value, (dict, list)) for value in payload.values()):
-        errors.append("controller attestation must not contain nested values")
-    if payload.get("schema_version") != 1:
-        errors.append("controller attestation has unsupported schema_version")
-    if payload.get("status") != "ready":
-        errors.append("controller attestation is not marked ready")
-    if payload.get("hidden_tuning_ready") is not True:
-        errors.append("hidden tuning is not attested ready")
-    if payload.get("sealed_holdout_ready") is not True:
-        errors.append("sealed holdout is not attested ready")
-    if public_version is None or payload.get("public_dataset_version") != public_version:
-        errors.append("controller attestation does not match the public dataset")
-    for key in ("controller_protocol_version", "attested_at_utc"):
-        if not isinstance(payload.get(key), str) or not payload[key].strip():
-            errors.append(f"controller attestation has no {key}")
-    return not errors, errors
-
-
 def evaluate_gates(
     root: Path,
     *,
+    task_id: str,
     baseline_report: Path | None,
-    controller_attestation: Path | None,
 ) -> dict[str, Any]:
-    (
-        dataset_ready,
-        public_version,
-        campaign_task_ids,
-        dataset_errors,
-    ) = check_public_dataset(root)
-    survey_ready, survey_errors = check_survey(root, campaign_task_ids)
+    if task_id not in TASK_IDS:
+        raise ValueError(f"unsupported task ID: {task_id}")
+    survey_ready, survey_errors = check_survey(root, task_id)
+    dataset_ready, public_version, dataset_errors = check_public_dataset(
+        root,
+        task_id,
+    )
     baseline_ready, baseline_errors = check_baseline_report(
         baseline_report,
-        campaign_task_ids,
-    )
-    controller_ready, controller_errors = check_controller_attestation(
-        root,
-        controller_attestation,
-        public_version,
+        task_id,
     )
     checks = {
         "survey": {"ready": survey_ready, "errors": survey_errors},
         "public_dataset": {
             "ready": dataset_ready,
             "version": public_version,
-            "campaign_task_ids": list(campaign_task_ids),
             "errors": dataset_errors,
         },
         "reference_baselines": {
             "ready": baseline_ready,
             "errors": baseline_errors,
         },
-        "trusted_controller": {
-            "ready": controller_ready,
-            "errors": controller_errors,
-        },
     }
     research_ready = all(
-        checks[name]["ready"]
-        for name in ("survey", "public_dataset", "trusted_controller")
+        checks[name]["ready"] for name in ("survey", "public_dataset")
     )
     promotion_ready = bool(
         research_ready and checks["reference_baselines"]["ready"]
     )
     return {
         # ``ready`` remains the process exit criterion: an agent may begin
-        # proposing candidates once the knowledge and data-isolation gates
-        # pass. Valid repeated baselines are required later for promotion.
+        # proposing candidates once the selected-task survey and public-data
+        # gates pass. Valid repeated baselines are required later for promotion.
         "ready": research_ready,
+        "task_id": task_id,
         "research_ready": research_ready,
         "promotion_ready": promotion_ready,
         "checks": checks,
@@ -478,12 +383,12 @@ def evaluate_gates(
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
-            "Validate knowledge/data-isolation gates for autoresearch and the "
-            "separate repeated-baseline gate for performance promotion."
+            "Validate selected-task survey/public-data gates for autoresearch "
+            "and the repeated-baseline gate for performance promotion."
         )
     )
+    parser.add_argument("--task", choices=TASK_IDS, required=True)
     parser.add_argument("--baseline-report", type=Path)
-    parser.add_argument("--controller-attestation", type=Path)
     parser.add_argument("--root", type=Path, default=Path(__file__).resolve().parents[1])
     parser.add_argument("--json", action="store_true", dest="as_json")
     return parser
@@ -493,8 +398,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     report = evaluate_gates(
         args.root.expanduser().resolve(),
+        task_id=args.task,
         baseline_report=args.baseline_report,
-        controller_attestation=args.controller_attestation,
     )
     if args.as_json:
         print(json.dumps(report, indent=2, sort_keys=True))
@@ -502,12 +407,12 @@ def main(argv: Sequence[str] | None = None) -> int:
         print("Autoresearch and runtime-promotion gates passed.")
     elif report["research_ready"]:
         print(
-            "Autoresearch knowledge/data gates passed; the runtime-promotion "
+            "Autoresearch survey/public-data gates passed; the runtime-promotion "
             "gate remains closed."
         )
     else:
-        print("Autoresearch knowledge/data gates are closed.", file=sys.stderr)
-        for name in ("survey", "public_dataset", "trusted_controller"):
+        print("Autoresearch survey/public-data gates are closed.", file=sys.stderr)
+        for name in ("survey", "public_dataset"):
             check = report["checks"][name]
             for error in check["errors"]:
                 print(f"- {name}: {error}", file=sys.stderr)

@@ -37,7 +37,8 @@ Public dataset version:
 
 Public manifest SHA-256:
 
-Confirm that no hidden tuning or holdout data is visible:
+Confirm all benchmark workloads and validity rules are versioned public
+artifacts:
 
 ## Command, seed, and environment
 

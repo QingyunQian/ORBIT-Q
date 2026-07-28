@@ -6,14 +6,11 @@
   "created_at": "2026-07-28T01:09:03Z",
   "generator_commit": "b42d2e1f5c94e5a305d3965a0813c79d72084500",
   "environment_image_digest": "sha256:623dc47116d71b5f4e2879a61def7beada982438cb2df45de8367d92f7ec242c",
-  "campaign_task_id": "05",
-  "required_task_ids": [
-    "05"
-  ],
+  "selected_task_id": "05",
   "coverage_requirements": {
-    "canonical_case_per_campaign_task": 1,
-    "reduced_smoke_case_per_campaign_task_when_supported": 1,
-    "scale_probe_per_campaign_task_when_supported": 1
+    "canonical_case": 1,
+    "reduced_smoke_case_when_supported": 1,
+    "scale_probe_when_supported": 1
   },
   "unsupported_optional_coverage": {
     "task_id": "05",

@@ -1,8 +1,7 @@
 PYPI_INDEX ?= https://pypi.org/simple
 TASK ?= 01
 REPEAT ?= 4
-BASELINE_REPORT ?= results/reference-baseline/results.json
-CONTROLLER_ATTESTATION ?=
+BASELINE_REPORT ?= results/task-$(TASK)-reference-baseline/results.json
 
 .PHONY: setup lint test verify doctor gates reference compare reference-all compare-all
 
@@ -23,8 +22,8 @@ doctor:
 
 gates:
 	uv run python research/check_gates.py \
-	  --baseline-report "$(BASELINE_REPORT)" \
-	  --controller-attestation "$(CONTROLLER_ATTESTATION)"
+	  --task "$(TASK)" \
+	  --baseline-report "$(BASELINE_REPORT)"
 
 reference:
 	./bench run $(TASK) --solution reference --repeat $(REPEAT) --no-build

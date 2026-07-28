@@ -15,11 +15,10 @@ tasks.
 Do not edit `src/solutions/` until:
 
 - `research/SURVEY.md` is complete and marked `READY`;
-- `datasets/public/manifest.json` is built, validated, and marked `ready`;
-- a trusted controller confirms hidden tuning rotations and a sealed holdout
-  outside every proposal worktree.
+- `datasets/public/manifest.json` contains a validated public workload for the
+  selected task and is marked `ready`.
 
-Placeholders and example attestations do not satisfy a gate.
+Placeholders do not satisfy a gate.
 
 Repeated passing reference measurements are a promotion gate, not a prerequisite
 for proposing a candidate. A symmetric failure of the immutable reference and
@@ -71,9 +70,10 @@ diagnostic. Report mean and standard error. Treat correctness and framework
 fidelity as hard gates. Never claim a speedup from a failed, timed-out,
 mismatched, or unpaired result.
 
-## Hidden-data boundary
+## Public evaluation boundary
 
-Proposal agents may inspect public data and expert sources. They must not gain
-filesystem, credential, command, log, or query access to hidden tuning or
-holdout records. The trusted controller returns only the aggregate fields
-allowed by `GOAL.md`.
+All workload configurations, seeds, evaluators, and validity rules used by a
+campaign must be versioned public artifacts. Hidden tuning records, sealed
+holdouts, and controller attestations are not required. Preserve a final paired
+benchmark on the immutable public workload. If optimization continues after
+that final run, record it as a new experiment and rerun the final benchmark.

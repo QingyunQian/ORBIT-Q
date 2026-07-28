@@ -14,22 +14,20 @@ from check_gates import evaluate_gates  # noqa: E402
 
 
 SHA = "a" * 64
-CAMPAIGN_TASK_ID = "05"
+SELECTED_TASK = "05"
 
 
-def _write_ready_fixture(root: Path, external: Path) -> tuple[Path, Path]:
+def _write_ready_fixture(root: Path) -> Path:
     (root / "research").mkdir(parents=True)
-    sections = f"## Task {CAMPAIGN_TASK_ID}: complete"
     (root / "research" / "SURVEY.md").write_text(
-        f"# Survey\n\n**Status: READY**\n\n{sections}\n",
+        f"# Survey\n\n**Status: READY**\n\n## Task {SELECTED_TASK}: complete\n",
         encoding="utf-8",
     )
 
-    public_version = "orbitq-workloads-v20260727.1"
     cases = [
         {
-            "task_id": CAMPAIGN_TASK_ID,
-            "case_id": f"public-{CAMPAIGN_TASK_ID}",
+            "task_id": SELECTED_TASK,
+            "case_id": f"public-{SELECTED_TASK}",
             "sha256": SHA,
             "provenance": "generated from the canonical public task",
         }
@@ -40,9 +38,8 @@ def _write_ready_fixture(root: Path, external: Path) -> tuple[Path, Path]:
         json.dumps(
             {
                 "status": "ready",
-                "version": public_version,
-                "campaign_task_id": CAMPAIGN_TASK_ID,
-                "required_task_ids": [CAMPAIGN_TASK_ID],
+                "version": "orbitq-workloads-v20260727.1",
+                "selected_task_id": SELECTED_TASK,
                 "cases": cases,
             }
         ),
@@ -50,52 +47,51 @@ def _write_ready_fixture(root: Path, external: Path) -> tuple[Path, Path]:
     )
 
     rows = []
-    for task in (CAMPAIGN_TASK_ID,):
-        for repeat in range(1, 7):
-            rows.append(
-                {
-                    "task_id": task,
-                    "solution": "reference",
-                    "source_sha256": SHA,
-                    "passed": True,
-                    "timed_out": False,
-                    "terminal_status": "SUCCESS",
-                    "runtime_sec": float(repeat),
-                    "engine": "docker",
-                    "environment": "tensorcircuit-py311",
-                    "environment_image_provenance": {"id": f"sha256:{SHA}"},
-                    "timeout_sec": 300,
-                    "repeat": repeat,
-                    "planned_repeats": 6,
-                    "evaluator_sha256": SHA,
-                    "compatibility_sha256": SHA,
-                    "staging_snapshot_sha256": SHA,
-                    "shared_container_id": f"container-id-{task}",
-                    "shared_container_name": f"container-name-{task}",
-                    "command": [
-                        "docker",
-                        "exec",
-                        f"container-name-{task}",
-                        "python",
-                        f"/session/evaluator/evaluate_{int(task)}.py",
-                    ],
-                    "shared_container_start_command": [
-                        "docker",
-                        "run",
-                        "--cpus",
-                        "8",
-                        "--memory",
-                        "9g",
-                        "--network",
-                        "none",
-                        "--mount",
-                        (
-                            f"type=bind,src=/tmp/{task},"
-                            "dst=/session,readonly"
-                        ),
-                    ],
-                }
-            )
+    for repeat in range(1, 7):
+        rows.append(
+            {
+                "task_id": SELECTED_TASK,
+                "solution": "reference",
+                "source_sha256": SHA,
+                "passed": True,
+                "timed_out": False,
+                "terminal_status": "SUCCESS",
+                "runtime_sec": float(repeat),
+                "engine": "docker",
+                "environment": "tensorcircuit-py311",
+                "environment_image_provenance": {"id": f"sha256:{SHA}"},
+                "timeout_sec": 300,
+                "repeat": repeat,
+                "planned_repeats": 6,
+                "evaluator_sha256": SHA,
+                "compatibility_sha256": SHA,
+                "staging_snapshot_sha256": SHA,
+                "shared_container_id": f"container-id-{SELECTED_TASK}",
+                "shared_container_name": f"container-name-{SELECTED_TASK}",
+                "command": [
+                    "docker",
+                    "exec",
+                    f"container-name-{SELECTED_TASK}",
+                    "python",
+                    f"/session/evaluator/evaluate_{int(SELECTED_TASK)}.py",
+                ],
+                "shared_container_start_command": [
+                    "docker",
+                    "run",
+                    "--cpus",
+                    "8",
+                    "--memory",
+                    "9g",
+                    "--network",
+                    "none",
+                    "--mount",
+                    (
+                        f"type=bind,src=/tmp/{SELECTED_TASK},"
+                        "dst=/session,readonly"
+                    ),
+                ],
+            }
+        )
     baseline = root / "baseline.json"
     baseline.write_text(
         json.dumps(
@@ -106,34 +102,18 @@ def _write_ready_fixture(root: Path, external: Path) -> tuple[Path, Path]:
         ),
         encoding="utf-8",
     )
-
-    attestation = external / "controller-attestation.json"
-    attestation.write_text(
-        json.dumps(
-            {
-                "schema_version": 1,
-                "status": "ready",
-                "public_dataset_version": public_version,
-                "hidden_tuning_ready": True,
-                "sealed_holdout_ready": True,
-                "controller_protocol_version": "v1",
-                "attested_at_utc": "2026-07-27T00:00:00Z",
-            }
-        ),
-        encoding="utf-8",
-    )
-    return baseline, attestation
+    return baseline
 
 
 class ResearchGateTests(unittest.TestCase):
     def test_ready_fixture_passes(self) -> None:
-        with tempfile.TemporaryDirectory() as temp, tempfile.TemporaryDirectory() as ext:
+        with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
-            baseline, attestation = _write_ready_fixture(root, Path(ext))
+            baseline = _write_ready_fixture(root)
             report = evaluate_gates(
                 root,
+                task_id=SELECTED_TASK,
                 baseline_report=baseline,
-                controller_attestation=attestation,
             )
             self.assertTrue(report["ready"], report)
             self.assertTrue(report["research_ready"], report)
@@ -143,73 +123,59 @@ class ResearchGateTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as temp:
             report = evaluate_gates(
                 Path(temp),
+                task_id=SELECTED_TASK,
                 baseline_report=None,
-                controller_attestation=None,
             )
             self.assertFalse(report["ready"])
             self.assertTrue(
                 all(not check["ready"] for check in report["checks"].values())
             )
 
-    def test_controller_attestation_inside_checkout_is_rejected(self) -> None:
-        with tempfile.TemporaryDirectory() as temp, tempfile.TemporaryDirectory() as ext:
+    def test_other_task_does_not_satisfy_public_dataset_gate(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
-            baseline, external_attestation = _write_ready_fixture(root, Path(ext))
-            internal = root / "controller-attestation.json"
-            internal.write_bytes(external_attestation.read_bytes())
+            baseline = _write_ready_fixture(root)
+            manifest = root / "datasets" / "public" / "manifest.json"
+            payload = json.loads(manifest.read_text(encoding="utf-8"))
+            payload["cases"][0]["task_id"] = "04"
+            manifest.write_text(json.dumps(payload), encoding="utf-8")
             report = evaluate_gates(
                 root,
+                task_id=SELECTED_TASK,
                 baseline_report=baseline,
-                controller_attestation=internal,
             )
-            controller = report["checks"]["trusted_controller"]
-            self.assertFalse(controller["ready"])
-            self.assertIn("outside", " ".join(controller["errors"]))
-
-    def test_controller_attestation_rejects_private_fields(self) -> None:
-        with tempfile.TemporaryDirectory() as temp, tempfile.TemporaryDirectory() as ext:
-            root = Path(temp)
-            baseline, attestation = _write_ready_fixture(root, Path(ext))
-            payload = json.loads(attestation.read_text(encoding="utf-8"))
-            payload["hidden_path"] = "/private/holdout"
-            attestation.write_text(json.dumps(payload), encoding="utf-8")
-            report = evaluate_gates(
-                root,
-                baseline_report=baseline,
-                controller_attestation=attestation,
-            )
-            controller = report["checks"]["trusted_controller"]
-            self.assertFalse(controller["ready"])
-            self.assertIn("forbidden fields", " ".join(controller["errors"]))
+            dataset = report["checks"]["public_dataset"]
+            self.assertFalse(dataset["ready"])
+            self.assertIn(SELECTED_TASK, " ".join(dataset["errors"]))
 
     def test_failing_reference_row_closes_baseline_gate(self) -> None:
-        with tempfile.TemporaryDirectory() as temp, tempfile.TemporaryDirectory() as ext:
+        with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
-            baseline, attestation = _write_ready_fixture(root, Path(ext))
+            baseline = _write_ready_fixture(root)
             payload = json.loads(baseline.read_text(encoding="utf-8"))
             payload["results"][0]["passed"] = False
             payload["results"][0]["terminal_status"] = "FUNCTIONAL_FAILED"
             baseline.write_text(json.dumps(payload), encoding="utf-8")
             report = evaluate_gates(
                 root,
+                task_id=SELECTED_TASK,
                 baseline_report=baseline,
-                controller_attestation=attestation,
             )
             self.assertFalse(report["checks"]["reference_baselines"]["ready"])
             self.assertTrue(report["research_ready"])
             self.assertFalse(report["promotion_ready"])
 
     def test_multiple_containers_for_one_task_close_baseline_gate(self) -> None:
-        with tempfile.TemporaryDirectory() as temp, tempfile.TemporaryDirectory() as ext:
+        with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
-            baseline, attestation = _write_ready_fixture(root, Path(ext))
+            baseline = _write_ready_fixture(root)
             payload = json.loads(baseline.read_text(encoding="utf-8"))
             payload["results"][1]["shared_container_id"] = "different-container"
             baseline.write_text(json.dumps(payload), encoding="utf-8")
             report = evaluate_gates(
                 root,
+                task_id=SELECTED_TASK,
                 baseline_report=baseline,
-                controller_attestation=attestation,
             )
             baseline_check = report["checks"]["reference_baselines"]
             self.assertFalse(baseline_check["ready"])
@@ -218,13 +184,13 @@ class ResearchGateTests(unittest.TestCase):
             self.assertFalse(report["promotion_ready"])
 
     def test_baseline_is_not_required_to_begin_research(self) -> None:
-        with tempfile.TemporaryDirectory() as temp, tempfile.TemporaryDirectory() as ext:
+        with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)
-            _, attestation = _write_ready_fixture(root, Path(ext))
+            _write_ready_fixture(root)
             report = evaluate_gates(
                 root,
+                task_id=SELECTED_TASK,
                 baseline_report=None,
-                controller_attestation=attestation,
             )
             self.assertTrue(report["ready"])
             self.assertTrue(report["research_ready"])

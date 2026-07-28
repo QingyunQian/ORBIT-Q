@@ -10,8 +10,8 @@ Reference commit: `46d6636881500fa8f70618b74f89353a2b6702b4`
 
 This survey covers only Task 05, as required by the one-task campaign scope in
 `GOAL.md`. `READY` means the public knowledge and measurement plan are
-complete. It does not attest that the public dataset, trusted controller, or
-repeated-runtime gates have passed.
+complete. It does not attest that the public dataset or repeated-runtime gates
+have passed.
 
 ## Evidence and claim rules
 
@@ -152,6 +152,16 @@ mutable dtype cache. Reusing one MVP closure across independent JAX traces
 caused a tracer leak. A candidate must use one stable transformed loss or a
 fresh MVP closure per independent trace.
 
+The component split
+`research/profiles/task-05-component-profile.json`
+(`sha256:9096f74abc7d1f3b3a9ba902f70e467c530020a050194bc05b72e3392e482bee`)
+measured steady medians of `0.049001 s` for the ten-layer normalized trajectory
+and `0.002398 s` for the 35-term Hamiltonian energy on the resulting state.
+Across these separately compiled components, the trajectory accounts for
+95.3% of their median sum. The components do not sum exactly to the fused loss
+because XLA fusion and warm-up differ, but the split rules out a
+Hamiltonian-only rewrite as the first-order 10x route.
+
 The principal source- and profile-supported bottlenecks are:
 
 - 600 scalar-loss reverse-mode evaluations over dense `2^18` states;
@@ -177,8 +187,8 @@ Each round changes only
 `src/solutions/task-05/solution_5.py`, starts from the latest accepted commit,
 and must preserve the semantics above. A hypothesis that requires prohibited
 raw-JAX simulation, fewer optimizer updates, omitted normalization, altered
-precision, or hidden-data access is rejected before implementation and remains
-recorded as a failed/rejected round.
+precision, workload manipulation, or evaluator manipulation is rejected before
+implementation and remains recorded as a failed/rejected round.
 
 1. **Whole-training scan:** JIT one `lax.scan` over all 600 Adam updates to
    reduce Python dispatch while returning every pre-update energy. The
@@ -279,8 +289,8 @@ least six pairs are eligible, candidate mean and median are lower, the
 candidate wins at least 80% of pairs, and the 95% lower confidence bound for
 mean paired speedup exceeds 1.0. A 10x result additionally requires the
 recorded paired evidence to support mean speedup at least 10 and its 95% lower
-bound to exceed 10. No failed, timed-out, unmatched, historical, or hidden
-per-record result contributes to a runtime claim.
+bound to exceed 10. No failed, timed-out, unmatched, or historical result
+contributes to a runtime claim.
 
 ## Open evidence gaps
 
@@ -292,6 +302,6 @@ per-record result contributes to a runtime claim.
   immutable-reference profile.
 - OMECo's historical local gain is unmatched and predates this frozen paired
   protocol.
-- The trusted controller must independently attest hidden tuning rotations and
-  a sealed holdout for the public dataset version before round 1 can change
-  candidate code.
+- Claims remain limited to the one versioned public Task 05 workload. A
+  promoted candidate requires a fresh final paired benchmark; later tuning
+  creates a new experiment and requires another final paired benchmark.

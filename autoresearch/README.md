@@ -8,17 +8,15 @@ not bypass the startup gates.
 
 Before editing `src/solutions/` or a TensorCircuit-NG checkout, require:
 
-1. `research/SURVEY.md` is cited, covers the campaign task, and says
+1. `research/SURVEY.md` is cited, covers the selected task, and says
    `Status: READY`.
 2. `datasets/public/manifest.json` says `status: "ready"` and covers the
-   campaign task.
-3. A trusted controller attests that hidden tuning rotations and a sealed
-   holdout exist outside every proposal worktree.
+   selected task.
 
-Promotion additionally requires the campaign task to have at least six
-passing matched reference/candidate pairs under one host fingerprint, image
-ID, resource profile, evaluator set, and timing scope. Symmetric failures of
-the initial byte-identical files are acceptable bootstrap outcomes but have no
+Promotion additionally requires the selected task to have at least six passing
+matched reference/candidate pairs under one host fingerprint, image ID,
+resource profile, evaluator set, and timing scope. Symmetric failures of the
+initial byte-identical files are acceptable bootstrap outcomes but have no
 runtime standing.
 
 The repository starts with the knowledge/data gates closed. Do not turn
@@ -27,14 +25,12 @@ underlying artifacts. Check research and promotion readiness with:
 
 ```bash
 python3 research/check_gates.py \
-  --baseline-report results/reference-baseline/results.json \
-  --controller-attestation /controller-owned/sanitized-attestation.json
+  --task XX \
+  --baseline-report results/task-XX-reference-baseline/results.json
 ```
 
-The attestation path must be outside the checkout. The checker accepts only its
-small documented aggregate schema and rejects private fields. Its
-`research_ready` field controls whether candidate hypotheses may begin;
-`promotion_ready` additionally requires the repeated-baseline evidence.
+The checker's `research_ready` field controls whether candidate hypotheses may
+begin; `promotion_ready` additionally requires the repeated-baseline evidence.
 
 ## Select one campaign task
 
@@ -62,10 +58,10 @@ Run from the `OrbitBreakersExpertBenchmarks` repository root:
   --output results/task-XX-reference-baseline
 ```
 
-Preserve the JSON report and its SHA-256 in controller-owned run storage. Do
-not use the contextual numbers in `baselines/historical.json` as measured
-baselines. A failed reference remains evidence; it closes only the promotion
-gate for that task.
+Preserve the JSON report and its SHA-256 in a campaign archive outside the
+disposable experiment worktree. Do not use the contextual numbers in
+`baselines/historical.json` as measured baselines. A failed reference remains
+evidence; it closes only the promotion gate for that task.
 
 ## Create one worktree for one hypothesis
 
@@ -142,27 +138,25 @@ After every experiment:
 2. Append the aggregate result and interpretation to `LOG.md`.
 3. Mark `keep`, `discard`, `invalid`, `timeout`, or `crash`.
 4. Commit the sanitized `LOG.md` update as a separate evidence commit.
-5. Copy the report, logs, and `results.tsv` to controller-owned immutable
-   storage.
+5. Copy the report, logs, and `results.tsv` to the campaign archive.
 
-Do not commit raw reports when they contain machine-local or private
-information. Do not include hidden identifiers, paths, seeds, hashes, outputs,
-or case-level failures in `LOG.md`.
+Do not commit raw reports when they contain machine-local credentials or
+unrelated secrets. Public case-level results, workload hashes, and public seeds
+may be recorded.
 
 Promote a passing experiment by review and cherry-pick. Keep a failed worktree
 until its evidence and lessons have been consolidated; then remove it with
 `git worktree remove`.
 
-## Hidden evaluation
+## Public evaluation
 
-The proposal process must be unable to read hidden tuning and holdout data.
-An environment variable or obscure path is routing, not access control. Use a
-separate controller identity, container, host, or service with no proposer
-filesystem access.
+All campaign workloads, configurations, seeds, evaluators, and validity rules
+must be public, versioned artifacts. Hidden tuning rotations, sealed holdouts,
+and controller attestations are not part of this procedure.
 
-The controller may return only the aggregate fields listed in `GOAL.md`. The
-sealed holdout is evaluated once for a promoted candidate. Tuning after a
-holdout result requires a new holdout version.
+Run a promoted candidate once more as a fresh final paired benchmark on the
+immutable public workload. If tuning continues afterward, record a new
+experiment and rerun the final benchmark before making a claim.
 
 ## Framework experiments
 

@@ -38,20 +38,18 @@ The stretch target does not replace the Issue #78 acceptance target. Record and 
 
 ## Roles
 
-Use three roles with separate access:
+Use two roles:
 
-1. The setup maintainer builds the survey, workload dataset, environment, and baseline record.
-2. The proposal agent reads expert solutions and public data, edits one candidate, and receives benchmark results.
-3. The trusted controller owns hidden tuning records and the sealed final holdout. It returns aggregate validity and runtime fields.
-
-Do not grant the proposal agent controller credentials or filesystem access to private data.
+1. The setup maintainer builds the selected-task survey, public workload,
+   environment, and baseline record.
+2. The proposal agent reads expert solutions and public workload data, edits
+   one candidate, and runs the public benchmark.
 
 ## Knowledge gates before candidate code
 
 Do not edit a candidate solution or TensorCircuit-NG source until the cited
-survey, versioned workload dataset, and trusted-controller isolation boundary
-are ready. If one of those gates is incomplete, stop and report the missing
-items.
+survey and versioned public workload dataset for the selected task are ready.
+If either gate is incomplete, stop and report the missing items.
 
 The repeated-reference gate below is a later promotion gate. A symmetric
 failure of the byte-identical reference and initial `optimized` copy is valid
@@ -87,11 +85,9 @@ contains source citations.
 
 Build a versioned workload dataset under the policy in `datasets/README.md`.
 
-For the selected task, the dataset must contain:
-
-- visible public development cases;
-- a hidden tuning set that the trusted controller rotates;
-- a sealed final holdout that no proposal agent can query.
+For the selected task, the dataset must contain visible public development
+cases. A fixed deterministic task may use its single canonical configuration
+when the task contract offers no distinct configurations or seeds.
 
 Cover only the selected task. Preserve its scientific semantics and
 `run_solution(config)` contract. Validate every workload with that task's human
@@ -107,7 +103,9 @@ The public manifest at `datasets/public/manifest.json` starts with
 real cases for the selected task, computes hashes, assigns a version, validates
 that task's coverage, and changes the status to `ready`.
 
-Store hidden tuning records, holdout records, decryption keys, seeds, paths, and populated private configuration outside the Git checkout. Use `private-data.example.toml` as a shape reference. Never populate or commit that example.
+All workload records, configurations, applicable seeds, validity rules, and
+evaluators are public and versioned. Hidden tuning rotations, sealed holdouts,
+private-data configuration, and controller attestations are not required.
 
 ### Gate 3: repeated reference baselines for promotion
 
@@ -143,7 +141,7 @@ fails, times out, uses a mismatched environment, or lacks six eligible pairs.
 An actual optimized candidate must pass correctness and this promotion gate
 before receiving an improvement, speedup, SOTA, or scaling claim.
 
-## Data boundary
+## Public evaluation boundary
 
 The proposal agent may inspect:
 
@@ -151,35 +149,12 @@ The proposal agent may inspect:
 - the selected task's problem statement and public development records;
 - `research/SURVEY.md`;
 - public framework source, documentation, and APIs;
-- aggregate benchmark reports that contain no private identifiers.
+- public benchmark reports and their case-level results.
 
-The proposal agent must not receive:
-
-- hidden tuning or holdout records;
-- private paths, filenames, record identifiers, seeds, hashes, keys, tokens, or credentials;
-- controller command lines or stack traces that expose private data;
-- per-record hidden failures, outputs, gradients, scores, or timing;
-- an interface that permits arbitrary hidden-set queries.
-
-The trusted controller may return these aggregate fields:
-
-```text
-valid
-timed_out
-passing_runs
-mean_runtime_sec
-median_runtime_sec
-runtime_stderr_sec
-paired_improvement_pct
-paired_improvement_stderr
-paired_speedup_mean
-paired_speedup_median
-paired_speedup_stderr
-paired_speedup_ci_low
-paired_speedup_ci_high
-```
-
-Redact private values from `LOG.md`, `results.tsv`, `run.log`, JSON reports, exceptions, and process output.
+Claims apply to the selected public workload and must not be generalized to
+unmeasured configurations. Keep machine-local credentials and unrelated
+secrets out of `LOG.md`, `results.tsv`, `run.log`, JSON reports, exceptions,
+and process output.
 
 ## Worktree contract
 
@@ -216,8 +191,8 @@ Append a correction entry when a prior entry contains an error. Keep failures
 until their lessons and immutable report hashes have been consolidated.
 
 Before removing a worktree, commit the sanitized `LOG.md`, then copy `LOG.md`,
-`results.tsv`, `run.log`, and benchmark JSON reports to controller-owned
-storage under a run-specific directory.
+`results.tsv`, `run.log`, and benchmark JSON reports to a campaign archive
+outside the disposable worktree under a run-specific directory.
 
 ## Allowed changes
 
@@ -247,9 +222,8 @@ images so the report separates framework gains from solution gains.
 
 Do not:
 
-- edit evaluators, the `./bench` runner, hidden data, reward files, or validity rules;
-- read private data through process inspection, environment dumps, error messages, timing probes, or filesystem search;
-- hardcode expected outputs, hidden configurations, seeds, evaluator thresholds, or task-specific answers;
+- edit evaluators, the `./bench` runner, workload data, reward files, or validity rules;
+- hardcode expected outputs, evaluator thresholds, or task-specific answers;
 - dispatch on evaluator details to return synthetic outputs;
 - replace the intended TensorCircuit-NG computation with a raw NumPy, SciPy, or JAX simulator;
 - switch the central quantum computation to another quantum framework;
@@ -316,9 +290,9 @@ Correctness and TensorCircuit-NG fidelity are hard gates. A fast invalid result 
 
 ## Experiment loop
 
-Run this loop after the survey, dataset, and trusted-controller knowledge gates
-pass and one eligible task has been selected. A closed repeated-baseline
-gate permits hypotheses but not promotion:
+Run this loop after the selected-task survey and public dataset gates pass and
+one eligible task has been selected. A closed repeated-baseline gate permits
+hypotheses but not promotion:
 
 1. Create a fresh worktree and branch for one hypothesis on the campaign
    task.
@@ -341,26 +315,29 @@ gate permits hypotheses but not promotion:
      --output results/task-XX-<opaque-id>
    ```
 
-8. Run public development checks.
-9. Submit the commit to the trusted controller for hidden tuning evaluation.
-10. Append the aggregate result, immutable report hash, and decision to
+8. Run the public workload checks.
+9. Append the paired result, immutable report hash, and decision to
     `results.tsv` and `LOG.md`.
-11. Commit the sanitized evidence separately from the candidate commit.
-12. Promote the experiment only when it satisfies the repeated-baseline and
+10. Commit the sanitized evidence separately from the candidate commit.
+11. Promote the experiment only when it satisfies the repeated-baseline and
     promotion rules. If the reference still has no valid runtime, record the
     candidate as `unbenchmarked` even when it restores correctness.
-13. Restore the prior best candidate after a regression or invalid result, but
+12. Restore the prior best candidate after a regression or invalid result, but
     preserve the log, terminal status, and report.
-14. Start the next hypothesis for the same task in a new worktree.
+13. Start the next hypothesis for the same task in a new worktree.
     Continue until a human interrupts the research loop.
 
 If an implementation bug causes a crash, fix it and rerun the same hypothesis. If the hypothesis violates semantics or cannot pass after bounded debugging, record `crash` or `invalid`, restore the prior best candidate, and select another hypothesis.
 
-Do not ask whether to continue after the loop starts. Use survey evidence, framework source, profiler output, and prior logs to select the next experiment. Do not request hidden-case details.
+Do not ask whether to continue after the loop starts. Use survey evidence,
+framework source, profiler output, and prior logs to select the next experiment.
 
-## Final holdout and Issue #78 report
+## Final paired benchmark and Issue #78 report
 
-Submit a promoted candidate to the sealed holdout once the trusted controller approves it. Do not tune after reading a holdout result. Start a new dataset version and research run if the team chooses to continue after a holdout failure.
+Run a promoted candidate once more as a fresh paired benchmark against the
+immutable reference on the versioned public workload. If tuning continues
+afterward, record the later candidate as a new experiment and rerun this final
+paired benchmark before making a claim.
 
 The final report must include:
 

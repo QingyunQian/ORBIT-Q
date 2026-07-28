@@ -197,7 +197,7 @@ GOAL.md                       autonomous research objective
 program.md                    Karpathy-style entrypoint
 autoresearch/                 worktree protocol, log, and result templates
 research/                     survey and frozen-measurement scaffolding
-datasets/                     public metadata and private-data protocol
+datasets/                     selected-task public workload policy
 ```
 
 The parent ORBIT-Q Harbor tasks keep their solution copies because Harbor uses
@@ -212,16 +212,16 @@ evaluator, one editable program, short measured experiments, Git checkpoints,
 and an experiment ledger. `GOAL.md` maps that loop to one eligible ORBIT-Q
 task per campaign and one hypothesis per fresh Git worktree.
 
-Do not start optimization until the survey, workload dataset, and
-hidden-evaluation boundary required by `GOAL.md` exist. Before starting a
-campaign, inspect the open pull requests on `sxzgroup/ORBIT-Q` and choose one
-task that has no active improvement PR. Bind the campaign to that one
-task and do not switch tasks inside its worktrees. A symmetric failure of
-the reference and its initial byte-identical candidate is acceptable bootstrap
-evidence; repeated passing pairs are required later for promotion or any
-improvement claim. The evaluators in this repository are public. A trusted
-controller must keep private tuning records and the sealed final holdout
-outside every agent worktree and mount them only during evaluation.
+Do not start optimization until the selected-task survey and public workload
+dataset required by `GOAL.md` exist. Before starting a campaign, inspect the
+open pull requests on `sxzgroup/ORBIT-Q` and choose one task that has no active
+improvement PR. Bind the campaign to that one task and do not switch tasks
+inside its worktrees. A symmetric failure of the reference and its initial
+byte-identical candidate is acceptable bootstrap evidence; repeated passing
+pairs are required later for promotion or any improvement claim. All workload
+configurations, evaluators, and validity rules are public and versioned; no
+hidden tuning set, sealed holdout, or trusted-controller attestation is
+required.
 
 `autoresearch/LOCAL_PRECEDENTS.md` records which conventions were adopted after
 the read-only review of the local BooleanRazor and IntrQCtrl repositories, plus
@@ -230,10 +230,10 @@ infrastructure.
 
 `research/check_gates.py` reports separate `research_ready` and
 `promotion_ready` states. Research requires the cited survey, versioned public
-dataset, and sanitized external controller attestation. Promotion additionally
-requires a valid six-run reference report.
+dataset for the selected task. Promotion additionally requires a valid six-run
+reference report for that task.
 
 The optimization target is lower valid runtime. Preserve
 `run_solution(config)`, TensorCircuit-NG semantics, and every functional check.
-Do not edit evaluators, manifests, environment locks, hidden data, or result
+Do not edit evaluators, manifests, environment locks, workload data, or result
 parsing during an experiment.
