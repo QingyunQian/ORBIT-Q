@@ -12,6 +12,7 @@ __pycache__/
 # Local environments
 .conda/
 .venv/
+.venv-c12/
 venv/
 env/
 .pip-cache/
