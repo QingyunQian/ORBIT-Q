@@ -1,0 +1,73 @@
+{
+  "timestamp_utc": "2026-07-28T11:37:31+00:00",
+  "machine": "x86_64",
+  "cpu_model": "Intel(R) Xeon(R) Processor",
+  "python": "3.12.3",
+  "protocol": "official evaluate_12.py, 5000 steps, fresh process per trial, alternating",
+  "trials": {
+    "reference": {
+      "times_sec": [
+        8.97,
+        9.0,
+        8.92,
+        9.11,
+        9.1
+      ],
+      "mean_sec": 9.02,
+      "stdev_sec": 0.083,
+      "min_sec": 8.92,
+      "max_sec": 9.11,
+      "final_fidelities": [
+        0.86855036,
+        0.869549036,
+        0.870108426,
+        0.870085359,
+        0.870080173
+      ]
+    },
+    "optimized_batched": {
+      "times_sec": [
+        2.34,
+        2.31,
+        2.31,
+        2.31,
+        2.31
+      ],
+      "mean_sec": 2.316,
+      "stdev_sec": 0.013,
+      "min_sec": 2.31,
+      "max_sec": 2.34,
+      "final_fidelities": [
+        0.870017886,
+        0.86892134,
+        0.870028138,
+        0.869776905,
+        0.869657874
+      ]
+    },
+    "optimized_fused": {
+      "times_sec": [
+        2.14,
+        2.1,
+        2.13,
+        2.15,
+        2.12
+      ],
+      "mean_sec": 2.128,
+      "stdev_sec": 0.019,
+      "min_sec": 2.1,
+      "max_sec": 2.15,
+      "final_fidelities": [
+        0.868904293,
+        0.869479537,
+        0.869838059,
+        0.870200217,
+        0.869516611
+      ]
+    }
+  },
+  "mean_speedup_vs_reference": {
+    "optimized_batched": 3.895,
+    "optimized_fused": 4.239
+  }
+}
