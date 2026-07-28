@@ -1,8 +1,11 @@
-# Task 09 causal-cone optimization comparison
+# Task 09: Random Local Light-Cone Optimization
 
 Date: 2026-07-28
 
 Base commit: `d612cd3ae752a8d16fd0b59c717d19abd4fb5f38`
+
+This report compares the reference and candidate and audits semantic
+preservation.
 
 ## Result
 
@@ -26,6 +29,121 @@ One matched pair cannot establish a confidence interval. Treat the timing as
 engineering evidence for the implementation, not as a promotion measurement.
 The benchmark protocol requires at least six matched pairs for a reportable
 runtime claim.
+
+## Semantic audit
+
+Audit result: **PASS after one documentation correction**.
+
+The first candidate revision changed the module docstring title from
+`random local light-cone optimization` to `compact causal-cone optimization`.
+The evaluator ignores the docstring. The edit still renamed the problem and
+could mislead a reviewer about the task. We restored the original title and
+description verbatim in the candidate.
+
+### Changed-file boundary
+
+The branch changes two files:
+
+| Path | Change |
+| --- | --- |
+| `src/solutions/task-09/solution_9.py` | Replaces the execution strategy while preserving `run_solution(config)` and the output contract |
+| `research/TASK_09_CAUSAL_CONE_COMPARISON.md` | Records the code comparison, experiments, and audit |
+
+The branch does not change these authoritative files:
+
+| Authority | Audit result |
+| --- | --- |
+| `tasks/task-09/problem.md` | Unchanged |
+| `tasks/task-09/evaluator/evaluate_9.py` | Unchanged |
+| `tasks/task-09/task.toml` | Unchanged |
+| `references/task-09/solution_9.py` | Unchanged |
+| Gate-tape generator, Pauli terms, seeds, and validity rules | Unchanged |
+
+### Requirement-by-requirement audit
+
+| Requirement | Candidate behavior | Result |
+| --- | --- | --- |
+| Problem identity | Uses the original `Task Suite Problem 9: random local light-cone optimization` module title and description | PASS |
+| Framework | Builds each retained circuit with `tc.Circuit` and evaluates it with `expectation_ps` | PASS |
+| Initial state | Applies Hadamard gates to every qubit in each exact backward cone; qubits outside the cone factor out of the local expectation | PASS |
+| Gate tape | Derives gates, qubits, axes, and parameter indices from `config["gate_tape"]` | PASS |
+| Gate semantics | Calls the same TensorCircuit gate methods with the same `theta` values as the reference | PASS |
+| Objective | Uses every supplied coefficient and Pauli term, then returns the negative objective as the loss | PASS |
+| Random initialization | Generates each full 3,897-coordinate seeded row before gathering active coordinates | PASS |
+| Restarts | Evaluates all `config["n_restarts"]` rows through `vmap` | PASS |
+| Adam | Preserves learning rate, betas, epsilon, moment updates, and bias correction | PASS |
+| Update count | Runs `config["max_steps"]` updates and does not stop before the final update | PASS |
+| History timing | Records each objective before applying its Adam update | PASS |
+| Output | Returns `observable_history` as a NumPy array with shape `(n_restarts, max_steps)` | PASS |
+| Hardcoding | Discovers cone membership and parameter overlap from the supplied tape; does not encode public qubit positions or expected answers | PASS |
+
+### Did the optimization change the problem meaning?
+
+No. The candidate changes the representation and execution order of the same
+unitary expectation calculation.
+
+The reference evaluates
+
+$$
+\langle + | U^\dagger O U | + \rangle
+$$
+
+after constructing all gates. The candidate cancels gates outside the exact
+backward connectivity cone before constructing TensorCircuit nodes. Those
+gates appear as matching \(G^\dagger G\) pairs outside the support of \(O\).
+Removing them leaves the local expectation and its active gradients
+unchanged.
+
+The candidate also removes inactive coordinates from its Adam arrays.
+Inactive gradients equal zero, so their moments remain zero and their
+parameters never change. The task does not request final parameters. It
+requests the objective history, which depends on active coordinates.
+
+The two public cones have disjoint parameter sets. Adam updates each coordinate
+from that coordinate's gradient and moments, so separate scans produce the
+same updates as one combined scan. The code groups intersecting cones when a
+future supplied tape contains parameter overlap.
+
+### Did the optimization twist the answer?
+
+No. We compared all 20,000 values in the full reference and candidate
+`(200, 100)` histories under one finalized configuration:
+
+The comparison used candidate SHA-256
+`2a4ef26d06a3989474ae08f753a6444ec755fb7647ef1f393f386aaa21089d4d`.
+
+| Answer-integrity check | Result |
+| --- | ---: |
+| Reference shape | `(200, 100)` |
+| Candidate shape | `(200, 100)` |
+| Numerical comparison at `rtol=1e-6`, `atol=1e-6` | PASS |
+| Maximum absolute difference | `1.1920928955078125e-7` |
+| Mean absolute difference | `2.7951091760769487e-8` |
+| Maximum initial-column difference | `7.450580596923828e-9` |
+| Maximum final-column difference | `1.1920928955078125e-7` |
+| Reference mean final objective | `1.5645751637220382` |
+| Candidate mean final objective | `1.5645751690864562` |
+| Best final objective | `1.5645909309387207` for both |
+| Success fraction | `1.0` for both |
+
+The histories are not bitwise equal. JAX traces the compact disjoint scans with
+a different floating-point operation order, which changes some float32 values
+by one unit in the last place. The largest observed difference,
+`1.1920928955078125e-7`, equals one float32 spacing near values of order one.
+The numerical trajectory, optimization result, and evaluator decision agree.
+
+### Audit limits
+
+The elementwise history comparison provides stronger semantic evidence than
+the evaluator's aggregate checks. It does not prove equivalence for gate types
+outside the task contract. The supplied gate set contains unitary `rx`, `ry`,
+`rz`, `rxx`, `ryy`, and `rzz` operations, which support the cancellation used
+by the candidate.
+
+The `.understand-anything/knowledge-graph.json` file was absent during this
+audit, so we could not generate a graph-based blast-radius overlay. The direct
+Git diff shows a two-file branch scope, and the authoritative task and
+reference surfaces remain unchanged.
 
 ## Code comparison
 
@@ -271,7 +389,7 @@ git diff --check
 ./bench verify
 ```
 
-The candidate contains 156 non-empty, non-comment lines, below the task's
+The candidate contains 155 non-empty, non-comment lines, below the task's
 200-line policy limit.
 
 ## Main findings
@@ -293,7 +411,7 @@ compact circuit. The final candidate needs both.
 
 ### Pack inactive optimizer coordinates
 
-Only 154 of 3,897 parameters affect the requested observables. Gathering those
+Of 3,897 parameters, 154 affect the requested observables. Gathering those
 coordinates cuts persistent Adam storage and elementwise optimizer work by
 25.3 times while preserving the seeded initial values.
 
@@ -332,7 +450,7 @@ measure:
 | Artifact | SHA-256 or version |
 | --- | --- |
 | Reference solution | `b28a9df18a46cb2e211a02bf526f3c3b75a44e11e7d364ec5f81026202d8d1d9` |
-| Final candidate solution | `72f30ded4c8695b2dbbd0d3b3054b3ce349a8cc9406d6864e98f38fee46462f8` |
+| Final candidate solution | `2a4ef26d06a3989474ae08f753a6444ec755fb7647ef1f393f386aaa21089d4d` |
 | Task 09 evaluator | `9ae54eed501fa71d985ab92aa3601714f41cf9848bea0014c0d8cfb7c866f58d` |
 | Requirements lock | `cd5ac5cb2102ea7b40bd46dc81320cc59e0ce0671ab88c597f81d82b384a824b` |
 | Docker image ID | `sha256:623dc47116d71b5f4e2879a61def7beada982438cb2df45de8367d92f7ec242c` |

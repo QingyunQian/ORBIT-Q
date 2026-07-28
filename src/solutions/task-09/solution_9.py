@@ -1,10 +1,9 @@
 """
-Task Suite Problem 9: compact causal-cone optimization.
+Task Suite Problem 9: random local light-cone optimization.
 
-The evaluator supplies a framework-neutral gate tape.  Discover each
-observable's backward causal cone before constructing TensorCircuit graphs,
-optimize only parameters that occur in those cones, and fuse all Adam steps
-into a single JAX scan.
+The evaluator passes an explicit framework-neutral gate tape and Pauli-term
+list. This solution constructs the full 512-qubit circuit from that tape and
+uses TensorCircuit's automatic light-cone contraction for the two local terms.
 """
 
 import jax
