@@ -1,6 +1,12 @@
-# Experiment `<opaque-id>`
+# Task XX Autoresearch Campaign
+
+Destination: `research/task-XX/LOG.md`
 
 Task: `task-XX`
+
+Insights: [`INSIGHTS.md`](INSIGHTS.md)
+
+## Experiment `<opaque-id>`
 
 Branch: `codex/orbitbreakers/task-XX/<opaque-id>`
 
@@ -111,3 +117,7 @@ Name the next hypothesis or explain why this line of work should stop.
 
 Append corrections below this heading. Never rewrite an earlier result after it
 has informed another experiment.
+
+For the next hypothesis, inherit this file from the latest accepted commit and
+append another `## Experiment` section. Do not replace the existing campaign
+history.

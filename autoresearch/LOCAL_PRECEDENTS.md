@@ -30,7 +30,8 @@ runner, or a log template.
 - Bind one campaign to one task and keep every worktree on that task.
 - Commit the hypothesis and code before evaluation, then commit sanitized
   evidence separately.
-- Keep `LOG.md` append-only and retain failures, timeouts, and invalid runs.
+- Keep `research/task-XX/LOG.md` append-only and retain failures, timeouts, and
+  invalid runs.
 - Bind results to source, evaluator, image, dependency, hardware, workload, and
   timeout provenance.
 - Treat correctness as an eligibility gate before comparing runtime.

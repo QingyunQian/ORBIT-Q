@@ -609,3 +609,11 @@ Append corrections below; never rewrite prior evidence.
   `074abb0b87daa91252a5923cf34214f5ec963fe6ba4da6613315ef10f4233448`.
   The earlier complete Round 6 promotion report remains the campaign's
   eligible evidence.
+
+- `2026-07-28T07:42:04Z`: campaign records were reorganized by task after
+  wrap-up. This append-only ledger moved from root `LOG.md` to
+  `research/task-05/LOG.md`; the survey, implementation comparison, profiling
+  scripts, and profiler outputs moved into the same task directory. Historical
+  paths above identify their locations when those events were recorded.
+  Distilled reusable conclusions are now maintained separately in
+  `research/task-05/INSIGHTS.md`.

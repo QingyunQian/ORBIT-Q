@@ -12,7 +12,7 @@ from typing import Any, Callable
 
 import jax
 
-from profile_task05_reference import (
+from profile_reference import (
     CONFIG,
     load_reference,
     memory_mapping,

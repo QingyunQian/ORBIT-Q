@@ -6,15 +6,15 @@ Read `GOAL.md` and `program.md` before changing solution or framework code.
 
 Before the first experiment, inspect the live open pull requests on
 `sxzgroup/ORBIT-Q` and select one task without an active improvement PR.
-Record it in `LOG.md`. Every worktree and hypothesis in the campaign must stay
-on that task. Start a separate campaign instead of switching or combining
-tasks.
+Record it in `research/task-XX/LOG.md`. Every worktree and hypothesis in the
+campaign must stay on that task. Start a separate campaign instead of switching
+or combining tasks.
 
 ## Gates before optimization
 
 Do not edit `src/solutions/` until:
 
-- `research/SURVEY.md` is complete and marked `READY`;
+- `research/task-XX/SURVEY.md` is complete and marked `READY`;
 - `datasets/public/manifest.json` contains a validated public workload for the
   selected task and is marked `ready`.
 
@@ -45,8 +45,11 @@ required work.
 
 Use one fresh Git worktree and `codex/orbitbreakers/task-XX/<opaque-id>`
 branch per hypothesis on the campaign task. Start from the latest accepted
-commit. Create tracked `LOG.md` from `autoresearch/LOG_TEMPLATE.md`; keep raw
-reports, `results.tsv`, and `run.log` untracked.
+commit. Keep the tracked append-only ledger at
+`research/task-XX/LOG.md`, initialized from `autoresearch/LOG_TEMPLATE.md`,
+and maintain distilled lessons in `research/task-XX/INSIGHTS.md`, initialized
+from `autoresearch/INSIGHTS_TEMPLATE.md`. Keep raw reports,
+`research/task-XX/results.tsv`, and `research/task-XX/run.log` untracked.
 
 Commit the hypothesis and code before evaluation. Commit sanitized evidence
 separately. Preserve failures and timeouts until their report hashes and lessons

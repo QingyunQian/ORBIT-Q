@@ -15,8 +15,8 @@ not establish the requested 10x target.
 
 | Role | Artifact | Commit or hash |
 |---|---|---|
-| Immutable expert | [`references/task-05/solution_5.py`](../references/task-05/solution_5.py) | SHA-256 `ccafe626865ee39b651adaeead86b8bf6f541e3f1426da4842da92b6a0ee015f` |
-| Campaign best | [`src/solutions/task-05/solution_5.py`](../src/solutions/task-05/solution_5.py) | SHA-256 `6245d59510412fd0ffcc083f3a9653e7d245edc5ae827b56dc4fc39894691307` |
+| Immutable expert | [`references/task-05/solution_5.py`](../../references/task-05/solution_5.py) | SHA-256 `ccafe626865ee39b651adaeead86b8bf6f541e3f1426da4842da92b6a0ee015f` |
+| Campaign best | [`src/solutions/task-05/solution_5.py`](../../src/solutions/task-05/solution_5.py) | SHA-256 `6245d59510412fd0ffcc083f3a9653e7d245edc5ae827b56dc4fc39894691307` |
 | Candidate hypothesis | Round `r06f1c7` | Commit `b90448438efa611855c75832d4b0e7568e3d3225` |
 | Promoted campaign commit | Reusable contractor | Commit `34ccc6f` |
 | Promotion evidence | Six paired runs | Commit `f674179` |
@@ -47,7 +47,8 @@ mean is 31.46% with standard error 1.25 percentage points.
 
 The immutable promotion report SHA-256 is
 `77678d2fa07f5af69b9f7bc0ba14cec45ced4023d72cbc43c8bb31a4f4f9437d`.
-The complete evidence is recorded in [`LOG.md`](../LOG.md).
+The complete evidence is recorded in [`LOG.md`](LOG.md), with distilled
+cross-round lessons in [`INSIGHTS.md`](INSIGHTS.md).
 
 ### Matched timings
 

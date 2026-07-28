@@ -46,25 +46,25 @@ def _command_option(command: object, option: str) -> str | None:
 
 def check_survey(root: Path, task_id: str) -> tuple[bool, list[str]]:
     errors: list[str] = []
-    path = root / "research" / "SURVEY.md"
+    relative_path = Path("research") / f"task-{task_id}" / "SURVEY.md"
+    path = root / relative_path
+    label = relative_path.as_posix()
     try:
         text = path.read_text(encoding="utf-8")
     except OSError:
-        return False, ["research/SURVEY.md is missing or unreadable"]
+        return False, [f"{label} is missing or unreadable"]
     if "**Status: READY**" not in text:
-        errors.append("research/SURVEY.md is not marked READY")
+        errors.append(f"{label} is not marked READY")
     marker = f"## Task {task_id}:"
     if marker not in text:
-        errors.append(f"research/SURVEY.md does not cover task {task_id}")
+        errors.append(f"{label} does not cover task {task_id}")
     else:
         section = text.split(marker, 1)[1]
         next_task = re.search(r"^## Task \d{2}:", section, re.MULTILINE)
         if next_task is not None:
             section = section[: next_task.start()]
         if re.search(r"\bTODO\b", section):
-            errors.append(
-                f"research/SURVEY.md task {task_id} still contains TODO placeholders"
-            )
+            errors.append(f"{label} still contains TODO placeholders")
     return not errors, errors
 
 

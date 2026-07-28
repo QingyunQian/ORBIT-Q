@@ -136,7 +136,7 @@ runtime of 45.5 s and an unmatched local OMECo variant at 34.85 s versus a
 or promotion evidence.
 
 The immutable-reference profile
-`research/profiles/task-05-reference-profile.json`
+`research/task-05/profiles/reference-profile.json`
 (`sha256:be24858b7693ff10c1c153a7fb27ba73a2b60fa7eae5e74ea16be9aa74e6473c`)
 measured an eight-step steady mean of `0.169716 s`, projecting to `101.830 s`
 for 600 executions versus the six-run evaluator mean of `117.776 s`. The
@@ -153,7 +153,7 @@ caused a tracer leak. A candidate must use one stable transformed loss or a
 fresh MVP closure per independent trace.
 
 The component split
-`research/profiles/task-05-component-profile.json`
+`research/task-05/profiles/component-profile.json`
 (`sha256:9096f74abc7d1f3b3a9ba902f70e467c530020a050194bc05b72e3392e482bee`)
 measured steady medians of `0.049001 s` for the ten-layer normalized trajectory
 and `0.002398 s` for the 35-term Hamiltonian energy on the resulting state.

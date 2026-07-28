@@ -17,7 +17,7 @@ cover only the task selected for that autoresearch campaign.
 Before creating the first campaign worktree:
 
 1. Choose one task.
-2. Record that task as `task-XX` in `LOG.md`.
+2. Create `research/task-XX/` and record the selection in its `LOG.md`.
 3. Use the same task for every hypothesis worktree in the campaign.
 
 Do not edit, benchmark, or promote a second task in the same campaign.
@@ -57,10 +57,11 @@ bootstrap evidence and does not block survey-driven candidate research. It
 does block any runtime-improvement claim for that task until a valid repeated
 reference/candidate comparison exists.
 
-### Gate 1: cited SOTA and performance survey in `research/SURVEY.md`
+### Gate 1: cited SOTA and performance survey
 
-Complete the scaffold at `research/SURVEY.md`. Cite papers, framework
-documentation, source files, issues, and benchmark records for each claim.
+Complete the task-scoped survey at `research/task-XX/SURVEY.md`. Cite papers,
+framework documentation, source files, issues, and benchmark records for each
+claim.
 
 Compare the current state of the art for the selected task's workloads. Record the best reported algorithmic scaling, runtime, memory use, implementation method, hardware, and software version when a source reports them. Mark missing comparisons as open evidence gaps.
 
@@ -147,14 +148,15 @@ The proposal agent may inspect:
 
 - the selected task's human expert solution and tracked expert-derived variants;
 - the selected task's problem statement and public development records;
-- `research/SURVEY.md`;
+- `research/task-XX/SURVEY.md`;
 - public framework source, documentation, and APIs;
 - public benchmark reports and their case-level results.
 
 Claims apply to the selected public workload and must not be generalized to
 unmeasured configurations. Keep machine-local credentials and unrelated
-secrets out of `LOG.md`, `results.tsv`, `run.log`, JSON reports, exceptions,
-and process output.
+secrets out of `research/task-XX/LOG.md`,
+`research/task-XX/INSIGHTS.md`, `research/task-XX/results.tsv`,
+`research/task-XX/run.log`, JSON reports, exceptions, and process output.
 
 ## Worktree contract
 
@@ -177,9 +179,14 @@ Every worktree in one campaign must use the same `task-XX`.
 
 Each worktree must contain:
 
-- an append-only, tracked `LOG.md` created from `autoresearch/LOG_TEMPLATE.md`;
-- an untracked `results.tsv` created from `autoresearch/results.template.tsv`;
-- an untracked `run.log`.
+- an append-only, tracked `research/task-XX/LOG.md`, initialized from
+  `autoresearch/LOG_TEMPLATE.md` when the campaign is created;
+- a tracked `research/task-XX/INSIGHTS.md`, initialized from
+  `autoresearch/INSIGHTS_TEMPLATE.md`, containing consolidated lessons rather
+  than a duplicate event stream;
+- an untracked `research/task-XX/results.tsv` created from
+  `autoresearch/results.template.tsv`;
+- an untracked `research/task-XX/run.log`.
 
 Fill in the hypothesis, parent commit, permitted data, and environment before
 running a benchmark. Commit the hypothesis and public-safe code before
@@ -190,8 +197,10 @@ crash, reset, and framework rebuild. Do not delete or rewrite prior entries.
 Append a correction entry when a prior entry contains an error. Keep failures
 until their lessons and immutable report hashes have been consolidated.
 
-Before removing a worktree, commit the sanitized `LOG.md`, then copy `LOG.md`,
-`results.tsv`, `run.log`, and benchmark JSON reports to a campaign archive
+Before removing a worktree, commit the sanitized task ledger and any updated
+insights, then copy `research/task-XX/LOG.md`,
+`research/task-XX/INSIGHTS.md`, `research/task-XX/results.tsv`,
+`research/task-XX/run.log`, and benchmark JSON reports to a campaign archive
 outside the disposable worktree under a run-specific directory.
 
 ## Allowed changes
@@ -278,8 +287,8 @@ A candidate earns promotion when:
 4. the candidate wins at least 80 percent of matched pairs;
 5. the lower bound of the predeclared confidence interval for paired speedup exceeds 1.0.
 
-Use the confidence method declared in `research/SURVEY.md` before experiments
-begin. Do not change it after observing candidate results.
+Use the confidence method declared in `research/task-XX/SURVEY.md` before
+experiments begin. Do not change it after observing candidate results.
 
 Apply a hard 300-second limit to each evaluator process. On timeout, stop the
 shared task container, mark the cell as `timeout`, and retain the incomplete
@@ -296,9 +305,14 @@ hypotheses but not promotion:
 
 1. Create a fresh worktree and branch for one hypothesis on the campaign
    task.
-2. Create `LOG.md` and `results.tsv` from the templates.
-3. Select one hypothesis from `research/SURVEY.md` or prior sanitized evidence.
-4. Record the hypothesis, parent commit, and permitted data in `LOG.md`.
+2. Initialize `research/task-XX/LOG.md`,
+   `research/task-XX/INSIGHTS.md`, and `research/task-XX/results.tsv` from
+   their templates when starting the campaign; later worktrees inherit the
+   tracked task records.
+3. Select one hypothesis from `research/task-XX/SURVEY.md`,
+   `research/task-XX/INSIGHTS.md`, or prior sanitized evidence.
+4. Record the hypothesis, parent commit, and permitted data in
+   `research/task-XX/LOG.md`.
 5. Change one candidate concept in one `src/solutions/` file.
 6. Commit the hypothesis and candidate change before running it.
 7. Run the unchanged reference and candidate as at least six interleaved,
@@ -317,7 +331,9 @@ hypotheses but not promotion:
 
 8. Run the public workload checks.
 9. Append the paired result, immutable report hash, and decision to
-    `results.tsv` and `LOG.md`.
+    `research/task-XX/results.tsv` and `research/task-XX/LOG.md`; update
+    `research/task-XX/INSIGHTS.md` only when the result changes the maintained
+    synthesis.
 10. Commit the sanitized evidence separately from the candidate commit.
 11. Promote the experiment only when it satisfies the repeated-baseline and
     promotion rules. If the reference still has no valid runtime, record the

@@ -8,7 +8,7 @@ not bypass the startup gates.
 
 Before editing `src/solutions/` or a TensorCircuit-NG checkout, require:
 
-1. `research/SURVEY.md` is cited, covers the selected task, and says
+1. `research/task-XX/SURVEY.md` is cited, covers the selected task, and says
    `Status: READY`.
 2. `datasets/public/manifest.json` says `status: "ready"` and covers the
    selected task.
@@ -36,7 +36,8 @@ begin; `promotion_ready` additionally requires the repeated-baseline evidence.
 
 Inspect the live open pull requests on `sxzgroup/ORBIT-Q`. Choose exactly one
 task that has no active improvement, optimization, performance, or runtime
-PR. Record the selection and inspection time in every `LOG.md`.
+PR. Record the selection and inspection time in
+`research/task-XX/LOG.md`.
 
 All worktrees in the campaign must target that same task. Do not switch
 tasks after observing benchmark results, and do not combine tasks in a
@@ -79,24 +80,28 @@ Enter that worktree and bootstrap its local files:
 
 ```bash
 cd ../OrbitBreakersExpertBenchmarks-worktrees/task-01/<opaque-id>
-cp autoresearch/LOG_TEMPLATE.md LOG.md
-cp autoresearch/results.template.tsv results.tsv
+mkdir -p research/task-01
+cp autoresearch/LOG_TEMPLATE.md research/task-01/LOG.md
+cp autoresearch/INSIGHTS_TEMPLATE.md research/task-01/INSIGHTS.md
+cp autoresearch/results.template.tsv research/task-01/results.tsv
 uv sync --index-url https://pypi.org/simple
 ./bench verify
 ./bench env doctor
 ```
 
 Fill the hypothesis, parent commit, permitted data, environment, and five-minute
-cap in `LOG.md` before running data-backed experiments. Commit `LOG.md` and the
-single candidate change before evaluation:
+cap in `research/task-01/LOG.md` before running data-backed experiments.
+Commit the task ledger and the single candidate change before evaluation:
 
 ```bash
-git add LOG.md src/solutions/task-01/solution_1.py
+git add research/task-01/LOG.md src/solutions/task-01/solution_1.py
 git commit -m "experiment: task 01 <opaque-id>"
 ```
 
-Never reuse this worktree for a second hypothesis. Never mix two tasks in it,
-and keep later campaign worktrees on the same task.
+Initialize these files only once. Later worktrees start from the latest
+accepted commit, inherit the tracked task ledger and insights, and append a new
+experiment section. Never reuse a worktree for a second hypothesis. Never mix
+two tasks in it, and keep later campaign worktrees on the same task.
 
 ## Run one paired experiment
 
@@ -112,7 +117,7 @@ reference is under `references/`:
   --timeout 300 \
   --no-build \
   --output results/task-01-<opaque-id> \
-  > run.log 2>&1
+  > research/task-01/run.log 2>&1
 ```
 
 The CLI creates one container for the task and starts a fresh evaluator process
@@ -129,16 +134,21 @@ crashes are experiment outcomes. Do not filter them out.
 
 ## Record immutable evidence
 
-The JSON report and log files are the evidence. `results.tsv` is only an index
-over those files and their hashes.
+The JSON report and log files are the evidence.
+`research/task-XX/results.tsv` is only an index over those files and their
+hashes.
 
 After every experiment:
 
-1. Hash the JSON report and append one row to `results.tsv`.
-2. Append the aggregate result and interpretation to `LOG.md`.
+1. Hash the JSON report and append one row to
+   `research/task-XX/results.tsv`.
+2. Append the aggregate result and interpretation to
+   `research/task-XX/LOG.md`.
 3. Mark `keep`, `discard`, `invalid`, `timeout`, or `crash`.
-4. Commit the sanitized `LOG.md` update as a separate evidence commit.
-5. Copy the report, logs, and `results.tsv` to the campaign archive.
+4. Update `research/task-XX/INSIGHTS.md` when the result changes a reusable
+   conclusion, rejected approach, or next hypothesis.
+5. Commit the sanitized task record updates as a separate evidence commit.
+6. Copy the report, logs, and task-local `results.tsv` to the campaign archive.
 
 Do not commit raw reports when they contain machine-local credentials or
 unrelated secrets. Public case-level results, workload hashes, and public seeds

@@ -196,7 +196,7 @@ baselines/bootstrap-*.md      measured setup summaries and evidence hashes
 GOAL.md                       autonomous research objective
 program.md                    Karpathy-style entrypoint
 autoresearch/                 worktree protocol, log, and result templates
-research/                     survey and frozen-measurement scaffolding
+research/task-XX/             task-scoped survey, ledger, insights, and reports
 datasets/                     selected-task public workload policy
 ```
 
@@ -232,6 +232,12 @@ infrastructure.
 `promotion_ready` states. Research requires the cited survey, versioned public
 dataset for the selected task. Promotion additionally requires a valid six-run
 reference report for that task.
+
+Each campaign keeps its tracked records under `research/task-XX/`.
+`LOG.md` is the append-only evidence history; `INSIGHTS.md` is the maintained
+cross-round synthesis; `SURVEY.md` freezes the pre-experiment research and
+measurement plan; and `IMPLEMENTATION_COMPARISON.md` closes out the accepted
+result. See `research/README.md` for the layout.
 
 The optimization target is lower valid runtime. Preserve
 `run_solution(config)`, TensorCircuit-NG semantics, and every functional check.

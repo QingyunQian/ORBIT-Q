@@ -18,8 +18,9 @@ SELECTED_TASK = "05"
 
 
 def _write_ready_fixture(root: Path) -> Path:
-    (root / "research").mkdir(parents=True)
-    (root / "research" / "SURVEY.md").write_text(
+    task_research = root / "research" / f"task-{SELECTED_TASK}"
+    task_research.mkdir(parents=True)
+    (task_research / "SURVEY.md").write_text(
         f"# Survey\n\n**Status: READY**\n\n## Task {SELECTED_TASK}: complete\n",
         encoding="utf-8",
     )
@@ -147,6 +148,31 @@ class ResearchGateTests(unittest.TestCase):
             dataset = report["checks"]["public_dataset"]
             self.assertFalse(dataset["ready"])
             self.assertIn(SELECTED_TASK, " ".join(dataset["errors"]))
+
+    def test_global_survey_does_not_satisfy_task_gate(self) -> None:
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            baseline = _write_ready_fixture(root)
+            task_survey = (
+                root / "research" / f"task-{SELECTED_TASK}" / "SURVEY.md"
+            )
+            global_survey = root / "research" / "SURVEY.md"
+            global_survey.write_text(
+                task_survey.read_text(encoding="utf-8"),
+                encoding="utf-8",
+            )
+            task_survey.unlink()
+            report = evaluate_gates(
+                root,
+                task_id=SELECTED_TASK,
+                baseline_report=baseline,
+            )
+            survey = report["checks"]["survey"]
+            self.assertFalse(survey["ready"])
+            self.assertIn(
+                f"research/task-{SELECTED_TASK}/SURVEY.md",
+                " ".join(survey["errors"]),
+            )
 
     def test_failing_reference_row_closes_baseline_gate(self) -> None:
         with tempfile.TemporaryDirectory() as temp:
