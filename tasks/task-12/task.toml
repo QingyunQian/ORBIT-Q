@@ -25,3 +25,11 @@ module = "solution_12"
 kind = "autoresearch-optimized-candidate"
 initialized_from = "reference"
 initialized_from_sha256 = "10cfd516bc250633f4675653e0d8986002e56f4d5916a9c2972c1085193f5d38"
+
+[[solutions]]
+name = "fused"
+path = "../../src/solutions/task-12/variants/solution_12_fused.py"
+module = "solution_12_fused"
+kind = "reference-derived-variant"
+sha256 = "5edd437829352c573b24ae2f9021ef6046c2cf53788a8b79c8811b8fe0e3103f"
+source_path = "optimized_sloutions/task-12/solution_12_fused.py"
