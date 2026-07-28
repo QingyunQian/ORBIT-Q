@@ -467,3 +467,13 @@ Append corrections below; never rewrite evidence used by a later round.
   `581907e1940bd29430d554dce6f6bb0638ed99ed6e48ad6fb49f029b45444e78`;
   full evidence archive:
   `/Users/hmyuuu/forge/OrbitBreakersCampaignArchive/task-05/r04d2a6`.
+
+- `2026-07-28T05:04:09.226933Z`: experiment `r05e9b3` tested
+  `plain-experimental` against the immutable reference. All six pairs passed,
+  but candidate runtimes ranged `77.341559–243.869802 s`; paired speedup
+  `1.2384425827x ± 0.1613576905x` had 95% interval
+  `[0.8236594344x, 1.6532257309x]`. Decision `discard`; promoted OMECo remains
+  accepted. Immutable report SHA-256
+  `23dcf1b1ea32a416830fdbb6d85a7f81d75ec08ffaadc25e40f9044a3d3dc51a`;
+  full evidence archive:
+  `/Users/hmyuuu/forge/OrbitBreakersCampaignArchive/task-05/r05e9b3`.
