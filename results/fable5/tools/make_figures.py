@@ -75,8 +75,8 @@ ax.set_yscale("log")
 ax.set_ylim(0.4, 40)
 ax.set_xlabel("challenge task")
 ax.set_ylabel("T / T$_{ref}$  (log scale)")
-ax.set_title("Artifact efficiency vs expert reference, same machine & image "
-             "(annotated: candidate/reference seconds); all 12 rewards = 1.0", fontsize=9.5)
+ax.set_title("Per-task artifact efficiency vs reference, same machine & image "
+             "(annotated: candidate/reference seconds)", fontsize=9.5)
 ax.grid(alpha=0.25, axis="y", which="both")
 fig.tight_layout()
 fig.savefig(FIGS / "fable5_ratio_bars.png", dpi=180)
