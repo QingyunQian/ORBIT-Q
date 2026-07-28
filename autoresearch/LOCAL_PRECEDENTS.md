@@ -22,19 +22,20 @@ runner, or a log template.
 
 ## Conventions adopted
 
-- Freeze the survey, workload contract, measurement protocol, and baseline
-  design before candidate timing.
+- Record the workload contract, measurement protocol, and baseline design used
+  for each formal runtime claim.
 - Use separate custodian, proposer, and evaluator roles.
 - Keep hidden data genuinely unreadable by proposal processes.
 - Use a fresh worktree for one falsifiable hypothesis.
-- Bind one campaign to one task and keep every worktree on that task.
+- Use one task and one hypothesis per worktree; later worktrees may change
+  tasks.
 - Commit the hypothesis and code before evaluation, then commit sanitized
   evidence separately.
 - Keep `research/task-XX/LOG.md` append-only and retain failures, timeouts, and
   invalid runs.
 - Bind results to source, evaluator, image, dependency, hardware, workload, and
   timeout provenance.
-- Treat correctness as an eligibility gate before comparing runtime.
+- Require correctness before comparing runtime.
 - Keep a flat result ledger only as an index over immutable JSON evidence.
 
 ## Deliberate ORBIT-specific choices

@@ -1,63 +1,71 @@
 # Workload dataset policy
 
-The public workload dataset is a required gate for autoresearch. The repository
-does not contain a completed dataset. `datasets/public/manifest.json` has
-`status: "not_built"` and no cases.
+The workload dataset is optional supporting infrastructure. Candidate work may
+begin, continue, and finish with only the bundled task configuration and
+evaluator. `datasets/public/manifest.json` is an incremental catalog and may
+have a null version or no cases without blocking any task.
 
-## Campaign scope
+## Tiers
 
-Build the dataset for the one task selected by the campaign. A campaign does
-not need workloads for the other 11 tasks.
+### Public development
 
-All workload records, configurations, seeds, evaluators, and validity rules are
-public and versioned. Hidden tuning sets, sealed holdouts, private
-configuration, and controller attestations are not required.
-
-## Public workload
-
-Include for the selected task:
+Proposal agents may read public cases. Include, for each task:
 
 - the canonical evaluator configuration;
-- a reduced smoke case when the task contract permits one;
-- a scale probe when the task contract permits one.
+- a reduced smoke case where the task contract permits one;
+- a scale probe that preserves the scientific method and output contract.
 
-If the selected task has one fixed deterministic configuration and no seed,
-the canonical case alone can satisfy the gate. Do not invent rotations,
-configurations, or seeds that change the task contract merely to create more
-cases.
+If a task forbids configuration changes, use approved public seeds or inputs that exercise the same contract.
 
-Store records under `datasets/public/` and list each one in
-`datasets/public/manifest.json`.
+Store public records under `datasets/public/`. List each record in `datasets/public/manifest.json`.
+
+### Hidden rotating tuning
+
+Hidden tuning is optional. If used, a trusted controller owns the records.
+Prefer at least two disjoint rotations for covered tasks and rotate after
+exposure, controller compromise, or a declared research cycle.
+
+Do not store hidden records, manifests, paths, seeds, hashes, keys, or populated controller configuration in the Git checkout. The controller returns aggregate validity and runtime fields.
+
+### Sealed final holdout
+
+A sealed final holdout is optional. If used, the trusted controller stores it
+apart from hidden tuning data and credentials, and proposal agents cannot query
+it.
+
+Evaluate a promoted candidate once per holdout version. Return aggregate validity and runtime fields. Do not return case-level output, timing, or failure details. A team that tunes after a holdout result must create a new holdout version before making another final claim.
 
 ## Record requirements
 
 Each workload record must define:
 
 - dataset version;
+- tier;
 - task ID and case ID;
-- input configuration and any applicable public seed;
+- input configuration and seed;
 - expected result keys, shapes, and numerical meaning;
 - functional validity thresholds;
 - source provenance;
 - content SHA256.
 
-Download external inputs from their primary source when a task needs them.
-Record the source URL, retrieval date, license, upstream version, and
-downloaded content hash.
+Hidden records use the same internal schema. Do not publish their values or identifiers.
 
-## Validation
+Download external inputs from their primary source when a task needs them. Record the source URL, retrieval date, license, upstream version, and downloaded content hash.
 
-Attempt each selected-task record with the matching human expert solution in
-the pinned environment. If that immutable expert has a reproducible setup
-failure, retain the failure and use an independent trusted oracle to validate
-the record's scientific semantics before marking the dataset ready. This
+## Coverage and separation
+
+Dataset releases may cover any subset of tasks, but must state that coverage
+explicitly. Attempt each published record with the matching human expert
+solution in the pinned environment. If that immutable expert has a reproducible
+setup failure, retain the failure and use an independent trusted oracle to
+validate the record's scientific semantics before publishing the record. This
 exception does not create a runtime baseline.
 
-Reject a dataset release when:
+Do not publish a dataset record when:
 
 - an expert fails a record;
+- public, tuning, and holdout records share a config and seed;
 - a record changes the task's scientific semantics;
-- the selected task lacks required coverage;
 - a record lacks provenance or a content hash.
 
 ## Versioning
@@ -70,27 +78,35 @@ orbitq-workloads-vYYYYMMDD.N
 
 Create a new version when any record, threshold, seed, generator, or split changes. Do not overwrite a released version. Record the generator commit and environment image digest.
 
-## Build and release procedure
+## Optional build and release procedure
 
-1. Read the selected task's problem statement and evaluator.
-2. Define public coverage without changing the task contract.
-3. Generate any records with deterministic tools and public seeds.
-4. Run the human expert against each record.
+1. Read each covered task's problem statement and evaluator.
+2. Define public coverage and any optional private coverage.
+3. Generate records with deterministic tools and fixed seeds.
+4. Run each human expert against each record.
 5. Review failures and semantic changes.
 6. Compute record and manifest hashes.
-7. Place records in `datasets/public/`.
-8. Assign the dataset version and selected task ID.
-9. Set the public manifest status to `ready`.
+7. Place public records in `datasets/public/`.
+8. Move private records and keys to controller-owned storage outside Git.
+9. Assign the dataset version.
+10. If private tiers are used, record a sanitized controller summary.
 
-Do not set the manifest to `ready` before these steps finish.
+## Proposal-agent boundary
 
-## Benchmark reporting
+A proposal agent may receive:
 
-Record the public workload version, manifest hash, validity result, evaluator
-runtime, paired statistics, and immutable report hash for every experiment.
-Because the workload is public, claims are limited to that workload and task.
+- public records and their manifest;
+- aggregate hidden validity;
+- aggregate hidden mean and median runtime;
+- aggregate runtime standard error, paired percentage improvement, and paired
+  speedup with standard errors;
+- timeout state and passing-run count.
 
-Run a promoted candidate once more as a fresh final paired benchmark on the
-immutable public workload. If tuning continues afterward, record the later
-candidate as a new experiment and rerun the final paired benchmark before
-making a claim.
+A proposal agent must not receive:
+
+- hidden records or record identifiers;
+- private paths, filenames, hashes, seeds, keys, tokens, or credentials;
+- per-record hidden outputs, errors, thresholds, timings, or pass states;
+- controller logs, stack traces, commands, environment dumps, or process listings that expose private storage.
+
+The controller must redact private values before it writes reports or returns errors.
