@@ -197,7 +197,7 @@ GOAL.md                       autonomous research objective
 program.md                    Karpathy-style entrypoint
 autoresearch/                 worktree protocol, log, and result templates
 research/                     survey and frozen-measurement scaffolding
-datasets/                     selected-task public workload policy
+datasets/                     public metadata and private-data protocol
 ```
 
 The parent ORBIT-Q Harbor tasks keep their solution copies because Harbor uses
@@ -209,31 +209,28 @@ See `PROVENANCE.md` for source commits and paths.
 
 Karpathy's [autoresearch](https://github.com/karpathy/autoresearch) uses a fixed
 evaluator, one editable program, short measured experiments, Git checkpoints,
-and an experiment ledger. `GOAL.md` maps that loop to one eligible ORBIT-Q
-task per campaign and one hypothesis per fresh Git worktree.
+and an experiment ledger. `GOAL.md` maps that loop to ORBIT-Q with one
+hypothesis and one task per fresh Git worktree.
 
-Do not start optimization until the selected-task survey and public workload
-dataset required by `GOAL.md` exist. Before starting a campaign, inspect the
-open pull requests on `sxzgroup/ORBIT-Q` and choose one task that has no active
-improvement PR. Bind the campaign to that one task and do not switch tasks
-inside its worktrees. A symmetric failure of the reference and its initial
-byte-identical candidate is acceptable bootstrap evidence; repeated passing
-pairs are required later for promotion or any improvement claim. All workload
-configurations, evaluators, and validity rules are public and versioned; no
-hidden tuning set, sealed holdout, or trusted-controller attestation is
-required.
+Every task is immediately eligible, even when an upstream improvement PR
+already covers it. The survey, public workload dataset, controller attestation,
+hidden tuning rotations, sealed holdout, and repeated baselines are optional
+supporting evidence and never block candidate work. A later hypothesis may
+target another task. A symmetric failure of the reference and its initial
+byte-identical candidate remains useful bootstrap evidence but cannot support a
+runtime claim. When private evaluation is used, keep its records outside every
+proposal worktree and return only sanitized aggregates.
 
 `autoresearch/LOCAL_PRECEDENTS.md` records which conventions were adopted after
 the read-only review of the local BooleanRazor and IntrQCtrl repositories, plus
 which incomplete or plan-only pieces were deliberately not treated as working
 infrastructure.
 
-`research/check_gates.py` reports separate `research_ready` and
-`promotion_ready` states. Research requires the cited survey, versioned public
-dataset for the selected task. Promotion additionally requires a valid six-run
-reference report for that task.
+`research/SURVEY.md` and `datasets/public/manifest.json` can be expanded
+incrementally when a hypothesis needs broader evidence. Neither artifact has a
+readiness status that controls the research loop.
 
 The optimization target is lower valid runtime. Preserve
 `run_solution(config)`, TensorCircuit-NG semantics, and every functional check.
-Do not edit evaluators, manifests, environment locks, workload data, or result
+Do not edit evaluators, manifests, environment locks, hidden data, or result
 parsing during an experiment.

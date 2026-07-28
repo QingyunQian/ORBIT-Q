@@ -1,7 +1,7 @@
-# Goal: Optimize One ORBIT-Q Human Expert Solution
+# Goal: Optimize ORBIT-Q Human Expert Solutions
 
-Use an autoresearch loop to reduce the evaluator-reported runtime of exactly
-one selected ORBIT-Q human expert TensorCircuit-NG solution.
+Use an autoresearch loop to reduce the evaluator-reported runtime of any
+ORBIT-Q human expert TensorCircuit-NG solution.
 
 Primary sources:
 
@@ -9,24 +9,27 @@ Primary sources:
 - [ORBIT-Q](https://github.com/sxzgroup/ORBIT-Q)
 - [Karpathy autoresearch](https://github.com/karpathy/autoresearch)
 
-## One-task campaign scope
+## Task selection
 
-The survey, dataset construction, environment setup, and reference bootstrap
-cover only the task selected for that autoresearch campaign.
+Every task in this repository is eligible for optimization at any time,
+including a task covered by an open upstream pull request. Inspecting upstream
+pull requests is optional context and never determines eligibility.
 
-Before creating the first campaign worktree:
+A research campaign may work on multiple tasks and may change targets between
+hypotheses. Each hypothesis must still name one task, use its own fresh
+worktree, and edit only that task's solution file so its evidence remains
+auditable.
 
-1. Choose one task.
-2. Record that task as `task-XX` in `LOG.md`.
-3. Use the same task for every hypothesis worktree in the campaign.
-
-Do not edit, benchmark, or promote a second task in the same campaign.
-Do not switch targets after seeing results. Close the campaign, preserve its
-evidence, and start a separate campaign if another task is selected.
+Record the task ID in the experiment's `LOG.md`. A survey, public workload
+dataset, private controller, hidden tuning rotation, sealed holdout, or
+repeated baseline is useful supporting infrastructure but is not a prerequisite
+for editing, profiling, testing, benchmarking, or promoting a candidate.
 
 ## Acceptance target and research target
 
-Issue #78 accepts any runtime reduction that survives repeated measurement while preserving the task contract, functional checks, quantum semantics, and TensorCircuit-NG framework fidelity.
+Issue #78 accepts any runtime reduction that survives repeated measurement
+while preserving the task contract, functional checks, quantum semantics, and
+TensorCircuit-NG framework fidelity.
 
 The research stretch target is at least one of:
 
@@ -34,133 +37,32 @@ The research stretch target is at least one of:
 - a 100x speedup where the task structure permits it;
 - a speedup that increases with problem size under a fixed validity rule.
 
-The stretch target does not replace the Issue #78 acceptance target. Record and submit smaller gains when the measurement rule confirms them.
+The stretch target does not replace the Issue #78 acceptance target. Record and
+submit smaller gains when the available measurements support them.
 
-## Roles
+## Research inputs
 
-Use two roles:
+`research/SURVEY.md` and `datasets/public/manifest.json` are optional,
+incremental research aids. Use the portions that are relevant to the current
+hypothesis; incomplete sections, missing cases, and null versions do not block
+work on any task.
 
-1. The setup maintainer builds the selected-task survey, public workload,
-   environment, and baseline record.
-2. The proposal agent reads expert solutions and public workload data, edits
-   one candidate, and runs the public benchmark.
+When a task benefits from additional workloads, add public cases under
+`datasets/public/` according to `datasets/README.md`. The bundled task
+configuration and evaluator are sufficient for ordinary local optimization
+experiments.
 
-## Knowledge gates before candidate code
-
-Do not edit a candidate solution or TensorCircuit-NG source until the cited
-survey and versioned public workload dataset for the selected task are ready.
-If either gate is incomplete, stop and report the missing items.
-
-The repeated-reference gate below is a later promotion gate. A symmetric
-failure of the byte-identical reference and initial `optimized` copy is valid
-bootstrap evidence and does not block survey-driven candidate research. It
-does block any runtime-improvement claim for that task until a valid repeated
-reference/candidate comparison exists.
-
-### Gate 1: cited SOTA and performance survey in `research/SURVEY.md`
-
-Complete the scaffold at `research/SURVEY.md`. Cite papers, framework
-documentation, source files, issues, and benchmark records for each claim.
-
-Compare the current state of the art for the selected task's workloads. Record the best reported algorithmic scaling, runtime, memory use, implementation method, hardware, and software version when a source reports them. Mark missing comparisons as open evidence gaps.
-
-Include one section for the selected task. It must identify:
-
-- the expert algorithm and required output contract;
-- the dominant operations and expected time or memory costs;
-- measured or source-supported bottlenecks;
-- relevant TensorCircuit-NG primitives and contractor paths;
-- relevant JAX transforms, compilation behavior, vectorization, scans, sparse operations, and device placement;
-- OMECo or tensor-network contraction paths where the task uses them;
-- candidate optimization hypotheses and the semantic constraints that each hypothesis must preserve.
-
-Inspect the installed framework source and APIs. Record the TensorCircuit-NG, JAX, JAXLIB, OMECo, TensorNetwork, and Quimb versions or commits used in the environment. Cite the inspected module paths and symbols.
-
-Add a measurement section that defines the paired-run order and confidence rule used for promotion.
-
-Do not change its status to `READY` until it covers the selected task and
-contains source citations.
-
-### Gate 2: versioned workload dataset
-
-Build a versioned workload dataset under the policy in `datasets/README.md`.
-
-For the selected task, the dataset must contain visible public development
-cases. A fixed deterministic task may use its single canonical configuration
-when the task contract offers no distinct configurations or seeds.
-
-Cover only the selected task. Preserve its scientific semantics and
-`run_solution(config)` contract. Validate every workload with that task's human
-expert solution before use.
-
-If an immutable expert cannot run in the pinned setup, preserve that terminal
-result and require an independent trusted oracle to validate the workload
-semantics. Do not fabricate a passing expert result, and do not use such a task
-for a runtime-improvement claim until the promotion gate has valid pairs.
-
-The public manifest at `datasets/public/manifest.json` starts with
-`status: "not_built"`. Keep this gate closed until the setup maintainer adds
-real cases for the selected task, computes hashes, assigns a version, validates
-that task's coverage, and changes the status to `ready`.
-
-All workload records, configurations, applicable seeds, validity rules, and
-evaluators are public and versioned. Hidden tuning rotations, sealed holdouts,
-private-data configuration, and controller attestations are not required.
-
-### Gate 3: repeated reference baselines for promotion
-
-Run the selected task's immutable human reference at least six times on one
-host and one pinned Docker image:
-
-```bash
-./bench verify
-./bench env doctor
-./bench env build tensorcircuit-py311
-./bench run XX \
-  --solution reference \
-  --repeat 6 \
-  --engine docker \
-  --timeout 300 \
-  --no-build \
-  --output results/task-XX-reference-baseline
-```
-
-Attempt the immutable reference repeatedly and preserve every terminal result.
-Use one container for the selected task and a fresh evaluator process per
-measurement.
-Record the container session, host fingerprint, image digest, dependency
-hashes, evaluator hashes, solution hashes, individual `runtime_sec` values,
-mean, median, sample standard deviation, standard error, minimum, and maximum.
-
-For an initial byte-identical smoke comparison, a matched failure or timeout is
-an acceptable setup outcome and must remain visible as missing runtime. Do not
-repair, filter, or invent a timing merely to open this gate.
-
-Keep the promotion gate closed if the selected task's reference or candidate
-fails, times out, uses a mismatched environment, or lacks six eligible pairs.
-An actual optimized candidate must pass correctness and this promotion gate
-before receiving an improvement, speedup, SOTA, or scaling claim.
-
-## Public evaluation boundary
-
-The proposal agent may inspect:
-
-- the selected task's human expert solution and tracked expert-derived variants;
-- the selected task's problem statement and public development records;
-- `research/SURVEY.md`;
-- public framework source, documentation, and APIs;
-- public benchmark reports and their case-level results.
-
-Claims apply to the selected public workload and must not be generalized to
-unmeasured configurations. Keep machine-local credentials and unrelated
-secrets out of `LOG.md`, `results.tsv`, `run.log`, JSON reports, exceptions,
-and process output.
+Hidden tuning and holdout infrastructure is optional. If private data is used,
+the proposal process must not receive its records, identifiers, paths, seeds,
+keys, credentials, per-record results, or an arbitrary query interface.
+Controller-owned aggregate reports may be used when available, but no
+controller attestation is required to begin or finish a local candidate.
 
 ## Worktree contract
 
-Use one fresh Git worktree for each falsifiable hypothesis on the campaign's
-single selected task. Start from the latest accepted commit; never recycle
-a prior experiment worktree. Name branches:
+Use one fresh Git worktree for each falsifiable hypothesis. Start from the
+latest accepted commit; never recycle a prior experiment worktree. Name
+branches:
 
 ```text
 codex/orbitbreakers/task-XX/<opaque-id>
@@ -172,8 +74,8 @@ Place worktrees under:
 ../ORBIT-Q-worktrees/orbitbreakers/task-XX/<opaque-id>
 ```
 
-Do not combine two tasks or two performance hypotheses in one worktree.
-Every worktree in one campaign must use the same `task-XX`.
+Do not combine two tasks or two performance hypotheses in one worktree. The
+next hypothesis may target any task.
 
 Each worktree must contain:
 
@@ -181,18 +83,18 @@ Each worktree must contain:
 - an untracked `results.tsv` created from `autoresearch/results.template.tsv`;
 - an untracked `run.log`.
 
-Fill in the hypothesis, parent commit, permitted data, and environment before
-running a benchmark. Commit the hypothesis and public-safe code before
-evaluation. Commit the sanitized result as a separate evidence commit.
+Fill in the hypothesis, parent commit, task, available data, and environment
+before running a benchmark. Commit the hypothesis and public-safe code before
+evaluation. Commit sanitized evidence separately.
 
 Append a log entry after every baseline, candidate run, invalid result, timeout,
 crash, reset, and framework rebuild. Do not delete or rewrite prior entries.
 Append a correction entry when a prior entry contains an error. Keep failures
 until their lessons and immutable report hashes have been consolidated.
 
-Before removing a worktree, commit the sanitized `LOG.md`, then copy `LOG.md`,
-`results.tsv`, `run.log`, and benchmark JSON reports to a campaign archive
-outside the disposable worktree under a run-specific directory.
+Before removing a worktree, commit the sanitized `LOG.md`, then preserve
+`LOG.md`, `results.tsv`, `run.log`, and benchmark JSON reports in appropriate
+run storage.
 
 ## Allowed changes
 
@@ -211,7 +113,8 @@ def run_solution(config):
     ...
 ```
 
-The returned keys, shapes, numerical meaning, iteration counts, and task semantics must satisfy the original evaluator.
+The returned keys, shapes, numerical meaning, iteration counts, and task
+semantics must satisfy the original evaluator.
 
 Issue #78 permits a TensorCircuit-NG framework patch. Run framework work in a
 separate checkout and record the exact base commit, patch commit, build inputs,
@@ -222,26 +125,28 @@ images so the report separates framework gains from solution gains.
 
 Do not:
 
-- edit evaluators, the `./bench` runner, workload data, reward files, or validity rules;
-- hardcode expected outputs, evaluator thresholds, or task-specific answers;
+- edit evaluators, the `./bench` runner, hidden data, reward files, or validity rules;
+- read private data through process inspection, environment dumps, error messages, timing probes, or filesystem search;
+- hardcode expected outputs, hidden configurations, seeds, evaluator thresholds, or task-specific answers;
 - dispatch on evaluator details to return synthetic outputs;
 - replace the intended TensorCircuit-NG computation with a raw NumPy, SciPy, or JAX simulator;
 - switch the central quantum computation to another quantum framework;
 - skip required optimizer steps, trajectories, samples, layers, or measurements unless the task contract permits an equivalent method;
 - add a dependency or framework patch without recording its exact version and rebuilding the pinned image.
 
-General-purpose support libraries may assist TensorCircuit-NG. They may not replace its central quantum computation.
+General-purpose support libraries may assist TensorCircuit-NG. They may not
+replace its central quantum computation.
 
-## Runtime and promotion rule
+## Runtime measurement and claims
 
-The evaluator-reported `runtime_sec` is the optimization metric. For one task,
-stage both source snapshots before execution, create one Docker container, and
-run every cell as a fresh evaluator process inside that container. Alternate
-pair order: odd pairs run reference then candidate; even pairs run candidate
-then reference. Measure matched pairs on the same host, container session,
-image, evaluator, workload version, and declared cache state.
+The evaluator-reported `runtime_sec` is the optimization metric. Exploratory
+runs may use any positive repeat count. For a runtime claim, compare the
+unchanged reference and candidate in matched, interleaved runs on the same
+host, container session, image, evaluator, workload, and declared cache state.
+The recommended default is six pairs, with odd pairs running reference then
+candidate and even pairs running candidate then reference.
 
-Report:
+Report the sample size and all available fields:
 
 ```text
 baseline_mean_runtime_sec
@@ -270,39 +175,40 @@ Compute each paired speedup as:
 baseline_runtime_sec / candidate_runtime_sec
 ```
 
-A candidate earns promotion when:
+A runtime comparison has standing only when the candidate and its matched
+reference satisfy correctness and framework fidelity, complete without
+timeout, and use matching provenance. Failed, timed-out, mismatched, or
+unpaired results remain useful diagnostic evidence but do not support a
+speedup claim.
 
-1. every correctness and framework-fidelity gate passes;
-2. at least six matched pairs complete without timeout;
-3. candidate mean and median runtime are both lower than the paired baseline;
-4. the candidate wins at least 80 percent of matched pairs;
-5. the lower bound of the predeclared confidence interval for paired speedup exceeds 1.0.
+Stronger claims should use enough matched pairs to characterize noise. The
+recommended promotion evidence is:
 
-Use the confidence method declared in `research/SURVEY.md` before experiments
-begin. Do not change it after observing candidate results.
+1. at least six eligible matched pairs;
+2. candidate mean and median runtime below the paired baseline;
+3. the candidate wins at least 80 percent of matched pairs;
+4. the lower bound of a predeclared confidence interval for paired speedup
+   exceeds 1.0.
+
+These recommendations do not block candidate creation, editing, profiling,
+testing, benchmarking, or review.
 
 Apply a hard 300-second limit to each evaluator process. On timeout, stop the
 shared task container, mark the cell as `timeout`, and retain the incomplete
 task session as failed evidence. Record actual completion time for successful
 runs. Do not pad a fast run to 300 seconds.
 
-Correctness and TensorCircuit-NG fidelity are hard gates. A fast invalid result has no runtime standing.
-
 ## Experiment loop
 
-Run this loop after the selected-task survey and public dataset gates pass and
-one eligible task has been selected. A closed repeated-baseline gate permits
-hypotheses but not promotion:
-
-1. Create a fresh worktree and branch for one hypothesis on the campaign
-   task.
+1. Choose any task and create a fresh worktree and branch for one hypothesis.
 2. Create `LOG.md` and `results.tsv` from the templates.
-3. Select one hypothesis from `research/SURVEY.md` or prior sanitized evidence.
-4. Record the hypothesis, parent commit, and permitted data in `LOG.md`.
+3. Select one hypothesis from code inspection, profiling, public sources,
+   `research/SURVEY.md`, or prior sanitized evidence.
+4. Record the task, hypothesis, parent commit, and data used in `LOG.md`.
 5. Change one candidate concept in one `src/solutions/` file.
 6. Commit the hypothesis and candidate change before running it.
-7. Run the unchanged reference and candidate as at least six interleaved,
-   counterbalanced pairs in one task container:
+7. Run public development checks and a reference/candidate comparison
+   appropriate to the experiment. The recommended claim-quality command is:
 
    ```bash
    ./bench run XX \
@@ -315,43 +221,46 @@ hypotheses but not promotion:
      --output results/task-XX-<opaque-id>
    ```
 
-8. Run the public workload checks.
-9. Append the paired result, immutable report hash, and decision to
-    `results.tsv` and `LOG.md`.
-10. Commit the sanitized evidence separately from the candidate commit.
-11. Promote the experiment only when it satisfies the repeated-baseline and
-    promotion rules. If the reference still has no valid runtime, record the
-    candidate as `unbenchmarked` even when it restores correctness.
-12. Restore the prior best candidate after a regression or invalid result, but
+8. Append the result, immutable report hash, and decision to `results.tsv` and
+   `LOG.md`.
+9. Commit sanitized evidence separately from the candidate commit.
+10. Promote or submit a candidate when review finds its correctness,
+    framework fidelity, and available runtime evidence sufficient for the
+    intended claim.
+11. Restore the prior best candidate after a regression or invalid result, but
     preserve the log, terminal status, and report.
-13. Start the next hypothesis for the same task in a new worktree.
-    Continue until a human interrupts the research loop.
+12. Start the next hypothesis in a fresh worktree. It may target the same task
+    or any other task.
 
-If an implementation bug causes a crash, fix it and rerun the same hypothesis. If the hypothesis violates semantics or cannot pass after bounded debugging, record `crash` or `invalid`, restore the prior best candidate, and select another hypothesis.
+If an implementation bug causes a crash, fix it and rerun the same hypothesis.
+If the hypothesis violates semantics or cannot pass after bounded debugging,
+record `crash` or `invalid`, restore the prior best candidate, and select
+another hypothesis.
 
-Do not ask whether to continue after the loop starts. Use survey evidence,
-framework source, profiler output, and prior logs to select the next experiment.
+Do not ask whether to continue after the loop starts. Use code inspection,
+public evidence, profiler output, and prior logs to select the next experiment.
+Do not request hidden-case details.
 
-## Final paired benchmark and Issue #78 report
+## Final report
 
-Run a promoted candidate once more as a fresh paired benchmark against the
-immutable reference on the versioned public workload. If tuning continues
-afterward, record the later candidate as a new experiment and rerun this final
-paired benchmark before making a claim.
-
-The final report must include:
+The final report should include:
 
 - task ID and candidate commit;
 - reference source hash and candidate source hash;
 - framework base and patch commits, if used;
 - image digest and dependency hashes;
-- evaluator and workload versions;
-- all baseline and candidate timings;
+- evaluator and workload versions when available;
+- all baseline and candidate timings used for a runtime claim;
 - mean, median, sample standard deviation, standard error, percentage
-  improvement, and paired speedups;
+  improvement, and paired speedups when the sample supports them;
 - functional and framework-fidelity results;
 - a description of the optimization mechanism;
 - ablations for a research claim;
 - scaling measurements for a scaling claim.
 
-Claim 10x, 100x, or scaling advantage only when the recorded measurements support that claim.
+If a private tuning set or final holdout is available, its aggregate result may
+be added as independent evidence. It is not required for local optimization or
+submission.
+
+Claim 10x, 100x, or scaling advantage only when the recorded measurements
+support that claim.

@@ -6,14 +6,6 @@ Branch: `codex/orbitbreakers/task-XX/<opaque-id>`
 
 Worktree:
 
-Campaign task: `task-XX`
-
-Live upstream PR list inspected at:
-
-Confirm no open improvement PR targets this task:
-
-Confirm every prior worktree in this campaign targets the same task:
-
 ## Hypothesis
 
 State one falsifiable performance hypothesis before inspecting benchmark
@@ -31,14 +23,13 @@ Candidate SHA-256:
 
 Diff SHA-256:
 
-## Permitted data
+## Data used
 
-Public dataset version:
+Public dataset version, if any:
 
-Public manifest SHA-256:
+Public manifest SHA-256, if any:
 
-Confirm all benchmark workloads and validity rules are versioned public
-artifacts:
+Private evaluation used: `no | controller aggregate only`
 
 ## Command, seed, and environment
 

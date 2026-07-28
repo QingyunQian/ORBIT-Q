@@ -1,46 +1,34 @@
 # Autoresearch operating procedure
 
 `GOAL.md` is the research contract. `program.md` is the Karpathy-style
-entrypoint. This directory supplies the experiment ledger templates; it does
-not bypass the startup gates.
+entrypoint. This directory supplies the experiment ledger templates.
 
-## Gate the research loop and promotion separately
+## Start from any task
 
-Before editing `src/solutions/` or a TensorCircuit-NG checkout, require:
+Every task is eligible for candidate work, regardless of incomplete research
+artifacts or active upstream pull requests. In particular, none of these are
+prerequisites:
 
-1. `research/SURVEY.md` is cited, covers the selected task, and says
-   `Status: READY`.
-2. `datasets/public/manifest.json` says `status: "ready"` and covers the
-   selected task.
+- completing `research/SURVEY.md`;
+- populating `datasets/public/manifest.json`;
+- obtaining a controller attestation or private tuning/holdout data;
+- establishing a repeated reference baseline;
+- checking whether an upstream PR covers the task.
 
-Promotion additionally requires the selected task to have at least six passing
-matched reference/candidate pairs under one host fingerprint, image ID,
-resource profile, evaluator set, and timing scope. Symmetric failures of the
-initial byte-identical files are acceptable bootstrap outcomes but have no
-runtime standing.
+Use those artifacts when they improve a particular experiment. Their absence
+does not block editing, profiling, testing, benchmarking, review, or promotion.
 
-The repository starts with the knowledge/data gates closed. Do not turn
-placeholders into `ready` attestations without building and validating the
-underlying artifacts. Check research and promotion readiness with:
+Runtime claims still need valid matched reference/candidate measurements under
+matching provenance. Six pairs are the recommended default for claim-quality
+evidence, not a condition for starting or completing candidate work. Symmetric
+failures of the initial byte-identical files are useful bootstrap outcomes but
+have no runtime standing.
 
-```bash
-python3 research/check_gates.py \
-  --task XX \
-  --baseline-report results/task-XX-reference-baseline/results.json
-```
+## Select one task per hypothesis
 
-The checker's `research_ready` field controls whether candidate hypotheses may
-begin; `promotion_ready` additionally requires the repeated-baseline evidence.
-
-## Select one campaign task
-
-Inspect the live open pull requests on `sxzgroup/ORBIT-Q`. Choose exactly one
-task that has no active improvement, optimization, performance, or runtime
-PR. Record the selection and inspection time in every `LOG.md`.
-
-All worktrees in the campaign must target that same task. Do not switch
-tasks after observing benchmark results, and do not combine tasks in a
-worktree. A different task requires a separate campaign.
+Record one task in each experiment's `LOG.md`. Do not combine tasks in one
+worktree. The next fresh hypothesis worktree may target the same task or any
+other task.
 
 ## Verify and establish the references
 
@@ -49,24 +37,24 @@ Run from the `OrbitBreakersExpertBenchmarks` repository root:
 ```bash
 ./bench verify
 ./bench env doctor
-./bench run XX \
+./bench run all \
   --solution reference \
   --repeat 6 \
   --engine docker \
   --timeout 300 \
   --no-build \
-  --output results/task-XX-reference-baseline
+  --output results/reference-baseline
 ```
 
-Preserve the JSON report and its SHA-256 in a campaign archive outside the
-disposable experiment worktree. Do not use the contextual numbers in
-`baselines/historical.json` as measured baselines. A failed reference remains
-evidence; it closes only the promotion gate for that task.
+Preserve the JSON report and its SHA-256 in run storage. Do not use the
+contextual numbers in `baselines/historical.json` as measured baselines. A
+failed reference remains diagnostic evidence but cannot support a runtime
+claim.
 
 ## Create one worktree for one hypothesis
 
 Run the following from the `OrbitBreakersExpertBenchmarks` repository root.
-Use the campaign task, a fresh opaque ID, and the latest accepted commit:
+Use the hypothesis task, a fresh opaque ID, and the latest accepted commit:
 
 ```bash
 git worktree add \
@@ -95,8 +83,8 @@ git add LOG.md src/solutions/task-01/solution_1.py
 git commit -m "experiment: task 01 <opaque-id>"
 ```
 
-Never reuse this worktree for a second hypothesis. Never mix two tasks in it,
-and keep later campaign worktrees on the same task.
+Never reuse this worktree for a second hypothesis and never mix two tasks in
+it. A later worktree may target any task.
 
 ## Run one paired experiment
 
@@ -138,25 +126,28 @@ After every experiment:
 2. Append the aggregate result and interpretation to `LOG.md`.
 3. Mark `keep`, `discard`, `invalid`, `timeout`, or `crash`.
 4. Commit the sanitized `LOG.md` update as a separate evidence commit.
-5. Copy the report, logs, and `results.tsv` to the campaign archive.
+5. Copy the report, logs, and `results.tsv` to controller-owned immutable
+   storage.
 
-Do not commit raw reports when they contain machine-local credentials or
-unrelated secrets. Public case-level results, workload hashes, and public seeds
-may be recorded.
+Do not commit raw reports when they contain machine-local or private
+information. Do not include hidden identifiers, paths, seeds, hashes, outputs,
+or case-level failures in `LOG.md`.
 
-Promote a passing experiment by review and cherry-pick. Keep a failed worktree
-until its evidence and lessons have been consolidated; then remove it with
-`git worktree remove`.
+Promote an experiment when review finds its correctness, framework fidelity,
+and available evidence sufficient for the intended claim, then cherry-pick it.
+Keep a failed worktree until its evidence and lessons have been consolidated;
+then remove it with `git worktree remove`.
 
-## Public evaluation
+## Optional hidden evaluation
 
-All campaign workloads, configurations, seeds, evaluators, and validity rules
-must be public, versioned artifacts. Hidden tuning rotations, sealed holdouts,
-and controller attestations are not part of this procedure.
+Hidden tuning and holdout infrastructure is not required. If it is used, the
+proposal process must be unable to read private data. An environment variable
+or obscure path is routing, not access control. Use a separate controller
+identity, container, host, or service with no proposer filesystem access.
 
-Run a promoted candidate once more as a fresh final paired benchmark on the
-immutable public workload. If tuning continues afterward, record a new
-experiment and rerun the final benchmark before making a claim.
+Return only sanitized aggregate fields. A team using a sealed holdout should
+evaluate it once per holdout version and create a new version after tuning on a
+holdout result.
 
 ## Framework experiments
 

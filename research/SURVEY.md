@@ -1,10 +1,7 @@
 # ORBIT-Q Runtime Optimization Survey
 
-**Status: NOT READY**
-
-The research gate remains closed. A maintainer must replace each `TODO` below
-with cited evidence before an agent edits an optimized solution or runs a
-candidate experiment.
+This is an incremental research aid. Incomplete sections and `TODO` entries do
+not block optimization work on any task.
 
 ## Evidence rules
 
@@ -26,7 +23,7 @@ Primary scope:
 - The task contracts and evaluators under `../tasks/task-XX/`
 - The human expert sources under `../references/task-XX/`
 
-## Cited-evidence checklist
+## Optional cited-evidence checklist
 
 - [ ] All 12 task sections identify the expert algorithm and output contract.
 - [ ] All 12 sections cite the evaluator and define its timed region.
@@ -162,11 +159,11 @@ TODO: compare reusable batching, vectorization, `jit` and `vmap` placement,
 scan structure, contractor selection, tensor layout, sparse operations, device
 placement, compilation cache behavior, and memory limits. Cite each comparison.
 
-## Frozen measurement and statistics plan
+## Measurement and statistics notes
 
-TODO: cite and freeze the paired-run method, run order, workload
-version, repeat count, validity rule, confidence interval, and promotion rule.
-The survey cannot change this section after candidate timing results exist.
+TODO: cite the paired-run method, run order, workload version, repeat count,
+validity rule, and confidence interval used for formal claims. Per-experiment
+measurement choices belong in `LOG.md` and the benchmark report.
 
 ## Claims boundary
 

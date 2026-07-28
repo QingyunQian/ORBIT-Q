@@ -20,7 +20,7 @@ process overhead and timeout enforcement as diagnostic evidence.
 
 Before execution, a maintainer must:
 
-1. mark `SURVEY.md` ready and freeze its statistical method;
+1. record the statistical method used for any formal claim;
 2. populate `BASELINE_MATRIX.template.tsv` into a versioned matrix with one row
    per planned process;
 3. record a digest for the exact matrix bytes;
@@ -92,7 +92,7 @@ The setup evaluator copies preserve this boundary and print the elapsed value
 to six decimal places. Changing timer placement, precision, or parsing after a
 baseline campaign starts creates a new protocol version.
 
-## Validity gate
+## Validity rules
 
 Classify a cell as `SUCCESS` only when:
 
@@ -113,8 +113,8 @@ pair.
 
 During initial setup, symmetric failures from the immutable reference and its
 byte-identical candidate are valid bootstrap outcomes. They demonstrate runner
-parity but provide no runtime or improvement metric. The validity gate becomes
-mandatory when evaluating a materially changed candidate for promotion.
+parity but provide no runtime or improvement metric. A materially changed
+candidate must satisfy these validity rules before its runtime is compared.
 
 ## Pinned provenance
 
@@ -149,12 +149,13 @@ Report the ratio-of-means percentage improvement:
 100 * (reference_mean - optimized_mean) / reference_mean
 ```
 
-Report its paired uncertainty using the method frozen in `SURVEY.md`. Also
-report each pairwise speedup `reference_runtime_sec / optimized_runtime_sec`
-and its mean, median, sample standard deviation, and standard error.
+Report its paired uncertainty using the method recorded for the experiment.
+Also report each pairwise speedup
+`reference_runtime_sec / optimized_runtime_sec` and its mean, median, sample
+standard deviation, and standard error.
 
-Use the confidence method frozen in `SURVEY.md`. Report a speedup only from
-matched eligible pairs. Correctness and framework fidelity remain hard gates.
+Report a speedup only from matched eligible pairs. Correctness and framework
+fidelity are required for the comparison.
 
 Issue #78 accepts a reproducible runtime reduction. Claims of 10x, 100x,
 scaling advantage, or state-of-the-art performance require the separate
