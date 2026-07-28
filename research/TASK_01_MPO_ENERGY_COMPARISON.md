@@ -21,17 +21,17 @@ The candidate builds the same TFIM Hamiltonian as an MPO and evaluates it with
 `tensorcircuit.templates.measurements.mpo_expectation`, reducing the number of
 separate observable contractions performed inside each objective.
 
-`quimb` is used only to construct the TFIM MPO data structure, matching the
-evaluator's Hamiltonian-construction style. The MPO is immediately converted
-with `tc.quantum.quimb2qop`, and the circuit evolution plus energy expectation
-remain TensorCircuit-NG native through `tc.Circuit` and `mpo_expectation`.
+The TFIM MPO is constructed directly as a TensorCircuit-NG `QuOperator` tensor
+network. The solution no longer imports `quimb`; the only quimb-origin object is
+the evaluator-supplied DMRG MPS, which is converted at the framework boundary
+with `tc.quantum.quimb2qop(config["dmrg_state"])`.
 
 ## Source Integrity
 
 - Base repository commit: `3cd8c4733dbdf6752653c88ddb8b32df7d86bdbf`.
 - Candidate solution commit: `4cac9cf`.
 - Reference solution SHA256: `8B3F65B998DF1ECD2C4F9E66ACCE99CE2F5155E7A385678DE768FE9ABD6B4F02`.
-- Candidate solution SHA256: `A6DCED0028B572EB36FB21A571D19F80DD2346C44417E7A17D1F668C883DE7C4`.
+- Candidate solution SHA256: `63A132DF6F2485E510EC3FAFFC5B9E0D9A5AD6498CE9360AD05D72BBF5AECA53`.
 - Evaluator SHA256: `B05694154C1FE10C7EBCA4E153791B5AB3D29D9B76EE9725C00393CB44DD78B1`.
 - Docker image used for exploratory timing: `orbitq-tensorcircuit-ng-1.8:py311`.
 - Docker image ID: `sha256:8abafcb68d446f36665ca2cc27f5770e7f956a74aa579333afc739060d658d7e`.
@@ -40,9 +40,8 @@ remain TensorCircuit-NG native through `tc.Circuit` and `mpo_expectation`.
 
 The candidate makes one solution-file change:
 
-- imports `quimb.tensor as qtn`;
 - imports `mpo_expectation` instead of `parameterized_measurements`;
-- replaces `tfim_measurement_data` with `tfim_mpo`;
+- replaces `tfim_measurement_data` with a pure TensorCircuit-NG `tfim_mpo`;
 - changes `circuit_energy` to call `mpo_expectation(circuit, mpo)`;
 - constructs the MPO once in `run_solution(config)` and reuses it for all
   optimizer steps.
@@ -65,10 +64,10 @@ Reduced comparison used a shared evaluator-generated DMRG MPS input,
 Official Challenge 01 evaluator result for the candidate:
 
 ```text
-End-to-end solution time: 64.78s
-DMRG reference energy: -41.50398520
-Initial variational energy: -41.50401306
-Final variational energy: -41.50417328
+End-to-end solution time: 64.596625s
+DMRG reference energy: -41.50398205
+Initial variational energy: -41.50404358
+Final variational energy: -41.50411987
 Overall: PASS
 ```
 
@@ -76,8 +75,8 @@ Static policy result:
 
 ```text
 static_policy_score: 1.0
-line_count: 65
-imports: numpy,optax,quimb,tensorcircuit
+line_count: 79
+imports: numpy,optax,tensorcircuit
 ```
 
 ## Runtime Evidence

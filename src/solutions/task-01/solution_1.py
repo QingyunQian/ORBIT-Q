@@ -7,7 +7,6 @@ returns NumPy values only; external validation lives in evaluate_1.py.
 
 import numpy as np
 import optax
-import quimb.tensor as qtn
 
 import tensorcircuit as tc
 from tensorcircuit.templates.measurements import mpo_expectation
@@ -32,10 +31,27 @@ def initial_parameters(config):
 
 
 def tfim_mpo(config):
-    hamiltonian = qtn.SpinHam1D(S=0.5)
-    hamiltonian += -4.0, "Z", "Z"
-    hamiltonian += -2.0 * config["field"], "X"
-    return tc.quantum.quimb2qop(hamiltonian.build_mpo(config["n_qubits"]))
+    eye = np.eye(2, dtype=np.complex64)
+    x_gate = np.array([[0, 1], [1, 0]], dtype=np.complex64)
+    z_gate = np.array([[1, 0], [0, -1]], dtype=np.complex64)
+    bulk = np.zeros((3, 3, 2, 2), dtype=np.complex64)
+    bulk[0, 0] = eye
+    bulk[1, 0] = z_gate
+    bulk[2, 0] = -config["field"] * x_gate
+    bulk[2, 1] = -z_gate
+    bulk[2, 2] = eye
+
+    tensors = [bulk[2:3]] + [bulk] * (config["n_qubits"] - 2) + [bulk[:, 0:1]]
+    nodes = [tc.quantum.Node(K.convert_to_tensor(tensor)) for tensor in tensors]
+    for i in range(config["n_qubits"] - 1):
+        nodes[i][1] ^ nodes[i + 1][0]
+
+    return tc.quantum.QuOperator(
+        out_edges=[node[2] for node in nodes],
+        in_edges=[node[3] for node in nodes],
+        ref_nodes=nodes,
+        ignore_edges=[nodes[0][0], nodes[-1][1]],
+    )
 
 
 def apply_variational_layers(circuit, params, config):
