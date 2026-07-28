@@ -63,6 +63,18 @@ ax.axhline(1.0, color="gray", linestyle="--", linewidth=1)
 for b, r, ct, rt in zip(bars, ratios, cand_t, ref_t):
     ax.annotate(f"{r:.2f}\n{ct:.0f}s/{rt:.0f}s", (b.get_x() + b.get_width() / 2, r),
                 textcoords="offset points", xytext=(0, 4), ha="center", fontsize=7.5)
+# matched-precision (complex64) control overlay where the official candidate ran complex128
+for i, nn in enumerate(range(1, 13)):
+    rc = json.loads((ROOT / f"challenge-{nn:02d}" / "runtime-comparison.json").read_text())
+    mc = rc.get("matched_precision_control")
+    if mc and mc.get("matched_precision_ratio"):
+        ax.scatter([i], [mc["matched_precision_ratio"]], marker="D", s=42,
+                   color="white", edgecolor="#264653", linewidth=1.4, zorder=4)
+    elif mc:
+        ax.annotate("c64\nfails", (i, 0.55), ha="center", fontsize=7, color="#e76f51")
+ax.scatter([], [], marker="D", s=42, color="white", edgecolor="#264653",
+           linewidth=1.4, label="complex64 control (matched precision)")
+ax.legend(loc="upper left", fontsize=8, framealpha=0.9)
 ax.set_yscale("log")
 ax.set_ylim(0.4, 40)
 ax.set_xlabel("challenge task")

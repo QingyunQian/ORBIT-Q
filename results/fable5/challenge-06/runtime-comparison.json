@@ -8,5 +8,11 @@
     "result": "PASS"
   },
   "runtime_ratio_candidate_over_reference": 1.09,
-  "ratio_basis": "candidate (cloud precheck) / publication reference, same machine and image"
+  "ratio_basis": "candidate (cloud precheck) / publication reference, same machine and image",
+  "matched_precision_control": {
+    "note": "official candidate uses complex128; all publication references use complex64 (post-freeze config-line check), so a complex64 control variant of the same candidate code was measured for matched-precision comparison",
+    "candidate_complex64_runtime_sec": 50.6,
+    "candidate_complex64_functional_score": 1.0,
+    "matched_precision_ratio": 0.76
+  }
 }
