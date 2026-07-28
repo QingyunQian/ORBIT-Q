@@ -6,6 +6,7 @@ list. This solution constructs the full 512-qubit circuit from that tape and
 uses TensorCircuit's automatic light-cone contraction for the two local terms.
 """
 
+import jax
 import numpy as np
 
 import tensorcircuit as tc
@@ -14,52 +15,109 @@ K = tc.set_backend("jax")
 tc.set_dtype("complex64")
 
 
-def pauli_indices(term):
-    xs, ys, zs = [], [], []
+def parameter_index(gate):
+    return gate[2] if len(gate) == 3 else gate[3]
+
+
+def pauli_indices(term, qubit_map):
+    indices = {"x": [], "y": [], "z": []}
     for pauli, qubit in term:
-        if pauli == "x":
-            xs.append(qubit)
-        elif pauli == "y":
-            ys.append(qubit)
-        elif pauli == "z":
-            zs.append(qubit)
-        else:
+        if pauli not in indices:
             raise ValueError(f"Unknown Pauli axis: {pauli}")
-    return xs, ys, zs
+        indices[pauli].append(qubit_map[qubit])
+    return tuple(indices[axis] for axis in ("x", "y", "z"))
 
 
-def initial_parameters(config):
-    params = []
+def extract_cone(gate_tape, weighted_term):
+    coeff, term = weighted_term
+    support = {qubit for _, qubit in term}
+    retained = []
+
+    for gate in reversed(gate_tape):
+        if len(gate) == 3:
+            relevant = gate[1] in support
+        elif len(gate) == 4:
+            relevant = gate[1] in support or gate[2] in support
+            if relevant:
+                support.update((gate[1], gate[2]))
+        else:
+            raise ValueError(f"Invalid gate-tape entry: {gate}")
+        if relevant:
+            retained.append(gate)
+
+    qubit_map = {qubit: index for index, qubit in enumerate(sorted(support))}
+    compact_gates = []
+    for gate in reversed(retained):
+        if len(gate) == 3:
+            compact_gates.append((gate[0], qubit_map[gate[1]], gate[2]))
+        else:
+            compact_gates.append(
+                (gate[0], qubit_map[gate[1]], qubit_map[gate[2]], gate[3])
+            )
+
+    return {
+        "coeff": coeff,
+        "n_qubits": len(support),
+        "gates": tuple(compact_gates),
+        "paulis": pauli_indices(term, qubit_map),
+        "parameters": frozenset(parameter_index(gate) for gate in retained),
+    }
+
+
+def parameter_groups(cones):
+    """Return connected components under shared trainable parameters."""
+    remaining = set(range(len(cones)))
+    groups = []
+    while remaining:
+        component = {min(remaining)}
+        active = set(cones[next(iter(component))]["parameters"])
+        changed = True
+        while changed:
+            changed = False
+            for index in sorted(remaining - component):
+                if active.intersection(cones[index]["parameters"]):
+                    component.add(index)
+                    active.update(cones[index]["parameters"])
+                    changed = True
+        remaining.difference_update(component)
+        groups.append(tuple(cones[index] for index in sorted(component)))
+    return tuple(groups)
+
+
+def initial_active_parameters(config, active_indices):
+    """Preserve each full seeded draw, then gather its active coordinates."""
+    active_indices = np.asarray(active_indices, dtype=np.int64)
+    params = np.empty((config["n_restarts"], len(active_indices)), dtype=np.float32)
     for restart_index in range(config["n_restarts"]):
         rng = np.random.default_rng(config["seed"] + 100000 + restart_index)
-        params.append(
-            rng.normal(
-                scale=config["initial_parameter_scale"],
-                size=(config["parameter_count"],),
-            ).astype(np.float32)
-        )
-    return K.convert_to_tensor(np.asarray(params, dtype=np.float32))
+        full_row = rng.normal(
+            scale=config["initial_parameter_scale"],
+            size=(config["parameter_count"],),
+        ).astype(np.float32)
+        params[restart_index] = full_row[active_indices]
+    return K.convert_to_tensor(params)
 
 
-def run_solution(config):
-    gate_tape = tuple(config["gate_tape"])
-    pauli_terms = tuple(config["pauli_terms"])
-    pauli_data = tuple((coeff, pauli_indices(term)) for coeff, term in pauli_terms)
+def train_group(config, cones, initial_params, active_indices):
+    positions = {parameter: index for index, parameter in enumerate(active_indices)}
 
     def loss_fn(params):
-        circuit = tc.Circuit(config["n_qubits"])
-        for qubit in range(config["n_qubits"]):
-            circuit.h(qubit)
-
-        for gate in gate_tape:
-            if len(gate) == 3:
-                getattr(circuit, gate[0])(gate[1], theta=params[gate[2]])
-            else:
-                getattr(circuit, gate[0])(gate[1], gate[2], theta=params[gate[3]])
-
         total = 0.0
-        for coeff, (xs, ys, zs) in pauli_data:
-            total += coeff * K.real(
+        for cone in cones:
+            circuit = tc.Circuit(cone["n_qubits"])
+            for qubit in range(cone["n_qubits"]):
+                circuit.h(qubit)
+            for gate in cone["gates"]:
+                if len(gate) == 3:
+                    getattr(circuit, gate[0])(
+                        gate[1], theta=params[positions[gate[2]]]
+                    )
+                else:
+                    getattr(circuit, gate[0])(
+                        gate[1], gate[2], theta=params[positions[gate[3]]]
+                    )
+            xs, ys, zs = cone["paulis"]
+            total += cone["coeff"] * K.real(
                 circuit.expectation_ps(
                     x=xs,
                     y=ys,
@@ -71,34 +129,56 @@ def run_solution(config):
 
     value_and_grad = K.vmap(K.value_and_grad(loss_fn), vectorized_argnums=0)
 
-    def train_step(params, moment1, moment2, step_count):
-        values, grads = value_and_grad(params)
-        step_count = step_count + 1.0
-        beta1 = 0.9
-        beta2 = 0.999
-        moment1 = beta1 * moment1 + (1.0 - beta1) * grads
-        moment2 = beta2 * moment2 + (1.0 - beta2) * grads * grads
-        moment1_hat = moment1 / (1.0 - beta1**step_count)
-        moment2_hat = moment2 / (1.0 - beta2**step_count)
-        params = params - config["learning_rate"] * moment1_hat / (
-            K.sqrt(moment2_hat) + 1.0e-8
+    def optimize(params):
+        initial_state = (
+            params,
+            K.zeros_like(params),
+            K.zeros_like(params),
+            K.convert_to_tensor(np.array(0.0, dtype=np.float32)),
         )
-        return params, moment1, moment2, step_count, -values
 
-    train_step = K.jit(train_step)
+        def step(state, _):
+            params, moment1, moment2, step_count = state
+            values, grads = value_and_grad(params)
+            step_count = step_count + 1.0
+            moment1 = 0.9 * moment1 + 0.1 * grads
+            moment2 = 0.999 * moment2 + 0.001 * grads * grads
+            moment1_hat = moment1 / (1.0 - 0.9**step_count)
+            moment2_hat = moment2 / (1.0 - 0.999**step_count)
+            params = params - config["learning_rate"] * moment1_hat / (
+                K.sqrt(moment2_hat) + 1.0e-8
+            )
+            return (params, moment1, moment2, step_count), -values
 
-    params = initial_parameters(config)
-    moment1 = K.zeros_like(params)
-    moment2 = K.zeros_like(params)
-    step_count = K.convert_to_tensor(np.array(0.0, dtype=np.float32))
-    history = []
-
-    for _ in range(config["max_steps"]):
-        params, moment1, moment2, step_count, observable = train_step(
-            params, moment1, moment2, step_count
+        _, history = jax.lax.scan(
+            step, initial_state, xs=None, length=config["max_steps"]
         )
-        history.append(observable)
+        return history
 
+    return K.jit(optimize)(initial_params)
+
+
+def run_solution(config):
+    gate_tape = tuple(config["gate_tape"])
+    cones = tuple(extract_cone(gate_tape, term) for term in config["pauli_terms"])
+    groups = parameter_groups(cones)
+    all_active = tuple(sorted(set().union(*(cone["parameters"] for cone in cones))))
+    initial_params = initial_active_parameters(config, all_active)
+    all_positions = {parameter: index for index, parameter in enumerate(all_active)}
+
+    histories = []
+    for group in groups:
+        group_active = tuple(
+            sorted(set().union(*(cone["parameters"] for cone in group)))
+        )
+        columns = tuple(all_positions[parameter] for parameter in group_active)
+        histories.append(
+            train_group(config, group, initial_params[:, columns], group_active)
+        )
+
+    history = histories[0]
+    for group_history in histories[1:]:
+        history = history + group_history
     return {
-        "observable_history": K.numpy(K.stack(history, axis=1)).astype(np.float64),
+        "observable_history": K.numpy(history).T.astype(np.float64),
     }
