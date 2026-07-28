@@ -3,8 +3,13 @@
 日期：2026-07-27 ~ 2026-07-28 · 求解模型：Fable 5（Cursor Agent）· 框架：TensorCircuit-NG
 最终结果：**12/12 题官方 reward = 1.0**（functional × static × LLM audit 全满分）· T/T_ref 中位数 **2.39**（最好 0.74，最差 18.06）
 
-![dual axis](figs/fable5_dual_axis_scatter.png)
 ![ratio bars](figs/fable5_ratio_bars.png)
+![agent resource use](figs/fable5_agent_resource_use.png)
+
+图表口径(对齐上游 README Main Results 的两图结构):第一张为产物效率
+(官方比值柱 + complex64 同精度对照菱形);第二张为资源消耗——左侧 agent 求解
+墙钟时间(会话时间线重建,总计约 290 分钟;Cursor harness 不暴露 token/服务
+成本,故如实缺省),右侧为官方盖章的产物运行时长与同机专家参考对照。
 
 ## 一、混合流程是怎么运作的
 
