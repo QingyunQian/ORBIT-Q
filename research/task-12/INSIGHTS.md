@@ -8,7 +8,16 @@ Evidence ledger: [`LOG.md`](LOG.md)
 
 ## Current best
 
-none (no candidate has passed the frozen paired measurement rule yet).
+Experiment `e01` (`src/solutions/task-12/solution_12.py`, SHA-256
+`1d9a36c2649e938666f680e98e423e966f82c503da64ce7e4e06c5e33344560a`): batched
+fixed-order su(4) exponentials plus a whole-training `jax.lax.scan`. Six
+eligible local-engine pairs against the immutable reference: paired speedup
+mean 3.914x ± 0.015x (95% Student-t CI 3.877x-3.951x), candidate mean
+2.320613 s vs reference mean 9.082742 s, 6/6 pairs won. The tracked
+pair-fused variant (`variants/solution_12_fused.py`) reaches 4.248x ± 0.020x
+(CI 4.196x-4.299x) under the same protocol. Scope: this repository's Task 12
+canonical workload on the campaign host with `--engine local`; the Docker
+promotion gate of `GOAL.md` remains closed pending a Docker rerun.
 
 ## Preserved semantics
 
@@ -32,16 +41,30 @@ none (no candidate has passed the frozen paired measurement rule yet).
   all differentiated) dominate the graph
   (`profiles/reference-profile.json`, ledger entry "Reference bottleneck
   profile").
-- Inside the step, gate construction dominates and the tensor-network
-  contraction is nearly free: the exact circuit state has bond dimension
-  <= 4 because exactly one brickwork gate crosses each cut (`SURVEY.md`).
+- Inside the step, gate construction dominates: batched-gate-build-only scan
+  steps cost 0.381 ms (adaptive expm) vs 0.123 ms (fixed Pade), while the
+  whole candidate step is 0.190 ms; the tensor-network contraction is nearly
+  free because the exact circuit state has bond dimension <= 4
+  (`profiles/expm-microbench.json`, `profiles/reference-profile.json`).
 - Per-step Python dispatch is only ~5 us, so a scan alone is a single-digit
-  percentage improvement (external precedent, `SURVEY.md` hypothesis 3).
+  percentage improvement (external precedent, recorded in `SURVEY.md`
+  hypothesis 3).
 
 ## What worked
 
-none recorded yet; see `SURVEY.md` hypothesis e01 for the primary planned
-candidate.
+- One einsum against the stacked 15 su(4) generators plus one batched
+  fixed 2^5 scaling-and-squaring diagonal Pade(3,3) exponential for all 31
+  gates: exactly unitary for anti-Hermitian input (measured unitarity defect
+  <= 8.3e-6 in complex64), max deviation from a float64 exponential 3.2e-6
+  over generator norms up to 33.6 while the training trajectory never
+  exceeds norm 3.61 (`profiles/equivalence-check.json`); shrinks StableHLO
+  from 8884 to 954 lines, compile from ~3.4 s to ~0.4 s, and the step from
+  0.667 ms to 0.190 ms.
+- `jax.lax.scan` over the 5000 Adam updates: compiles the step exactly once
+  and removes per-step dispatch; essential once the step itself is ~0.2 ms.
+- Pair-fusing qubit pairs into 16 four-level `QuditCircuit` sites (tracked
+  variant): halves the contraction network; worth a further ~8% end to end
+  after the gate-construction fix (4.248x vs 3.914x).
 
 ## What did not work
 

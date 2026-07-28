@@ -111,3 +111,155 @@ containing only the batched 31-gate build plus gradient and Adam costs
 the candidate's fixed-order diagonal Pade(3,3); the per-gate `su4`
 construction chain, not the tensor-network contraction, dominates both the
 graph size and the step time.
+
+## Experiment `e01`
+
+Branch: `cursor/task-12-batched-su4-campaign-f598`
+
+Worktree: single working clone on the campaign host (deviation recorded under
+"Campaign selection and provenance").
+
+## Hypothesis
+
+Building all 31 SU4 gate matrices per step with one batched einsum against
+the stacked su(4) generators and one fixed 2^5 scaling-and-squaring diagonal
+Pade(3,3) exponential, applying them through `circuit.any`, and running the
+5000 Adam updates inside one `jax.lax.scan` reduces the evaluator-reported
+runtime by at least 3x while reproducing the reference trajectory within
+complex64 round-off (falsified if any functional gate fails, if the paired
+speedup CI includes 1.0, or if the early-step loss trajectory deviates beyond
+round-off scale).
+
+## Parent commit and diff digest
+
+Latest accepted parent commit:
+`611c35b` (`data: release task 12 public workload v2`; campaign base
+`690ffbac51715afd0a3e80718eeb6de20f11863a`)
+
+Hypothesis commit: `ef005888101c98de30fda2df3331f5f8461bf0ab`
+
+Candidate file: `src/solutions/task-12/solution_12.py`
+
+Candidate SHA-256:
+`1d9a36c2649e938666f680e98e423e966f82c503da64ce7e4e06c5e33344560a`
+
+Diff SHA-256:
+`0badae624ed7ec5e309e1a0684e431e407895dc54f4530d61846a3320ffd309e`
+
+## Data used
+
+Public dataset version: `orbitq-workloads-v20260728.2`
+
+Public manifest SHA-256:
+`569a0141c5f0d723f275112d58cc6a69a3af10ad84ab8536c072604ee838cbfd`
+
+Private evaluation used: `no`
+
+## Command, seed, and environment
+
+Benchmark command:
+
+```bash
+./bench run 12 --solution optimized --compare-to reference --repeat 6 \
+  --engine local --timeout 300 \
+  --output results/task-12-e01-batched-pairs-local
+```
+
+Public seed or case selector: canonical fixed configuration, seed 2039.
+
+Reference SHA-256:
+`10cfd516bc250633f4675653e0d8986002e56f4d5916a9c2972c1085193f5d38`
+
+Evaluator SHA-256:
+`08940a5fabfd88a957c467edabfbe6faa7b766f38b4d518557e50e94fcf3b277`
+
+Docker image ID: none (`--engine local`; no Docker daemon on this host)
+
+Container session ID: none (fresh local evaluator process per cell)
+
+Pair-order pattern: odd pairs `reference -> candidate`; even pairs
+`candidate -> reference`
+
+TensorCircuit-NG commit/version: `tensorcircuit-nightly==1.7.0.dev20260618`
+(+ `envs/tensorcircuit-py311/sitecustomize.py` OMECo shortcut backport)
+
+JAX/JAXLIB versions: `0.10.0` / `0.10.0`
+
+## Hardware and five-minute cap
+
+Host fingerprint:
+`748423c1790b38ddbdd8eb77499b222a173b313f350e3bc35402ee8889a49dc4`
+
+CPU allocation: 4 vCPU Intel Xeon x86_64 (whole host; no container pinning)
+
+Memory allocation: 15 GiB host memory (no container limit)
+
+Timeout: `300 seconds`
+
+Measured region: evaluator-reported `End-to-end solution time`
+(`run_solution(config)` only; evaluator-side DMRG excluded by the evaluator)
+
+## Result: validity, runtime, and improvement
+
+Immutable report: `results/task-12-e01-batched-pairs-local/results.json`
+(untracked; retained on the campaign host)
+
+Report SHA-256:
+`653aaaaabff79a4c9a2bdcdbea4a82b561d8cff0824b83f84df08f5efb2659cd`
+
+Summary SHA-256:
+`725eeecf70b572fca9d7a4e88dbe995f216b87b75173624dedb1a75715c108f7`
+
+```text
+terminal_status: SUCCESS x 12 (6 reference cells, 6 candidate cells)
+valid: 12/12 (Overall: PASS in every cell; final fidelities 0.86954-0.87016)
+timed_out: 0
+passing_pairs: 6/6 (candidate wins 6/6)
+reference_mean_runtime_sec: 9.082742
+reference_runtime_stderr_sec: 0.027423
+reference_median_runtime_sec: 9.086063
+candidate_mean_runtime_sec: 2.320613
+candidate_runtime_stderr_sec: 0.002886
+candidate_median_runtime_sec: 2.320519
+improvement_pct: 74.450306
+improvement_pct_stderr: 0.095146
+speedup: 3.913941
+speedup_stderr: 0.014572
+paired_speedup_ci_low: 3.876545
+paired_speedup_ci_high: 3.951460
+```
+
+Pairwise runtimes (reference, candidate, speedup): (9.132, 2.324, 3.9299),
+(9.040, 2.317, 3.9023), (9.023, 2.318, 3.8926), (9.163, 2.311, 3.9651),
+(9.132, 2.323, 3.9312), (9.006, 2.331, 3.8629).
+
+Note: the paired benchmark was executed against the exact candidate bytes
+recorded in the hypothesis commit; the immutable report's per-row
+`source_sha256` values equal the candidate and reference hashes above.
+
+Trajectory equivalence (`profiles/equivalence-check.json`): the first 10
+recorded losses match the reference bit-for-bit in float32 (max delta 0.0);
+max delta 3.98e-05 over 50 steps and 1.27e-03 over 400 steps, the ordinary
+round-off scale amplified by optimizer dynamics. The maximum su(4)
+generator-norm bound over all 5000 steps is 3.6016 (scaled norm 0.1125 after
+2^-5), far inside the fixed-Pade accuracy envelope measured in
+`profiles/expm-microbench.json`.
+
+Decision: `keep` (all validity gates pass; six eligible counterbalanced
+local-engine pairs; candidate mean and median lower; 6/6 pairs won; 95%
+paired-speedup CI excludes 1.0. The `GOAL.md` Docker promotion gate stays
+closed on this host and is deferred to a Docker-capable rerun.)
+
+## Failure signal and interpretation
+
+No failures, timeouts, or invalid cells in this session.
+
+## Next pivot
+
+Track the pair-fused ququart formulation as a reference-derived variant and
+measure it under the same paired protocol; request a Docker-engine rerun for
+formal promotion.
+
+## Append-only corrections
+
+None.
