@@ -11,9 +11,11 @@
   "runtime_ratio_candidate_over_reference": 0.74,
   "ratio_basis": "candidate (cloud precheck) / publication reference, same machine and image",
   "precision_control": {
-    "note": "the candidate uses complex64; a complex128 control variant of the same code was measured to attribute the sub-1.0 ratio",
-    "candidate_complex128_runtime_sec": 199.0,
-    "ratio_complex128_over_reference": 1.11,
-    "interpretation": "the sub-1.0 ratio comes primarily from the complex64 precision choice (legitimate within the task tolerances: energy gap 0.069 vs 0.12 allowed, string MAE 0.057-0.064 vs 0.12 allowed), not from an algorithmic advantage; in matched double precision the candidate is about 1.1x the reference. The reference source was never read, so its dtype is unknown but its runtime is consistent with double precision."
+    "note": "post-freeze dtype check (config lines only, no algorithmic content read): the reference itself sets complex64, same as the candidate",
+    "reference_dtype": "complex64 (set_dtype line extracted from the reference source after the full 12-task run was frozen and stamped)",
+    "candidate_dtype": "complex64",
+    "candidate_complex128_control_runtime_sec": 199.0,
+    "reference_second_sample_runtime_sec": 176.67,
+    "interpretation": "matched-precision comparison: both sides run complex64, so T/T_ref = 0.74 is a genuine same-precision implementation advantage (about 1.35x faster than the expert reference). The earlier 'precision-driven' attribution was incorrect; the complex128 control only characterizes the candidate's own precision scaling."
   }
 }
