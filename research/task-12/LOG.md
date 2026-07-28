@@ -263,3 +263,68 @@ formal promotion.
 ## Append-only corrections
 
 None.
+
+## Variant benchmark: pair-fused ququart contraction
+
+Date: 2026-07-28
+
+Variant tracking commit: `3026f94b202bf91d1d5b7c8656e8ab5f23e6a030`
+
+Variant file: `src/solutions/task-12/variants/solution_12_fused.py`
+
+Variant SHA-256:
+`5edd437829352c573b24ae2f9021ef6046c2cf53788a8b79c8811b8fe0e3103f`
+
+This is a tracked reference-derived variant benchmark, not a second campaign
+candidate; `src/solutions/task-12/solution_12.py` remains the e01 candidate.
+
+Command:
+
+```bash
+./bench run 12 --solution fused --compare-to reference --repeat 6 \
+  --engine local --timeout 300 \
+  --output results/task-12-fused-variant-pairs-local
+```
+
+Environment, host, pair-order pattern, timeout, and measured region: same as
+experiment `e01`.
+
+Immutable report: `results/task-12-fused-variant-pairs-local/results.json`
+(untracked; retained on the campaign host)
+
+Report SHA-256:
+`f7bc804a975b299a786b6bc519764a2dd926076e054d82d9aea20094cc0abed8`
+
+Summary SHA-256:
+`4d6a20dd02145ef5717abcb1c9ad643f7e9dbde4a3f59bfcb7c52523fc6c6608`
+
+```text
+terminal_status: SUCCESS x 12 (6 reference cells, 6 variant cells)
+valid: 12/12 (Overall: PASS in every cell; final fidelities 0.86904-0.87013)
+timed_out: 0
+passing_pairs: 6/6 (variant wins 6/6)
+reference_mean_runtime_sec: 9.020622
+reference_runtime_stderr_sec: 0.026975
+reference_median_runtime_sec: 9.033664
+candidate_mean_runtime_sec: 2.123708
+candidate_runtime_stderr_sec: 0.004555
+candidate_median_runtime_sec: 2.121520
+improvement_pct: 76.457192
+improvement_pct_stderr: 0.111281
+speedup: 4.247582
+speedup_stderr: 0.019961
+paired_speedup_ci_low: 4.196459
+paired_speedup_ci_high: 4.299083
+```
+
+Pairwise runtimes (reference, variant, speedup): (9.017, 2.119, 4.2557),
+(9.082, 2.124, 4.2756), (9.050, 2.111, 4.2870), (8.931, 2.128, 4.1960),
+(8.954, 2.143, 4.1786), (9.089, 2.117, 4.2938).
+
+Interpretation: after e01's gate-construction fix, halving the contraction
+network buys a further ~8% end to end (4.248x vs 3.914x); the contraction
+was never the dominant cost. The variant stays PASS-equivalent with final
+fidelities inside the reference's own run-to-run band.
+
+Decision: `keep` as a tracked variant (same local-engine eligibility caveat
+as e01).
