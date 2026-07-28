@@ -24,7 +24,7 @@ bounded by cutting dense-state passes rather than by compile or dispatch.
 | Role | Artifact | Commit or hash |
 |---|---|---|
 | Immutable expert | [`references/task-11/solution_11.py`](../../references/task-11/solution_11.py) | SHA-256 `087c7a2894b4f0383bfc476f835933940cdfd2d9812f814adede3a39375b3f00` |
-| Campaign best (candidate e01) | [`src/solutions/task-11/solution_11.py`](../../src/solutions/task-11/solution_11.py) | SHA-256 `a787e7579bbe969f25e3ca9bea0b7f25b028e6e0bd7f8d54a6969940de1149c5` |
+| Campaign best (candidate e01) | [`src/solutions/task-11/solution_11.py`](../../src/solutions/task-11/solution_11.py) | SHA-256 `d5faedc2859705be1b5a259f11ae78886dfeee9f5563eade841bedd88359e5dc` |
 | Candidate hypothesis | Experiment `e01` | Commit `3dbe4a4c662335600fd014126d775344445d4aad` |
 | Candidate evidence | Six paired runs | Report SHA-256 `65bc5909d6939deda5f0346ccfefa19cb07afd6b6a866960ac6b746a2e64440e` |
 | Workload | `datasets/public/task-11/canonical.json`, dataset `orbitq-workloads-v20260728.3` | Expert validation report SHA-256 `b4ce3d311a0d4ba74ec094b8330824d07135a82f5a23c44aece9a3e2d25f7d91` |

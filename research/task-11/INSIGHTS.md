@@ -9,7 +9,7 @@ Evidence ledger: [`LOG.md`](LOG.md)
 ## Current best
 
 Experiment `e01` (`src/solutions/task-11/solution_11.py`, SHA-256
-`a787e7579bbe969f25e3ca9bea0b7f25b028e6e0bd7f8d54a6969940de1149c5`): exact
+`d5faedc2859705be1b5a259f11ae78886dfeee9f5563eade841bedd88359e5dc`): exact
 gate fusion (47 -> 11 dense-state passes per layer), batched fixed-order
 entangler exponentials, diagonal onsite coefficient vector, and a
 whole-training `jax.lax.scan`. Six eligible local-engine pairs against the
