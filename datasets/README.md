@@ -6,7 +6,7 @@ The workload dataset is a required gate for autoresearch. The repository does no
 
 ### Public development
 
-Proposal agents may read public cases. Include, for each task:
+Proposal agents may read public cases. Include, for the selected task:
 
 - the canonical evaluator configuration;
 - a reduced smoke case where the task contract permits one;
@@ -18,7 +18,9 @@ Store public records under `datasets/public/`. List each record in `datasets/pub
 
 ### Hidden rotating tuning
 
-The trusted controller owns hidden tuning records. Provide at least two disjoint rotations for each task. Rotate after exposure, controller compromise, or a declared research cycle.
+The trusted controller owns hidden tuning records. Provide at least two
+disjoint rotations for the selected task. Rotate after exposure, controller
+compromise, or a declared research cycle.
 
 Do not store hidden records, manifests, paths, seeds, hashes, keys, or populated controller configuration in the Git checkout. The controller returns aggregate validity and runtime fields.
 
@@ -47,18 +49,19 @@ Download external inputs from their primary source when a task needs them. Recor
 
 ## Coverage and separation
 
-Cover tasks 01 through 12 in all three tiers. Attempt each record with the
-matching human expert solution in the pinned environment. If that immutable
-expert has a reproducible setup failure, retain the failure and use an
-independent trusted oracle to validate the record's scientific semantics before
-marking the dataset ready. This exception does not create a runtime baseline.
+Cover only the campaign's selected task in all three tiers. Attempt each record
+with that task's matching human expert solution in the pinned environment. If
+the immutable expert has a reproducible setup failure, retain the failure and
+use an independent trusted oracle to validate the record's scientific
+semantics before marking the dataset ready. This exception does not create a
+runtime baseline.
 
 Reject a dataset release when:
 
 - an expert fails a record;
 - public, tuning, and holdout records share a config and seed;
 - a record changes the task's scientific semantics;
-- a task lacks required coverage;
+- the selected task lacks required coverage;
 - a record lacks provenance or a content hash.
 
 ## Versioning
@@ -73,10 +76,10 @@ Create a new version when any record, threshold, seed, generator, or split chang
 
 ## Build and release procedure
 
-1. Read every task problem statement and evaluator.
-2. Define public, tuning, and holdout coverage for all 12 tasks.
+1. Read the selected task's problem statement and evaluator.
+2. Define public, tuning, and holdout coverage for the selected task.
 3. Generate records with deterministic tools and fixed seeds.
-4. Run each human expert against each record.
+4. Run the selected task's human expert against each record.
 5. Review failures and semantic changes.
 6. Compute record and manifest hashes.
 7. Place public records in `datasets/public/`.

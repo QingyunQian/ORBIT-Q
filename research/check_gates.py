@@ -70,7 +70,10 @@ def _command_option(command: object, option: str) -> str | None:
     return values[index + 1] if index + 1 < len(values) else None
 
 
-def check_survey(root: Path) -> tuple[bool, list[str]]:
+def check_survey(
+    root: Path,
+    campaign_task_ids: Sequence[str],
+) -> tuple[bool, list[str]]:
     errors: list[str] = []
     path = root / "research" / "SURVEY.md"
     try:
@@ -81,7 +84,7 @@ def check_survey(root: Path) -> tuple[bool, list[str]]:
         errors.append("research/SURVEY.md is not marked READY")
     if re.search(r"\bTODO\b", text):
         errors.append("research/SURVEY.md still contains TODO placeholders")
-    for task_id in TASK_IDS:
+    for task_id in campaign_task_ids:
         if f"Task {task_id}:" not in text:
             errors.append(f"research/SURVEY.md does not cover task {task_id}")
     return not errors, errors
@@ -89,7 +92,7 @@ def check_survey(root: Path) -> tuple[bool, list[str]]:
 
 def check_public_dataset(
     root: Path,
-) -> tuple[bool, str | None, list[str]]:
+) -> tuple[bool, str | None, tuple[str, ...], list[str]]:
     errors: list[str] = []
     payload = _read_json(
         root / "datasets" / "public" / "manifest.json",
@@ -97,7 +100,25 @@ def check_public_dataset(
         errors,
     )
     if not isinstance(payload, dict):
-        return False, None, errors or ["public dataset manifest must be an object"]
+        return (
+            False,
+            None,
+            (),
+            errors or ["public dataset manifest must be an object"],
+        )
+
+    campaign_task_id = str(payload.get("campaign_task_id", ""))
+    if campaign_task_id not in TASK_IDS:
+        errors.append("public dataset manifest has no valid campaign_task_id")
+        campaign_task_ids: tuple[str, ...] = ()
+    else:
+        campaign_task_ids = (campaign_task_id,)
+
+    required_task_ids = payload.get("required_task_ids")
+    if required_task_ids != list(campaign_task_ids):
+        errors.append(
+            "public dataset required_task_ids must contain only campaign_task_id"
+        )
 
     if payload.get("status") != "ready":
         errors.append("public dataset manifest is not marked ready")
@@ -125,23 +146,30 @@ def check_public_dataset(
                 f"public dataset case {index} lacks {', '.join(missing)}"
             )
         task_id = str(case.get("task_id", ""))
-        if task_id in TASK_IDS:
+        if task_id in campaign_task_ids:
             covered.add(task_id)
+        elif task_id in TASK_IDS:
+            errors.append(
+                f"public dataset case {index} is outside the campaign task"
+            )
         else:
             errors.append(f"public dataset case {index} has invalid task_id")
         sha256 = case.get("sha256")
         if sha256 not in (None, "") and not SHA256_RE.fullmatch(str(sha256)):
             errors.append(f"public dataset case {index} has invalid sha256")
 
-    missing_tasks = sorted(set(TASK_IDS) - covered)
+    missing_tasks = sorted(set(campaign_task_ids) - covered)
     if missing_tasks:
         errors.append(
             "public dataset lacks task coverage: " + ", ".join(missing_tasks)
         )
-    return not errors, version, errors
+    return not errors, version, campaign_task_ids, errors
 
 
-def check_baseline_report(path: Path | None) -> tuple[bool, list[str]]:
+def check_baseline_report(
+    path: Path | None,
+    campaign_task_ids: Sequence[str],
+) -> tuple[bool, list[str]]:
     errors: list[str] = []
     if path is None:
         return False, ["a full reference baseline report was not supplied"]
@@ -179,7 +207,7 @@ def check_baseline_report(path: Path | None) -> tuple[bool, list[str]]:
             continue
         row: dict[str, Any] = raw_row
         task_id = str(row.get("task_id", ""))
-        if task_id not in TASK_IDS:
+        if task_id not in campaign_task_ids:
             errors.append(f"baseline row {index} has invalid task_id")
             continue
         by_task[task_id].append(row)
@@ -305,7 +333,7 @@ def check_baseline_report(path: Path | None) -> tuple[bool, list[str]]:
                 f"baseline row {index} lacks a read-only shared staging mount"
             )
 
-    for task_id in TASK_IDS:
+    for task_id in campaign_task_ids:
         count = len(by_task.get(task_id, []))
         if count < 6:
             errors.append(
@@ -396,9 +424,17 @@ def evaluate_gates(
     baseline_report: Path | None,
     controller_attestation: Path | None,
 ) -> dict[str, Any]:
-    survey_ready, survey_errors = check_survey(root)
-    dataset_ready, public_version, dataset_errors = check_public_dataset(root)
-    baseline_ready, baseline_errors = check_baseline_report(baseline_report)
+    (
+        dataset_ready,
+        public_version,
+        campaign_task_ids,
+        dataset_errors,
+    ) = check_public_dataset(root)
+    survey_ready, survey_errors = check_survey(root, campaign_task_ids)
+    baseline_ready, baseline_errors = check_baseline_report(
+        baseline_report,
+        campaign_task_ids,
+    )
     controller_ready, controller_errors = check_controller_attestation(
         root,
         controller_attestation,
@@ -409,6 +445,7 @@ def evaluate_gates(
         "public_dataset": {
             "ready": dataset_ready,
             "version": public_version,
+            "campaign_task_ids": list(campaign_task_ids),
             "errors": dataset_errors,
         },
         "reference_baselines": {

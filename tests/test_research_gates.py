@@ -10,15 +10,16 @@ from pathlib import Path
 RESEARCH_ROOT = Path(__file__).resolve().parents[1] / "research"
 sys.path.insert(0, str(RESEARCH_ROOT))
 
-from check_gates import TASK_IDS, evaluate_gates  # noqa: E402
+from check_gates import evaluate_gates  # noqa: E402
 
 
 SHA = "a" * 64
+CAMPAIGN_TASK_ID = "05"
 
 
 def _write_ready_fixture(root: Path, external: Path) -> tuple[Path, Path]:
     (root / "research").mkdir(parents=True)
-    sections = "\n".join(f"## Task {task}: complete" for task in TASK_IDS)
+    sections = f"## Task {CAMPAIGN_TASK_ID}: complete"
     (root / "research" / "SURVEY.md").write_text(
         f"# Survey\n\n**Status: READY**\n\n{sections}\n",
         encoding="utf-8",
@@ -27,12 +28,11 @@ def _write_ready_fixture(root: Path, external: Path) -> tuple[Path, Path]:
     public_version = "orbitq-workloads-v20260727.1"
     cases = [
         {
-            "task_id": task,
-            "case_id": f"public-{task}",
+            "task_id": CAMPAIGN_TASK_ID,
+            "case_id": f"public-{CAMPAIGN_TASK_ID}",
             "sha256": SHA,
             "provenance": "generated from the canonical public task",
         }
-        for task in TASK_IDS
     ]
     manifest = root / "datasets" / "public" / "manifest.json"
     manifest.parent.mkdir(parents=True)
@@ -41,6 +41,8 @@ def _write_ready_fixture(root: Path, external: Path) -> tuple[Path, Path]:
             {
                 "status": "ready",
                 "version": public_version,
+                "campaign_task_id": CAMPAIGN_TASK_ID,
+                "required_task_ids": [CAMPAIGN_TASK_ID],
                 "cases": cases,
             }
         ),
@@ -48,7 +50,7 @@ def _write_ready_fixture(root: Path, external: Path) -> tuple[Path, Path]:
     )
 
     rows = []
-    for task in TASK_IDS:
+    for task in (CAMPAIGN_TASK_ID,):
         for repeat in range(1, 7):
             rows.append(
                 {

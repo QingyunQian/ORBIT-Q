@@ -8,15 +8,17 @@ not bypass the startup gates.
 
 Before editing `src/solutions/` or a TensorCircuit-NG checkout, require:
 
-1. `research/SURVEY.md` is cited, covers all 12 tasks, and says `Status: READY`.
-2. `datasets/public/manifest.json` says `status: "ready"` and covers all tasks.
+1. `research/SURVEY.md` is cited, covers the campaign task, and says
+   `Status: READY`.
+2. `datasets/public/manifest.json` says `status: "ready"` and covers the
+   campaign task.
 3. A trusted controller attests that hidden tuning rotations and a sealed
    holdout exist outside every proposal worktree.
 
-Promotion additionally requires every claimed task to have at least six passing
-matched reference/candidate pairs under one host fingerprint, image ID,
-resource profile, evaluator set, and timing scope. Symmetric failures of the
-initial byte-identical files are acceptable bootstrap outcomes but have no
+Promotion additionally requires the campaign task to have at least six
+passing matched reference/candidate pairs under one host fingerprint, image
+ID, resource profile, evaluator set, and timing scope. Symmetric failures of
+the initial byte-identical files are acceptable bootstrap outcomes but have no
 runtime standing.
 
 The repository starts with the knowledge/data gates closed. Do not turn
@@ -51,13 +53,13 @@ Run from the `OrbitBreakersExpertBenchmarks` repository root:
 ```bash
 ./bench verify
 ./bench env doctor
-./bench run all \
+./bench run XX \
   --solution reference \
   --repeat 6 \
   --engine docker \
   --timeout 300 \
   --no-build \
-  --output results/reference-baseline
+  --output results/task-XX-reference-baseline
 ```
 
 Preserve the JSON report and its SHA-256 in controller-owned run storage. Do

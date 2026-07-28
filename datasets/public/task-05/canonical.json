@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "dataset_version": "orbitq-workloads-v20260728.1",
+  "tier": "public-development",
+  "task_id": "05",
+  "case_id": "task-05-canonical-fixed-v1",
+  "description": "Canonical fixed Task 05 non-unitary cooling workload.",
+  "input_config": {
+    "n_qubits": 18,
+    "transverse_field": 1.1,
+    "n_layers": 10,
+    "initial_filter_strength": 0.01,
+    "max_steps": 600,
+    "learning_rate": 0.02,
+    "maximum_energy_density_gap": 0.5
+  },
+  "seed": null,
+  "randomness": "none",
+  "expected_result_contract": {
+    "final_a": {
+      "shape": [
+        5,
+        2
+      ],
+      "meaning": "Learned one-qubit strengths by even/odd sublayer."
+    },
+    "final_b": {
+      "shape": [
+        5,
+        2
+      ],
+      "meaning": "Learned two-qubit strengths by even/odd sublayer."
+    },
+    "energy_density_history": {
+      "shape": [
+        600
+      ],
+      "meaning": "Pre-update energy density for each of exactly 600 Adam updates."
+    }
+  },
+  "functional_thresholds": {
+    "energy_density_must_improve": true,
+    "ground_energy_lower_bound_tolerance": 1e-08,
+    "maximum_final_ground_energy_density_gap": 0.5
+  },
+  "variation_support": {
+    "reduced_smoke_case": false,
+    "scale_probe": false,
+    "reason": "The public Task 05 contract fixes 18 qubits, ten layers, and exactly 600 updates; changing any of them would not exercise the campaign workload."
+  },
+  "source_provenance": {
+    "repository_commit": "46d6636881500fa8f70618b74f89353a2b6702b4",
+    "problem_path": "tasks/task-05/problem.md",
+    "problem_sha256": "b0b31d059b86d92bee03a51a82586c0c4e0823de2ec5a96dc5772baeccd5da78",
+    "evaluator_path": "tasks/task-05/evaluator/evaluate_5.py",
+    "evaluator_sha256": "dd0742cf402827beec19328bc9cf090e80a08973cf9303fd7d524a4f4cd37402",
+    "expert_path": "references/task-05/solution_5.py",
+    "expert_sha256": "ccafe626865ee39b651adaeead86b8bf6f541e3f1426da4842da92b6a0ee015f"
+  },
+  "expert_validation": {
+    "status": "PASS",
+    "validated_at_utc": "2026-07-27T18:18:21.759853Z",
+    "environment_image_id": "sha256:623dc47116d71b5f4e2879a61def7beada982438cb2df45de8367d92f7ec242c",
+    "host_fingerprint_sha256": "d72d96a55e39ff10c67a820a30902dbd1b919a8f41fb4dbf95c855eac59f0013",
+    "evaluator_runtime_sec": 135.503222,
+    "initial_energy_density": -1.1720402241,
+    "final_energy_density": -1.326731205,
+    "exact_ground_energy_density": -1.3268985748,
+    "report_sha256": "b5defee28534cb68cb274563a4f8c1075acc38ed2d1b6e8cb13acf401e8011b4",
+    "summary_sha256": "10dc8c4582ac2d3c334947d291a2d201f379a4f724370e935502818c513d5f29",
+    "stdout_sha256": "0acbac2fe0b119580533765023792f222eff38c2e9497ea9d15b46497cb2fb4b"
+  }
+}
