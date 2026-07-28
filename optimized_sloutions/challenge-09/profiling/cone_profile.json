@@ -1,0 +1,47 @@
+{
+  "n_qubits": 512,
+  "tape_len": 3897,
+  "parameter_count": 3897,
+  "cones": [
+    {
+      "term": [
+        [
+          "x",
+          388
+        ],
+        [
+          "z",
+          390
+        ]
+      ],
+      "coeff": 0.5645931361768194,
+      "n_qubits": 18,
+      "n_gates": 74,
+      "n_params": 74
+    },
+    {
+      "term": [
+        [
+          "x",
+          16
+        ],
+        [
+          "y",
+          19
+        ]
+      ],
+      "coeff": 1.0,
+      "n_qubits": 15,
+      "n_gates": 80,
+      "n_params": 80
+    }
+  ],
+  "param_overlap": 0,
+  "active_params": 154,
+  "notes": {
+    "microbench_vmap200_step_ms_lightcone_true": 10.1,
+    "microbench_vmap200_step_ms_lightcone_false": 1678.1,
+    "smoke_e2e_sec": 11.68,
+    "reference_publication_cloud_sec": 36.17
+  }
+}
