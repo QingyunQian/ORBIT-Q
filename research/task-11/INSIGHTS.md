@@ -8,7 +8,16 @@ Evidence ledger: [`LOG.md`](LOG.md)
 
 ## Current best
 
-none (no candidate has passed the frozen paired measurement rule yet).
+Experiment `e01` (`src/solutions/task-11/solution_11.py`, SHA-256
+`bca046d2e1c6e6824fce51022967c21f364c2e0d515ca2b0583f389276eb17f2`): exact
+gate fusion (47 -> 11 dense-state passes per layer), batched fixed-order
+entangler exponentials, diagonal onsite coefficient vector, and a
+whole-training `jax.lax.scan`. Six eligible local-engine pairs against the
+immutable reference: paired speedup mean 1.464x ± 0.003x (95% Student-t CI
+1.457x-1.472x), candidate mean 114.968325 s vs reference mean 168.361539 s,
+6/6 pairs won. Scope: this repository's Task 11 canonical workload on the
+campaign host with `--engine local`; the Docker promotion gate of `GOAL.md`
+remains closed pending a Docker rerun.
 
 ## Preserved semantics
 
@@ -42,8 +51,19 @@ none (no candidate has passed the frozen paired measurement rule yet).
 
 ## What worked
 
-none recorded yet; see `SURVEY.md` hypothesis e01 for the primary planned
-candidate.
+- Exact gate fusion: compose the three single-site rotations per site into
+  one 3x3 unitary and absorb each even-bond pair into its 9x9 entangler so
+  every layer applies 11 two-qudit unitaries instead of 47 gate applications
+  (`profiles/reference-profile.json`: StableHLO 8135 -> 2426 lines; step
+  323 -> 268 ms; forward energy 36 -> 17.5 ms).
+- Batched fixed 2^5 scaling-and-squaring diagonal Pade(3,3) for all
+  entanglers of a layer: exactly unitary for anti-Hermitian input; max
+  generator norm over training is 2.959 (`profiles/equivalence-check.json`).
+- Precomputed per-basis-state coefficient vector for the diagonal single-ion
+  term: replaces 12 separate `expectation` contractions with one weighted
+  `|amp|^2` sum.
+- `jax.lax.scan` over the 500 Adam updates plus a jitted finalize block:
+  compiles the step once and removes per-step Python dispatch.
 
 ## What did not work
 
@@ -57,11 +77,13 @@ candidate.
 
 ## Open hypotheses
 
-- e01: exact gate fusion (47 -> 11 passes per layer) + batched fixed-order
-  Pade(3,3) entangler exponentials + diagonal-observable coefficient vector
-  + whole-training scan (see `SURVEY.md`).
 - Reproduce the six-pair protocol under `--engine docker` on a
-  Docker-capable host to open the formal `GOAL.md` promotion gate.
+  Docker-capable host to open the formal `GOAL.md` promotion gate (highest
+  value; no code change required).
+- Further dense-state layout tuning inside `QuditCircuit` is bounded by the
+  ~1.7x reshape-matmul floor probe and would depart from framework circuit
+  APIs; revisit only with maintainer guidance on framework-fidelity
+  boundaries.
 
 ## Evidence limits
 

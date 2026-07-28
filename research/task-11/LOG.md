@@ -117,3 +117,162 @@ container on the maintainer host (`baselines/bootstrap-2026-07-27.md`), and
 the ORBIT-Q publication record lists 68.10 s on an unspecified host
 (`baselines/historical.json`). These numbers are not pooled with this
 campaign's measurements.
+
+## Experiment `e01`
+
+Branch: `cursor/task-11-fused-layer-campaign-f598`
+
+Worktree: single working clone on the campaign host (deviation recorded under
+"Campaign selection and provenance").
+
+## Hypothesis
+
+Exact gate fusion (compose per-site rz/ry/rz into one 3x3 unitary and absorb
+each even-bond pair into its entangler, dropping dense-state passes from 47
+to 11 per layer), plus one batched fixed 2^5 scaling-and-squaring diagonal
+Pade(3,3) exponential for every 9x9 entangler of a layer, plus a precomputed
+per-basis-state coefficient vector for the diagonal single-ion term, plus a
+whole-training `jax.lax.scan` with a jitted post-training readout, reduces
+the evaluator-reported runtime by a statistically significant factor while
+preserving the algebraic layer unitaries and reproducing the reference
+energy trajectory within complex64 round-off amplified by optimizer dynamics
+(falsified if any functional gate fails, if the paired-speedup CI includes
+1.0, or if early-step energy deltas exceed the round-off envelope audited in
+`profiles/equivalence-check.json`).
+
+## Parent commit and diff digest
+
+Latest accepted parent commit:
+`c29a139` (`data: release task 11 public workload v3`; campaign base
+`ed382bf042ecb1c87b399acaadec6bce74368649`)
+
+Hypothesis commit: `3dbe4a4c662335600fd014126d775344445d4aad`
+
+Candidate file: `src/solutions/task-11/solution_11.py`
+
+Candidate SHA-256:
+`bca046d2e1c6e6824fce51022967c21f364c2e0d515ca2b0583f389276eb17f2`
+
+Diff SHA-256:
+`3c6da28ef2f60be4abd390e1c5d9b0244e649fa23ff0d15a0c9dce0262dbef5c`
+
+## Data used
+
+Public dataset version: `orbitq-workloads-v20260728.3`
+
+Public manifest SHA-256:
+`97bf9fba6626a77d8bfe734b65c30cd319587185d8cb63b0b51ebfc9e176164a`
+
+Private evaluation used: `no`
+
+## Command, seed, and environment
+
+Benchmark command:
+
+```bash
+./bench run 11 --solution optimized --compare-to reference --repeat 6 \
+  --engine local --timeout 300 \
+  --output results/task-11-e01-fused-pairs-local
+```
+
+Public seed or case selector: canonical fixed configuration, seed 2041.
+
+Reference SHA-256:
+`087c7a2894b4f0383bfc476f835933940cdfd2d9812f814adede3a39375b3f00`
+
+Evaluator SHA-256:
+`de70880ec00a86a7123aed14651b33401a7f872f667fb1598bd3ba191e29353b`
+
+Docker image ID: none (`--engine local`; no Docker daemon on this host)
+
+Container session ID: none (fresh local evaluator process per cell)
+
+Pair-order pattern: odd pairs `reference -> candidate`; even pairs
+`candidate -> reference`
+
+TensorCircuit-NG commit/version: `tensorcircuit-nightly==1.7.0.dev20260618`
+(+ `envs/tensorcircuit-py311/sitecustomize.py` OMECo shortcut backport)
+
+JAX/JAXLIB versions: `0.10.0` / `0.10.0`
+
+## Hardware and five-minute cap
+
+Host fingerprint:
+`748423c1790b38ddbdd8eb77499b222a173b313f350e3bc35402ee8889a49dc4`
+
+CPU allocation: 4 vCPU Intel Xeon x86_64 (whole host; no container pinning)
+
+Memory allocation: 15 GiB host memory (no container limit)
+
+Timeout: `300 seconds`
+
+Measured region: evaluator-reported `End-to-end solution time`
+(`run_solution(config)` only)
+
+## Result: validity, runtime, and improvement
+
+Immutable report: `results/task-11-e01-fused-pairs-local/results.json`
+(untracked; retained on the campaign host)
+
+Report SHA-256:
+`65bc5909d6939deda5f0346ccfefa19cb07afd6b6a866960ac6b746a2e64440e`
+
+Summary SHA-256:
+`80b810cdf62fa247431104c8f44a30ca9494adca9d3d17c4d59eba432f0fbf67`
+
+```text
+terminal_status: SUCCESS x 12 (6 reference cells, 6 candidate cells)
+valid: 12/12 (Overall: PASS in every cell)
+timed_out: 0
+passing_pairs: 6/6 (candidate wins 6/6)
+reference_mean_runtime_sec: 168.361539
+reference_runtime_stderr_sec: 0.367342
+reference_median_runtime_sec: 168.568934
+candidate_mean_runtime_sec: 114.968325
+candidate_runtime_stderr_sec: 0.252797
+candidate_median_runtime_sec: 115.133288
+improvement_pct: 31.713427
+improvement_pct_stderr: 0.129555
+speedup: 1.464430
+speedup_stderr: 0.002767
+paired_speedup_ci_low: 1.457317
+paired_speedup_ci_high: 1.471543
+```
+
+Pairwise runtimes (reference, candidate, speedup): (169.633, 115.438, 1.4695),
+(168.531, 115.399, 1.4604), (168.606, 114.940, 1.4669), (167.352, 115.211, 1.4526),
+(168.763, 115.056, 1.4668), (167.284, 113.767, 1.4704).
+
+Note: the paired benchmark was executed against the exact candidate bytes
+recorded in the hypothesis commit; the immutable report's per-row
+`source_sha256` values equal the candidate and reference hashes above.
+
+Trajectory equivalence (`profiles/equivalence-check.json`): max absolute
+energy-density delta over the first 5/20/50/100 steps is
+2.8e-5 / 6.5e-5 / 8.0e-5 / 8.0e-5 (complex64 noise floor amplified by
+optimizer dynamics; exact gate fusion changes float rounding order, so the
+first steps are not bit-identical). The maximum entangler generator-norm
+bound over all 500 steps is 2.959 (scaled norm 0.0925 after 2^-5), inside
+the fixed-Pade accuracy envelope.
+
+Decision: `keep` (all validity gates pass; six eligible counterbalanced
+local-engine pairs; candidate mean and median lower; 6/6 pairs won; 95%
+paired-speedup CI excludes 1.0. The `GOAL.md` Docker promotion gate stays
+closed on this host and is deferred to a Docker-capable rerun.)
+
+## Failure signal and interpretation
+
+No failures, timeouts, or invalid cells in this session.
+
+## Next pivot
+
+No further candidate iterations planned for this campaign; request a
+Docker-engine rerun for formal promotion. Residual headroom is bounded by
+the bandwidth-bound dense-state floor measured in
+`profiles/gate-application-microbench.json` (~1.7x below the framework
+circuit path for a bare reshape-matmul probe that is not shippable under
+the framework-fidelity rules).
+
+## Append-only corrections
+
+None.
