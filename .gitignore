@@ -13,6 +13,7 @@ __pycache__/
 .conda/
 .venv/
 .venv-c12/
+.venv-obeb/
 venv/
 env/
 .pip-cache/
