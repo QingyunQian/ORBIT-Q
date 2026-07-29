@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "status": "public-reference-component-profile",
+  "measured_at_utc": "2026-07-28T01:28:18Z",
+  "task_id": "05",
+  "reference_sha256": "ccafe626865ee39b651adaeead86b8bf6f541e3f1426da4842da92b6a0ee015f",
+  "profiler_sha256": "a3d902878d1fd95c5d80869a0b1f36a5ac7ea94a842448ba68a4719e3b39f4b1",
+  "environment": {
+    "image_id": "sha256:623dc47116d71b5f4e2879a61def7beada982438cb2df45de8367d92f7ec242c",
+    "cpus": 8,
+    "memory": "9g",
+    "network": "none",
+    "backend": "cpu",
+    "jax": "0.10.0",
+    "jaxlib": "0.10.0"
+  },
+  "initial_parameter_energy_density": -1.1720402240753174,
+  "final_state_norm": 0.9999998807907104,
+  "trajectory": {
+    "lower_sec": 0.1199332920004963,
+    "compile_sec": 0.3172979579976527,
+    "first_call_compile_and_exec_sec": 0.483574583002337,
+    "steady_runtime_sec": [
+      0.11134200000014971,
+      0.09185808400070528,
+      0.04917924999972456,
+      0.049250125000980916,
+      0.04835337500117021,
+      0.04796608399919933,
+      0.04882333400018979,
+      0.04842616700261715
+    ],
+    "steady_mean_runtime_sec": 0.06189980237559212,
+    "steady_median_runtime_sec": 0.049001291999957175,
+    "steady_stdev_runtime_sec": 0.025054350668793846,
+    "cost_analysis": {
+      "flops": 41947604,
+      "transcendentals": 116,
+      "bytes_accessed": 169907392
+    },
+    "memory_analysis": {
+      "argument_size_in_bytes": 80,
+      "output_size_in_bytes": 2097152,
+      "temp_size_in_bytes": 2102704
+    }
+  },
+  "hamiltonian_energy": {
+    "lower_sec": 0.027096082998468773,
+    "compile_sec": 0.22494137499961653,
+    "first_call_compile_and_exec_sec": 0.13728891700156964,
+    "steady_runtime_sec": [
+      0.0024012499998207204,
+      0.0023944580025272444,
+      0.002338042002520524,
+      0.002372625000134576,
+      0.0023580840024806093,
+      0.0024046670005191118,
+      0.002466541998728644,
+      0.0024064999997790437
+    ],
+    "steady_mean_runtime_sec": 0.0023927710008138092,
+    "steady_median_runtime_sec": 0.0023978540011739824,
+    "steady_stdev_runtime_sec": 0.00003863975045170151,
+    "cost_analysis": {
+      "flops": 28573698,
+      "bytes_accessed": 12583220
+    },
+    "memory_analysis": {
+      "argument_size_in_bytes": 2097152,
+      "output_size_in_bytes": 4,
+      "temp_size_in_bytes": 4194312
+    }
+  },
+  "interpretation": {
+    "trajectory_share_of_separate_component_medians_pct": 95.33483688401903,
+    "hamiltonian_share_of_separate_component_medians_pct": 4.665163115980977,
+    "finding": "The ten-layer normalized TensorCircuit trajectory dominates forward evaluation. The 35-term Hamiltonian MVP is not the first-order 10x target.",
+    "priority": "Prioritize circuit contraction, gate application, normalization, and reverse-mode trajectory memory traffic before Hamiltonian rewrites.",
+    "caution": "Separate component timings do not sum exactly to the fused loss timing because XLA fusion and warm-up differ. Percentages use steady medians after independent compilation."
+  }
+}

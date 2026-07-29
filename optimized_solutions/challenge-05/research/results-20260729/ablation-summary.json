@@ -1,0 +1,283 @@
+{
+  "schema_version": 1,
+  "task_id": "05",
+  "protocol": {
+    "pairs": 6,
+    "order": "alternating matched pairs in one container",
+    "timing": "evaluator-reported run_solution wall time",
+    "confidence_interval": "two-sided 95% Student-t, df=5"
+  },
+  "reference_baseline": {
+    "report_sha256": "98f867e0ce8f6f701a271ce1ceb0f966b2374c987bde0c2e8a994d26c3a70bfe",
+    "source_sha256": "ccafe626865ee39b651adaeead86b8bf6f541e3f1426da4842da92b6a0ee015f",
+    "host_fingerprint_sha256": "c627504db97dc65b8d998afb4b9cdf73cfc3eff2ce2ac589b4a7a4aa0c7fdc48",
+    "image_id": "sha256:b059c5fa7f75702f9afbf94ec7866e102ac32afd59d25634ec0aca0fd56e2833",
+    "passing_runs": 6,
+    "runtimes_sec": [
+      97.277727,
+      97.722246,
+      98.529488,
+      99.783288,
+      98.037636,
+      100.264691
+    ],
+    "mean_runtime_sec": 98.60251266666667,
+    "stderr_runtime_sec": 0.4834394797403059,
+    "first_five_mean_runtime_sec": 98.270077
+  },
+  "comparisons": [
+    {
+      "factor": "Overall: exact bounded-rank MPS",
+      "reference_label": "Immutable dense expert",
+      "candidate_label": "Exact no-QR MPS",
+      "decision": "keep and promote",
+      "report_sha256": "220bf9b519cc69e7996a78855308fa1e1b70b82a51d7861561cca8b5a01678c5",
+      "generated_at": "2026-07-29T06:52:25.185319Z",
+      "host_fingerprint_sha256": "c627504db97dc65b8d998afb4b9cdf73cfc3eff2ce2ac589b4a7a4aa0c7fdc48",
+      "image": "orbitbreakers-expert-benchmarks:tensorcircuit-py311",
+      "image_id": "sha256:b059c5fa7f75702f9afbf94ec7866e102ac32afd59d25634ec0aca0fd56e2833",
+      "environment": "tensorcircuit-py311",
+      "cpus": 6,
+      "memory": "7g",
+      "timeout_sec": 300.0,
+      "reference_source_sha256": "ccafe626865ee39b651adaeead86b8bf6f541e3f1426da4842da92b6a0ee015f",
+      "candidate_source_sha256": "f741e6cc75b8ed1e47bbedafc557d231d54db60fb064011650fc9c7da36c9ef6",
+      "passing_cells": 12,
+      "cells": 12,
+      "pairs": [
+        {
+          "pair": 1,
+          "order": "reference->candidate",
+          "reference_runtime_sec": 92.0401,
+          "candidate_runtime_sec": 6.572937,
+          "speedup": 14.002887902318248,
+          "improvement_pct": 92.85861597282054
+        },
+        {
+          "pair": 2,
+          "order": "candidate->reference",
+          "reference_runtime_sec": 88.862011,
+          "candidate_runtime_sec": 6.36915,
+          "speedup": 13.951941938877242,
+          "improvement_pct": 92.83253898001475
+        },
+        {
+          "pair": 3,
+          "order": "reference->candidate",
+          "reference_runtime_sec": 98.32889,
+          "candidate_runtime_sec": 7.291294,
+          "speedup": 13.485794153959503,
+          "improvement_pct": 92.58478967880143
+        },
+        {
+          "pair": 4,
+          "order": "candidate->reference",
+          "reference_runtime_sec": 101.013869,
+          "candidate_runtime_sec": 7.20303,
+          "speedup": 14.023802344291221,
+          "improvement_pct": 92.86926629847234
+        },
+        {
+          "pair": 5,
+          "order": "reference->candidate",
+          "reference_runtime_sec": 101.533766,
+          "candidate_runtime_sec": 6.984368,
+          "speedup": 14.537287554149495,
+          "improvement_pct": 93.12113765188224
+        },
+        {
+          "pair": 6,
+          "order": "candidate->reference",
+          "reference_runtime_sec": 100.723636,
+          "candidate_runtime_sec": 6.969672,
+          "speedup": 14.451703896539177,
+          "improvement_pct": 93.08040071150728
+        }
+      ],
+      "reference_mean_runtime_sec": 97.08371199999999,
+      "candidate_mean_runtime_sec": 6.8984085,
+      "mean_paired_speedup": 14.075569631689149,
+      "paired_speedup_stderr": 0.15553582990268205,
+      "paired_speedup_ci95": [
+        13.675752052398515,
+        14.475387210979783
+      ],
+      "paired_improvement_mean_pct": 92.89112488224976,
+      "first_five": {
+        "reference_mean_runtime_sec": 96.3557272,
+        "candidate_mean_runtime_sec": 6.8841558,
+        "mean_paired_speedup": 14.000342778719142
+      }
+    },
+    {
+      "factor": "Ablation: dense layer gate fusion",
+      "reference_label": "Accepted dense parent",
+      "candidate_label": "Fused dense filters",
+      "decision": "discard; 95% CI crosses 1x",
+      "report_sha256": "275e09b4c8e34c3094d81fd3beb7df18142171955091356603b1f914fe699b91",
+      "generated_at": "2026-07-29T07:12:35.022063Z",
+      "host_fingerprint_sha256": "c627504db97dc65b8d998afb4b9cdf73cfc3eff2ce2ac589b4a7a4aa0c7fdc48",
+      "image": "orbitbreakers-expert-benchmarks:tensorcircuit-py311",
+      "image_id": "sha256:b059c5fa7f75702f9afbf94ec7866e102ac32afd59d25634ec0aca0fd56e2833",
+      "environment": "tensorcircuit-py311",
+      "cpus": 6,
+      "memory": "7g",
+      "timeout_sec": 300.0,
+      "reference_source_sha256": "6245d59510412fd0ffcc083f3a9653e7d245edc5ae827b56dc4fc39894691307",
+      "candidate_source_sha256": "e89be55cfe34125fd6e9f3519c82786cd10948e5ab1fe9b68dfc5adfce698c00",
+      "passing_cells": 12,
+      "cells": 12,
+      "pairs": [
+        {
+          "pair": 1,
+          "order": "reference->candidate",
+          "reference_runtime_sec": 69.902664,
+          "candidate_runtime_sec": 67.941323,
+          "speedup": 1.028868160250574,
+          "improvement_pct": 2.805817243245557
+        },
+        {
+          "pair": 2,
+          "order": "candidate->reference",
+          "reference_runtime_sec": 70.717955,
+          "candidate_runtime_sec": 68.759069,
+          "speedup": 1.0284891291939977,
+          "improvement_pct": 2.7699980860589175
+        },
+        {
+          "pair": 3,
+          "order": "reference->candidate",
+          "reference_runtime_sec": 71.076948,
+          "candidate_runtime_sec": 74.537621,
+          "speedup": 0.9535714589012708,
+          "improvement_pct": -4.868910522156916
+        },
+        {
+          "pair": 4,
+          "order": "candidate->reference",
+          "reference_runtime_sec": 61.140383,
+          "candidate_runtime_sec": 59.725427,
+          "speedup": 1.023691015218694,
+          "improvement_pct": 2.314274020821879
+        },
+        {
+          "pair": 5,
+          "order": "reference->candidate",
+          "reference_runtime_sec": 62.882212,
+          "candidate_runtime_sec": 58.872285,
+          "speedup": 1.0681123044570124,
+          "improvement_pct": 6.376886042113156
+        },
+        {
+          "pair": 6,
+          "order": "candidate->reference",
+          "reference_runtime_sec": 74.430944,
+          "candidate_runtime_sec": 71.959011,
+          "speedup": 1.0343519590618053,
+          "improvement_pct": 3.321109295617684
+        }
+      ],
+      "reference_mean_runtime_sec": 68.35851766666667,
+      "candidate_mean_runtime_sec": 66.96578933333333,
+      "mean_paired_speedup": 1.0228473378472258,
+      "paired_speedup_stderr": 0.015328853858797316,
+      "paired_speedup_ci95": [
+        0.9834432645416796,
+        1.0622514111527719
+      ],
+      "paired_improvement_mean_pct": 2.119862360950046,
+      "first_five": {
+        "reference_mean_runtime_sec": 67.1440324,
+        "candidate_mean_runtime_sec": 65.967145,
+        "mean_paired_speedup": 1.0205464136043099
+      }
+    },
+    {
+      "factor": "Ablation: absorb RX into rank-2 MPS MPO",
+      "reference_label": "Exact no-QR MPS",
+      "candidate_label": "Fused MPS filters",
+      "decision": "discard; consistent regression",
+      "report_sha256": "645adcee4dd4f625dab6b9b8e5845f4f1f038c8f0e1a89666ef77d372783eff5",
+      "generated_at": "2026-07-29T06:57:36.086471Z",
+      "host_fingerprint_sha256": "c627504db97dc65b8d998afb4b9cdf73cfc3eff2ce2ac589b4a7a4aa0c7fdc48",
+      "image": "orbitbreakers-expert-benchmarks:tensorcircuit-py311",
+      "image_id": "sha256:b059c5fa7f75702f9afbf94ec7866e102ac32afd59d25634ec0aca0fd56e2833",
+      "environment": "tensorcircuit-py311",
+      "cpus": 6,
+      "memory": "7g",
+      "timeout_sec": 300.0,
+      "reference_source_sha256": "f741e6cc75b8ed1e47bbedafc557d231d54db60fb064011650fc9c7da36c9ef6",
+      "candidate_source_sha256": "6293bc6319a46ed696e46a71a18c3111d87148c954899f690caabfc4d75146be",
+      "passing_cells": 12,
+      "cells": 12,
+      "pairs": [
+        {
+          "pair": 1,
+          "order": "reference->candidate",
+          "reference_runtime_sec": 7.012065,
+          "candidate_runtime_sec": 8.023952,
+          "speedup": 0.8738916932703485,
+          "improvement_pct": -14.430656304526554
+        },
+        {
+          "pair": 2,
+          "order": "candidate->reference",
+          "reference_runtime_sec": 6.97726,
+          "candidate_runtime_sec": 8.285549,
+          "speedup": 0.8420999018894223,
+          "improvement_pct": -18.750756027437696
+        },
+        {
+          "pair": 3,
+          "order": "reference->candidate",
+          "reference_runtime_sec": 7.090604,
+          "candidate_runtime_sec": 8.339378,
+          "speedup": 0.8502557384975235,
+          "improvement_pct": -17.61167313814169
+        },
+        {
+          "pair": 4,
+          "order": "candidate->reference",
+          "reference_runtime_sec": 6.962868,
+          "candidate_runtime_sec": 8.539373,
+          "speedup": 0.8153839866229056,
+          "improvement_pct": -22.64160400570568
+        },
+        {
+          "pair": 5,
+          "order": "reference->candidate",
+          "reference_runtime_sec": 7.042301,
+          "candidate_runtime_sec": 8.254876,
+          "speedup": 0.8531080297269155,
+          "improvement_pct": -17.21844891321742
+        },
+        {
+          "pair": 6,
+          "order": "candidate->reference",
+          "reference_runtime_sec": 6.96847,
+          "candidate_runtime_sec": 8.419983,
+          "speedup": 0.8276109346064,
+          "improvement_pct": -20.829723023848853
+        }
+      ],
+      "reference_mean_runtime_sec": 7.008928,
+      "candidate_mean_runtime_sec": 8.3105185,
+      "mean_paired_speedup": 0.8437250474355859,
+      "paired_speedup_stderr": 0.008379017964837072,
+      "paired_speedup_ci95": [
+        0.822186096046507,
+        0.8652639988246646
+      ],
+      "paired_improvement_mean_pct": -18.580476902146316,
+      "first_five": {
+        "reference_mean_runtime_sec": 7.0170196,
+        "candidate_mean_runtime_sec": 8.2886256,
+        "mean_paired_speedup": 0.846947870001423
+      }
+    }
+  ],
+  "unmeasured_factor": {
+    "factor": "exact MPS versus accepted dense parent",
+    "reason": "The final Docker approval disconnected and explicitly prohibited an automatic retry. No paired value is inferred."
+  }
+}

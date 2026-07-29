@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "task_id": "05",
+  "harness": "research/task-05/check_exact_mps_equivalence.py",
+  "environment_image_id": "sha256:b059c5fa7f75702f9afbf94ec7866e102ac32afd59d25634ec0aca0fd56e2833",
+  "checks": [
+    {
+      "candidate": "e02 exact no-QR MPS",
+      "candidate_sha256": "f741e6cc75b8ed1e47bbedafc557d231d54db60fb064011650fc9c7da36c9ef6",
+      "state_max_abs_error": 2.7939677238464355e-08,
+      "state_norm_abs_error": 4.172325134277344e-07,
+      "initial_energy_abs_error": 0.00017905235290527344,
+      "gradient_max_abs_error": 1.195073127746582e-05,
+      "one_update_parameter_max_abs_error": 0.03376488760113716,
+      "conditioned_one_update_max_abs_error": 3.725290298461914e-09,
+      "near_zero_reference_gradient_count": 1,
+      "maximum_exact_bond_dimension": 32,
+      "passed": true
+    },
+    {
+      "candidate": "e03 RX-absorbed MPS",
+      "candidate_sha256": "6293bc6319a46ed696e46a71a18c3111d87148c954899f690caabfc4d75146be",
+      "state_max_abs_error": 2.7706846594810486e-08,
+      "state_norm_abs_error": 4.76837158203125e-07,
+      "initial_energy_abs_error": 0.00017905235290527344,
+      "gradient_max_abs_error": 9.208917617797852e-06,
+      "one_update_parameter_max_abs_error": 0.03380005806684494,
+      "conditioned_one_update_max_abs_error": 3.725290298461914e-09,
+      "near_zero_reference_gradient_count": 1,
+      "maximum_exact_bond_dimension": 32,
+      "passed": true
+    }
+  ]
+}
