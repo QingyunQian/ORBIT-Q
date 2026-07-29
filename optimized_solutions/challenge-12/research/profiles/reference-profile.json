@@ -1,0 +1,22 @@
+{
+  "generated_by": "research/task-12/profile_reference.py",
+  "environment_lock": "envs/tensorcircuit-py311/requirements.lock",
+  "reference": {
+    "solution": "reference (replicated objective)",
+    "quimb_conversion_sec": 0.1379,
+    "jit_trace_sec": 1.693,
+    "xla_compile_sec": 3.373,
+    "stablehlo_line_count": 8884,
+    "steady_state_step_ms": 0.6668,
+    "loop_5000_estimate_sec": 3.334,
+    "total_estimate_sec": 8.538
+  },
+  "candidate": {
+    "solution": "candidate (e01 objective in a 5000-step scan)",
+    "jit_trace_sec": 0.744,
+    "xla_compile_sec": 0.408,
+    "stablehlo_line_count": 954,
+    "scan_loop_5000_sec": 0.952,
+    "steady_state_step_ms": 0.1904
+  }
+}

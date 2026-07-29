@@ -1,0 +1,44 @@
+{
+  "generated_by": "research/task-12/profile_factor_ablation.py",
+  "scope": "scan removal with identical candidate objective",
+  "environment": {
+    "image": "orbitbreakers-expert-benchmarks:tensorcircuit-py311",
+    "cpus": 6,
+    "memory": "7g",
+    "network": "none"
+  },
+  "steps": 5000,
+  "scan": {
+    "lower_sec": 0.60646366,
+    "compile_sec": 0.316957074,
+    "stablehlo_line_count": 954,
+    "execution_sec": [
+      0.913055518,
+      0.913425434,
+      0.912820772
+    ],
+    "mean_execution_sec": 0.913100575
+  },
+  "python_loop": {
+    "step_lower_sec": 0.525993696,
+    "step_compile_sec": 0.303303482,
+    "stablehlo_line_count": 927,
+    "execution_sec": [
+      1.166982586,
+      1.156237215,
+      1.155474601
+    ],
+    "mean_execution_sec": 1.159564801
+  },
+  "loop_over_scan_execution": 1.2699201302,
+  "cold_profile_total_sec": {
+    "scan": 1.836521309,
+    "python_loop": 1.988861979
+  },
+  "history_max_abs_errors": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "parameter_max_abs_error": 0.0
+}
