@@ -1,0 +1,19 @@
+{
+  "generated_by": "research/task-11/check_equivalence.py",
+  "environment_lock": "envs/tensorcircuit-py311/requirements.lock",
+  "max_abs_energy_delta_first_k_steps": {
+    "5": 2.7745962142944336e-05,
+    "20": 6.490945816040039e-05,
+    "50": 8.022785186767578e-05,
+    "100": 8.022785186767578e-05
+  },
+  "max_entangler_generator_norm_bound_500_steps": 2.958796501159668,
+  "pade_scaled_norm_at_max": 0.09246239066123962,
+  "candidate_final_energy_density": -0.7044647932052612,
+  "candidate_final_string_orders": [
+    -0.3860138952732086,
+    -0.34448209404945374,
+    -0.4002382159233093
+  ],
+  "note": "Exact gate fusion changes float rounding, so deltas start at the complex64 noise floor (not exactly zero) and grow only through optimizer dynamics; the layer unitaries are algebraically identical."
+}
