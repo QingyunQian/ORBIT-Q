@@ -71,7 +71,7 @@ The task-level map shows why a single pass rate is not enough: different framewo
 
 ### Challenge-design notes
 
-- [Challenge 07 exact classical-ancilla reduction](docs/challenge-07-classical-ancilla-reduction.md)
+- [Challenge 07 exact classical-ancilla reduction](optimized_solutions/challenge-07/CLASSICAL_ANCILLA_REDUCTION.md)
   documents an unexpected reduction of the published measurement-feedback
   circuit, provides an independently auditable proof of concept, and discusses
   whether future revisions should accept the reduction or strengthen the
