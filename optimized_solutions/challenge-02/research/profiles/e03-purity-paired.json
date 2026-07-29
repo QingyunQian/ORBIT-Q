@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "task_id": "02",
+  "factor": "exact_frobenius_purity",
+  "parent_commit": "edf1e91",
+  "parent_sha256": "6e44df512170e071655eee7697f7a0c084704dd34c266f441b2755cb1f29bc1a",
+  "candidate_sha256": "ab560235d23e2dcd5256467f1dba03bb4eee7d675250ccf9054c3d8a670c508e",
+  "raw_report_sha256": "cccabf99871f8fe7d62ac42fdedd6d77394157fdd41a490ff42f324104565184",
+  "role_note": "The runner labels the new registered optimized source as reference and the explicit accepted-parent source as candidate. Factor speedup below is parent_sec/factor_sec.",
+  "environment_image_id": "sha256:b059c5fa7f75702f9afbf94ec7866e102ac32afd59d25634ec0aca0fd56e2833",
+  "cpus": 6,
+  "memory": "7g",
+  "passing_cells": 12,
+  "pairs": [
+    {"pair": 1, "order": "factor->parent", "parent_sec": 4.512375, "factor_sec": 4.422352, "speedup": 1.0203563624062488},
+    {"pair": 2, "order": "parent->factor", "parent_sec": 4.525156, "factor_sec": 4.983842, "speedup": 0.9079653809249972},
+    {"pair": 3, "order": "factor->parent", "parent_sec": 4.536363, "factor_sec": 4.385974, "speedup": 1.0342886209539772},
+    {"pair": 4, "order": "parent->factor", "parent_sec": 4.623152, "factor_sec": 4.35917, "speedup": 1.0605578584914102},
+    {"pair": 5, "order": "factor->parent", "parent_sec": 4.600339, "factor_sec": 4.314358, "speedup": 1.066285876137307},
+    {"pair": 6, "order": "parent->factor", "parent_sec": 4.748949, "factor_sec": 4.486073, "speedup": 1.0585982439429762}
+  ],
+  "parent_mean_sec": 4.591055666666667,
+  "parent_median_sec": 4.568351,
+  "parent_stderr_sec": 0.0363186640555208,
+  "factor_mean_sec": 4.4919615,
+  "factor_median_sec": 4.4041630000000005,
+  "factor_stderr_sec": 0.10119889970473989,
+  "mean_paired_speedup": 1.0246753904761527,
+  "paired_speedup_stderr": 0.024428152166625212,
+  "paired_speedup_95pct_t_ci": [0.9618808262384664, 1.0874699547138391],
+  "factor_wins": 5,
+  "decision": "discard_inconclusive"
+}

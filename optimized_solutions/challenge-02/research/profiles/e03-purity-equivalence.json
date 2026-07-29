@@ -1,0 +1,15 @@
+{
+  "aux_max_error": 2.9803231882397085e-07,
+  "gradient_max_error": 1.6996636986732483e-08,
+  "history_max_abs_errors": {
+    "energy_density_history": 1.2516975402832031e-06,
+    "entropy_history": 8.568167686462402e-07,
+    "entropy_mse_history": 6.258487701416016e-07,
+    "loss_history": 1.1920928955078125e-06
+  },
+  "loss_abs_error": 0.0,
+  "passed": true,
+  "schema_version": 1,
+  "steps": 12,
+  "task_id": "02"
+}

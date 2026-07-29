@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "task_id": "02",
+  "factor": "checkpoint_vmap_plus_frobenius_purity",
+  "parent": "whole_training_k_jaxy_scan",
+  "candidate_sha256": "181c0459c8194aa259be813e23896d3c70691adf5999a26353fe57cab14d3f3d",
+  "raw_report_sha256": "6dd10f3c24054668734022000058391c192c87f0554d404a6d3b7d61593ee07e",
+  "environment_image_id": "sha256:b059c5fa7f75702f9afbf94ec7866e102ac32afd59d25634ec0aca0fd56e2833",
+  "cpus": 6,
+  "memory": "7g",
+  "passing_cells": 12,
+  "role_note": "The runner's registered optimized role is this factor and its explicit candidate role is the parent; ratios below are normalized as parent/factor.",
+  "pairs": [
+    {
+      "pair": 1,
+      "order": "factor->parent",
+      "parent_sec": 4.455414,
+      "factor_sec": 4.334005,
+      "speedup": 1.0280131195049382
+    },
+    {
+      "pair": 2,
+      "order": "parent->factor",
+      "parent_sec": 4.565881,
+      "factor_sec": 4.164098,
+      "speedup": 1.0964874025539264
+    },
+    {
+      "pair": 3,
+      "order": "factor->parent",
+      "parent_sec": 4.534834,
+      "factor_sec": 4.265577,
+      "speedup": 1.063123230456278
+    },
+    {
+      "pair": 4,
+      "order": "parent->factor",
+      "parent_sec": 4.502713,
+      "factor_sec": 4.151774,
+      "speedup": 1.0845274815054964
+    },
+    {
+      "pair": 5,
+      "order": "factor->parent",
+      "parent_sec": 4.58468,
+      "factor_sec": 4.133233,
+      "speedup": 1.1092236997043234
+    },
+    {
+      "pair": 6,
+      "order": "parent->factor",
+      "parent_sec": 4.543243,
+      "factor_sec": 4.264484,
+      "speedup": 1.0653675802277602
+    }
+  ],
+  "parent_mean_sec": 4.5311275,
+  "parent_median_sec": 4.5390385,
+  "parent_stderr_sec": 0.01895267561893742,
+  "factor_mean_sec": 4.218861833333333,
+  "factor_median_sec": 4.214291,
+  "factor_stderr_sec": 0.03283990947959184,
+  "mean_paired_speedup": 1.0744570856587872,
+  "paired_speedup_stderr": 0.011780750629781522,
+  "paired_speedup_95pct_t_ci": [
+    1.0441737020681832,
+    1.1047404692493912
+  ],
+  "candidate_wins": 6,
+  "decision": "keep"
+}
