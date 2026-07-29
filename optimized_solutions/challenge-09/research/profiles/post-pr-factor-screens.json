@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "task_id": "09",
+  "scope": "post-PR factor screens around the compact causal-cone candidate",
+  "combined_group": {
+    "pairs": 3,
+    "parent_runtime_sec": [
+      7.201068,
+      7.091683,
+      7.125373
+    ],
+    "ablation_runtime_sec": [
+      7.769708,
+      7.660184,
+      7.736016
+    ],
+    "parent_mean_sec": 7.139375,
+    "ablation_mean_sec": 7.721969,
+    "improvement_pct": -8.160304,
+    "parent_pair_wins": 3,
+    "history_max_abs_error": 1.1920928955078125e-7
+  },
+  "threaded_groups": {
+    "pairs": 3,
+    "parent_runtime_sec": [
+      7.593318,
+      7.063274,
+      7.684472
+    ],
+    "candidate_runtime_sec": [
+      6.868084,
+      6.99859,
+      6.834185
+    ],
+    "parent_mean_sec": 7.447021,
+    "candidate_mean_sec": 6.900286,
+    "improvement_pct": 7.34166,
+    "candidate_pair_wins": 3,
+    "history_max_abs_error": 0.0
+  },
+  "manual_single_qubit_fusion": {
+    "pairs": 6,
+    "parent_mean_sec": 6.695207,
+    "candidate_mean_sec": 6.569652,
+    "improvement_pct": 1.875299,
+    "paired_speedup_mean": 1.019713,
+    "paired_speedup_95pct_t_interval": [
+      0.969225,
+      1.070201
+    ],
+    "candidate_pair_wins": 3,
+    "history_max_abs_error": 0.000112
+  }
+}
