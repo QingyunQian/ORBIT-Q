@@ -1,0 +1,27 @@
+{
+  "candidate_sha256": "ad3154ccdfec1a329493e1dc7bbe6e3d30ee4e5d0cc7ac16c9922c57976d1262",
+  "environment": {
+    "devices": [
+      "cpu:0"
+    ],
+    "image_id": "sha256:b059c5fa7f75702f9afbf94ec7866e102ac32afd59d25634ec0aca0fd56e2833",
+    "jax": "0.10.0",
+    "jaxlib": "0.10.0",
+    "platform": "cpu",
+    "python": "3.11.15"
+  },
+  "generated_by": "research/task-10/profile_candidate.py",
+  "profile": {
+    "final_energy_density": -1.1781773567199707,
+    "first_execution_sec": 0.04371038099634461,
+    "full_run_solution_after_profile_sec": 3.6463986430026125,
+    "initial_energy_density": 0.971886157989502,
+    "jit_lower_sec": 0.6671965030036517,
+    "stablehlo_line_count": 19252,
+    "steady_full_training_ms": 39.67775079945568,
+    "steady_full_training_runs": 5,
+    "steady_full_training_total_sec": 0.1983887539972784,
+    "tensor_setup_sec": 0.007958046000567265,
+    "xla_compile_sec": 2.8734394700004486
+  }
+}

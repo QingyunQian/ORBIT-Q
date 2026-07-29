@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "task_id": "10",
+  "variant": "no-scan",
+  "comparison": "ablation / promoted optimized candidate",
+  "repeat": 5,
+  "resource_profile": {
+    "cpus": 6,
+    "memory": "7g",
+    "network": "none",
+    "image": "orbitbreakers-expert-benchmarks:tensorcircuit-py311"
+  },
+  "source_hashes": {
+    "optimized": "ad3154ccdfec1a329493e1dc7bbe6e3d30ee4e5d0cc7ac16c9922c57976d1262",
+    "ablation": "9b087a036cf6ea47446496cf427f912c0ce7daf82d0eef3409441cb58b61b1c5",
+    "evaluator": "0ab012597cfa79ec32ebc55bb28307c7b15309315f8057604760df5ad4be71db"
+  },
+  "optimized_runtime_sec": [
+    4.05066,
+    3.735415,
+    3.829799,
+    3.748724,
+    3.685019
+  ],
+  "ablation_runtime_sec": [
+    3.795272,
+    3.879476,
+    3.831091,
+    3.655041,
+    3.602889
+  ],
+  "optimized_mean_sec": 3.8099234,
+  "ablation_mean_sec": 3.7527538,
+  "mean_paired_ablation_over_optimized": 0.9857153906,
+  "paired_ratio_95pct_t_interval": [
+    0.9394078208,
+    1.0320229603
+  ],
+  "optimized_pair_wins": 2,
+  "passing_cells": 10
+}

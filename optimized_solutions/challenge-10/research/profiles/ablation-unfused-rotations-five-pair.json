@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "task_id": "10",
+  "variant": "unfused-rotations",
+  "comparison": "ablation / promoted optimized candidate",
+  "repeat": 5,
+  "resource_profile": {
+    "cpus": 6,
+    "memory": "7g",
+    "network": "none",
+    "image": "orbitbreakers-expert-benchmarks:tensorcircuit-py311"
+  },
+  "source_hashes": {
+    "optimized": "ad3154ccdfec1a329493e1dc7bbe6e3d30ee4e5d0cc7ac16c9922c57976d1262",
+    "ablation": "2ad09a70662d126edca9ee2e7b474461f4de7266314da08bdd028b5e468f75c0",
+    "evaluator": "0ab012597cfa79ec32ebc55bb28307c7b15309315f8057604760df5ad4be71db"
+  },
+  "optimized_runtime_sec": [
+    3.987919,
+    3.727566,
+    3.905148,
+    3.832564,
+    3.828318
+  ],
+  "ablation_runtime_sec": [
+    4.044643,
+    4.316287,
+    4.000334,
+    3.875908,
+    4.018104
+  ],
+  "optimized_mean_sec": 3.856303,
+  "ablation_mean_sec": 4.0510552,
+  "mean_paired_ablation_over_optimized": 1.0514838427,
+  "paired_ratio_95pct_t_interval": [
+    0.975262596,
+    1.1277050895
+  ],
+  "optimized_pair_wins": 5,
+  "passing_cells": 10
+}
