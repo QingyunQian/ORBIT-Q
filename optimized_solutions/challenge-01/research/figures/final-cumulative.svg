@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="390" viewBox="0 0 760 390" role="img" aria-labelledby="title desc">
+  <title id="title">Final cumulative Task 01 comparison</title>
+  <desc id="desc">Each lane compares immutable expert and final candidate runtime for one matched pair.</desc>
+  <rect width="760" height="390" fill="#ffffff"/>
+  <style>
+    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #172033; }
+    .muted { fill: #5c667a; }
+    .grid { stroke: #d9deea; stroke-width: 1; }
+  </style>
+  <text x="38" y="42" font-size="22" font-weight="600">Final cumulative Task 01 comparison</text>
+  <text x="38" y="70" font-size="14" class="muted">Six alternating matched pairs · mean speedup 9.6364×</text>
+  <line x1="78" y1="310.00" x2="708" y2="310.00" class="grid"/>
+  <text x="66" y="314.00" font-size="12" text-anchor="end" class="muted">0s</text>
+  <line x1="78" y1="250.52" x2="708" y2="250.52" class="grid"/>
+  <text x="66" y="254.52" font-size="12" text-anchor="end" class="muted">20s</text>
+  <line x1="78" y1="191.04" x2="708" y2="191.04" class="grid"/>
+  <text x="66" y="195.04" font-size="12" text-anchor="end" class="muted">40s</text>
+  <line x1="78" y1="131.57" x2="708" y2="131.57" class="grid"/>
+  <text x="66" y="135.57" font-size="12" text-anchor="end" class="muted">60s</text>
+  <line x1="105" y1="152.46" x2="105" y2="293.84" stroke="#d9deea" stroke-width="5"/>
+  <circle cx="105" cy="152.46" r="6" fill="#c14b4b"/>
+  <circle cx="105" cy="293.84" r="6" fill="#138a72"/>
+  <text x="105" y="333" font-size="12" text-anchor="middle">pair 1</text>
+  <text x="105" y="142.46" font-size="11" text-anchor="middle">52.98</text>
+  <text x="105" y="311.84" font-size="11" text-anchor="middle">5.43</text>
+  <line x1="201" y1="150.24" x2="201" y2="295.24" stroke="#d9deea" stroke-width="5"/>
+  <circle cx="201" cy="150.24" r="6" fill="#c14b4b"/>
+  <circle cx="201" cy="295.24" r="6" fill="#138a72"/>
+  <text x="201" y="333" font-size="12" text-anchor="middle">pair 2</text>
+  <text x="201" y="140.24" font-size="11" text-anchor="middle">53.72</text>
+  <text x="201" y="313.24" font-size="11" text-anchor="middle">4.96</text>
+  <line x1="297" y1="128.57" x2="297" y2="287.52" stroke="#d9deea" stroke-width="5"/>
+  <circle cx="297" cy="128.57" r="6" fill="#c14b4b"/>
+  <circle cx="297" cy="287.52" r="6" fill="#138a72"/>
+  <text x="297" y="333" font-size="12" text-anchor="middle">pair 3</text>
+  <text x="297" y="118.57" font-size="11" text-anchor="middle">61.01</text>
+  <text x="297" y="305.52" font-size="11" text-anchor="middle">7.56</text>
+  <line x1="393" y1="111.85" x2="393" y2="289.09" stroke="#d9deea" stroke-width="5"/>
+  <circle cx="393" cy="111.85" r="6" fill="#c14b4b"/>
+  <circle cx="393" cy="289.09" r="6" fill="#138a72"/>
+  <text x="393" y="333" font-size="12" text-anchor="middle">pair 4</text>
+  <text x="393" y="101.85" font-size="11" text-anchor="middle">66.63</text>
+  <text x="393" y="307.09" font-size="11" text-anchor="middle">7.03</text>
+  <line x1="489" y1="119.86" x2="489" y2="291.22" stroke="#d9deea" stroke-width="5"/>
+  <circle cx="489" cy="119.86" r="6" fill="#c14b4b"/>
+  <circle cx="489" cy="291.22" r="6" fill="#138a72"/>
+  <text x="489" y="333" font-size="12" text-anchor="middle">pair 5</text>
+  <text x="489" y="109.86" font-size="11" text-anchor="middle">63.94</text>
+  <text x="489" y="309.22" font-size="11" text-anchor="middle">6.31</text>
+  <line x1="585" y1="114.81" x2="585" y2="289.60" stroke="#d9deea" stroke-width="5"/>
+  <circle cx="585" cy="114.81" r="6" fill="#c14b4b"/>
+  <circle cx="585" cy="289.60" r="6" fill="#138a72"/>
+  <text x="585" y="333" font-size="12" text-anchor="middle">pair 6</text>
+  <text x="585" y="104.81" font-size="11" text-anchor="middle">65.64</text>
+  <text x="585" y="307.60" font-size="11" text-anchor="middle">6.86</text>
+  <circle cx="490" cy="365" r="5" fill="#c14b4b"/>
+  <text x="502" y="369" font-size="12">human expert</text>
+  <circle cx="600" cy="365" r="5" fill="#138a72"/>
+  <text x="612" y="369" font-size="12">campaign best</text>
+  <text x="38" y="369" font-size="13">95% CI [8.6808, 10.5920]×</text>
+</svg>

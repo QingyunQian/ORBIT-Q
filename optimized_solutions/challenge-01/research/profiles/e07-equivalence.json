@@ -1,0 +1,22 @@
+{
+  "batched_compile_plus_steps_seconds": 5.998278650993598,
+  "batched_initial_final": [
+    -41.504051208496094,
+    -41.50410461425781
+  ],
+  "batched_sha256": "d4ff44c15be181921ec8bfeaac7dcc0f0d50dd9f0471084ca5df3441710128c8",
+  "dmrg_energy": -41.50401330592778,
+  "history_max_absolute_difference": 0.000156402587890625,
+  "history_max_relative_difference": 3.7683607843064237e-06,
+  "native_compile_plus_steps_seconds": 20.87642753799446,
+  "native_initial_final": [
+    -41.504051208496094,
+    -41.504150390625
+  ],
+  "native_sha256": "00248c83e754bd11469c0aa785d38c4c2087a4786b695f1db48076ddca1848e3",
+  "one_qubit_gate_max_absolute_difference": 6.143906006172983e-08,
+  "parameter_max_absolute_difference_after_steps": 0.0017972923815250397,
+  "schema_version": 1,
+  "steps": 500,
+  "two_qubit_gate_max_absolute_difference": 0.0
+}

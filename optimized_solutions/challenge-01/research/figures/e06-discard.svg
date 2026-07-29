@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="390" viewBox="0 0 760 390" role="img" aria-labelledby="title desc">
+  <title id="title">E06 Greedy contractor screen</title>
+  <desc id="desc">One paired screening result; no confidence interval is claimed.</desc>
+  <rect width="760" height="390" fill="#ffffff"/>
+  <style>
+    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #172033; }
+    .muted { fill: #5c667a; }
+    .grid { stroke: #d9deea; stroke-width: 1; }
+  </style>
+  <text x="38" y="42" font-size="22" font-weight="600">E06: Greedy contractor screen</text>
+  <text x="38" y="70" font-size="14" class="muted">Parent: e04 OMECo 1x1 · decision: discard</text>
+  <line x1="92.0" y1="316" x2="706.0" y2="316" class="grid"/>
+  <line x1="598.56" y1="94" x2="598.56" y2="326" stroke="#5c667a" stroke-width="1.5" stroke-dasharray="5 5"/>
+  <text x="598.56" y="344" font-size="12" text-anchor="middle" class="muted">1.0× no change</text>
+  <text x="70" y="110.00" font-size="12" text-anchor="end" class="muted">pair 1</text>
+  <circle cx="199.44" cy="106.00" r="5.5" fill="#3e67b1"/>
+  <text x="199.44" y="96.00" font-size="11" text-anchor="middle">0.851×</text>
+  <polygon points="199.44,281 208.44,292 199.44,303 190.44,292" fill="#c14b4b"/>
+  <text x="38" y="374" font-size="13">screen 0.8514× · one pair only · no confidence interval · wins 0/1</text>
+</svg>

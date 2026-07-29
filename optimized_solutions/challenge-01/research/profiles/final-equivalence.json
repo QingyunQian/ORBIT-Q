@@ -1,0 +1,21 @@
+{
+  "candidate_compile_plus_steps_seconds": 5.540762284988887,
+  "candidate_initial_final": [
+    -41.50384521484375,
+    -41.50390625
+  ],
+  "candidate_sha256": "5297b04c4794fb43afa9c391988a9b563c9d44142ce3a622dbfcd8d659b335c4",
+  "dmrg_energy": -41.50380352192084,
+  "history_max_absolute_difference": 0.000171661376953125,
+  "history_max_relative_difference": 4.136031748203095e-06,
+  "native_compile_plus_steps_seconds": 21.96379186399281,
+  "native_initial_final": [
+    -41.50385284423828,
+    -41.503963470458984
+  ],
+  "one_qubit_gate_max_absolute_difference": 6.143906006172983e-08,
+  "parameter_max_absolute_difference_after_steps": 0.0030423887073993683,
+  "schema_version": 1,
+  "steps": 500,
+  "two_qubit_gate_max_absolute_difference": 0.0
+}

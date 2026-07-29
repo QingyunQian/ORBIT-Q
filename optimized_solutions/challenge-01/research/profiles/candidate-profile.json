@@ -1,0 +1,42 @@
+{
+  "compile_seconds": 2.1644059640093474,
+  "configuration": {
+    "dmrg_chi": 8,
+    "dmrg_sweeps": 2,
+    "field": 1.05,
+    "learning_rate": 0.005,
+    "max_steps": 500,
+    "n_layers": 4,
+    "n_qubits": 32
+  },
+  "cost_analysis": {
+    "bytes accessed": 49688780.0,
+    "flops": 132386304.0,
+    "transcendentals": 10340.0
+  },
+  "evaluator_side_dmrg_seconds_excluded_from_runtime": 3.0926432980049867,
+  "first_compiled_step_seconds": 0.014306488010333851,
+  "lower_seconds": 0.5415836070023943,
+  "projected_500_step_seconds": 2.8538996979477815,
+  "schema_version": 1,
+  "solution_path": "src/solutions/task-01/solution_1.py",
+  "solution_sha256": "5297b04c4794fb43afa9c391988a9b563c9d44142ce3a622dbfcd8d659b335c4",
+  "stablehlo_line_count": 2754,
+  "steady_step_mean_seconds": 0.005707799395895563,
+  "steady_step_median_seconds": 0.005746502996771596,
+  "steady_step_seconds": [
+    0.005905718004214577,
+    0.005746502996771596,
+    0.005853201990248635,
+    0.0055262279929593205,
+    0.005507345995283686
+  ],
+  "structural_counts": {
+    "fused_boundary_one_qubit_gate_nodes": 4,
+    "fused_two_qubit_gate_nodes": 62,
+    "parameters": 570,
+    "tfim_mpo_bond_dimension": 3,
+    "training_steps": 500
+  },
+  "task_id": "01"
+}
