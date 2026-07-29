@@ -1,0 +1,74 @@
+{
+  "factor": "Whole-training TensorCircuit scan",
+  "raw_report_sha256": "2e1cf1079174db8e9dc5dbd32e799560e4f6789615b979de92a5c85478edfa47",
+  "passing_cells": 12,
+  "total_cells": 12,
+  "reference_mean_runtime_sec": 1.1699971666666666,
+  "reference_median_runtime_sec": 1.1622625000000002,
+  "reference_stderr_sec": 0.009218188258064086,
+  "candidate_mean_runtime_sec": 1.0187746666666666,
+  "candidate_median_runtime_sec": 1.020192,
+  "candidate_stderr_sec": 0.010554815528679031,
+  "ratio_of_means_speedup": 1.148435669778466,
+  "ratio_of_means_reduction_pct": 12.925031299933352,
+  "paired_speedups": [
+    1.1559791372957626,
+    1.164981838913276,
+    1.1105340464932794,
+    1.1123551776500245,
+    1.1230027934310873,
+    1.2289053845345235
+  ],
+  "paired_speedup_mean": 1.1492930630529923,
+  "paired_speedup_median": 1.139490965363425,
+  "paired_speedup_stderr": 0.018427162946733532,
+  "paired_speedup_ci95": [
+    1.1019245326998086,
+    1.196661593406176
+  ],
+  "wins": 6,
+  "pairs": [
+    {
+      "pair_id": 1,
+      "order": "reference->candidate",
+      "reference_runtime_sec": 1.1627,
+      "candidate_runtime_sec": 1.005814,
+      "speedup": 1.1559791372957626
+    },
+    {
+      "pair_id": 2,
+      "order": "candidate->reference",
+      "reference_runtime_sec": 1.156573,
+      "candidate_runtime_sec": 0.992782,
+      "speedup": 1.164981838913276
+    },
+    {
+      "pair_id": 3,
+      "order": "reference->candidate",
+      "reference_runtime_sec": 1.159804,
+      "candidate_runtime_sec": 1.044366,
+      "speedup": 1.1105340464932794
+    },
+    {
+      "pair_id": 4,
+      "order": "candidate->reference",
+      "reference_runtime_sec": 1.163261,
+      "candidate_runtime_sec": 1.045764,
+      "speedup": 1.1123551776500245
+    },
+    {
+      "pair_id": 5,
+      "order": "reference->candidate",
+      "reference_runtime_sec": 1.161825,
+      "candidate_runtime_sec": 1.03457,
+      "speedup": 1.1230027934310873
+    },
+    {
+      "pair_id": 6,
+      "order": "candidate->reference",
+      "reference_runtime_sec": 1.21582,
+      "candidate_runtime_sec": 0.989352,
+      "speedup": 1.2289053845345235
+    }
+  ]
+}

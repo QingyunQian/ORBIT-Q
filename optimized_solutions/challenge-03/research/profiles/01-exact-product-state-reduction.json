@@ -1,0 +1,74 @@
+{
+  "factor": "Exact product-state reduction",
+  "raw_report_sha256": "6a4dbfbbb1eaf4cba63036f26cbe9e402cd28cf7acc55381c868077a0b105fcc",
+  "passing_cells": 12,
+  "total_cells": 12,
+  "reference_mean_runtime_sec": 4.010579833333333,
+  "reference_median_runtime_sec": 4.0266055000000005,
+  "reference_stderr_sec": 0.015495948781142094,
+  "candidate_mean_runtime_sec": 2.416386,
+  "candidate_median_runtime_sec": 2.409294,
+  "candidate_stderr_sec": 0.011485237159066422,
+  "ratio_of_means_speedup": 1.6597430349842006,
+  "ratio_of_means_reduction_pct": 39.749709507922766,
+  "paired_speedups": [
+    1.6557721043445142,
+    1.6680672199149458,
+    1.6386185708557914,
+    1.7004516024637448,
+    1.6784083751511225,
+    1.6186029571372011
+  ],
+  "paired_speedup_mean": 1.6599868049778865,
+  "paired_speedup_median": 1.6619196621297299,
+  "paired_speedup_stderr": 0.01187298780397567,
+  "paired_speedup_ci95": [
+    1.6294663181942552,
+    1.6905072917615178
+  ],
+  "wins": 6,
+  "pairs": [
+    {
+      "pair_id": 1,
+      "order": "reference->candidate",
+      "reference_runtime_sec": 4.034552,
+      "candidate_runtime_sec": 2.436659,
+      "speedup": 1.6557721043445142
+    },
+    {
+      "pair_id": 2,
+      "order": "candidate->reference",
+      "reference_runtime_sec": 4.018851,
+      "candidate_runtime_sec": 2.409286,
+      "speedup": 1.6680672199149458
+    },
+    {
+      "pair_id": 3,
+      "order": "reference->candidate",
+      "reference_runtime_sec": 3.947927,
+      "candidate_runtime_sec": 2.409302,
+      "speedup": 1.6386185708557914
+    },
+    {
+      "pair_id": 4,
+      "order": "candidate->reference",
+      "reference_runtime_sec": 4.045893,
+      "candidate_runtime_sec": 2.379305,
+      "speedup": 1.7004516024637448
+    },
+    {
+      "pair_id": 5,
+      "order": "reference->candidate",
+      "reference_runtime_sec": 4.03436,
+      "candidate_runtime_sec": 2.403682,
+      "speedup": 1.6784083751511225
+    },
+    {
+      "pair_id": 6,
+      "order": "candidate->reference",
+      "reference_runtime_sec": 3.981896,
+      "candidate_runtime_sec": 2.460082,
+      "speedup": 1.6186029571372011
+    }
+  ]
+}

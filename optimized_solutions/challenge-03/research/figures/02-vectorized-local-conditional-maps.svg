@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="390" viewBox="0 0 860 390">
+<rect width="860" height="390" fill="white"/>
+<text x="28" y="25" font-family="sans-serif" font-size="17" font-weight="bold">Vectorized local conditional maps</text>
+<line x1="78" y1="188.83" x2="728" y2="188.83" stroke="#dc2626" stroke-dasharray="5 4"/>
+<text x="69" y="192.83" text-anchor="end" font-family="sans-serif" font-size="11">1.0x</text>
+<line x1="78" y1="296" x2="728" y2="296" stroke="#111827"/>
+<line x1="78" y1="46" x2="78" y2="296" stroke="#111827"/>
+<rect x="100.75" y="77.21" width="62.83" height="218.79" fill="#2563eb"/><text x="132.17" y="318" text-anchor="middle" font-size="12">P1</text><rect x="209.08" y="73.31" width="62.83" height="222.69" fill="#2563eb"/><text x="240.50" y="318" text-anchor="middle" font-size="12">P2</text><rect x="317.42" y="77.92" width="62.83" height="218.08" fill="#2563eb"/><text x="348.83" y="318" text-anchor="middle" font-size="12">P3</text><rect x="425.75" y="73.72" width="62.83" height="222.28" fill="#2563eb"/><text x="457.17" y="318" text-anchor="middle" font-size="12">P4</text><rect x="534.08" y="73.16" width="62.83" height="222.84" fill="#2563eb"/><text x="565.50" y="318" text-anchor="middle" font-size="12">P5</text><rect x="642.42" y="74.47" width="62.83" height="221.53" fill="#2563eb"/><text x="673.83" y="318" text-anchor="middle" font-size="12">P6</text>
+<line x1="756" y1="77.15" x2="756" y2="72.79" stroke="#111827" stroke-width="3"/>
+<line x1="748" y1="77.15" x2="764" y2="77.15" stroke="#111827" stroke-width="3"/>
+<line x1="748" y1="72.79" x2="764" y2="72.79" stroke="#111827" stroke-width="3"/>
+<circle cx="756" cy="74.97" r="6" fill="#f59e0b"/>
+<text x="772" y="78.97" font-family="sans-serif" font-size="12">mean 2.063x</text>
+<text x="28" y="348" font-family="sans-serif" font-size="12">95% Student-t CI [2.042x, 2.083x]; 6/6 pairs won; 12/12 cells passed.</text>
+<text x="28" y="369" font-family="monospace" font-size="10">raw report sha256:874c67138cb7b8b2fa98cadc716f6cc3e93e77720448597900c5fa57d4df5560</text>
+</svg>
