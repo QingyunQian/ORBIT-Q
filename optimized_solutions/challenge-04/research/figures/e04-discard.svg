@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="390" viewBox="0 0 760 390" role="img" aria-labelledby="title desc">
+  <title id="title">E04 Density expectation reuse</title>
+  <desc id="desc">The failed allocation exceeds the frozen seven GiB container limit.</desc>
+  <rect width="760" height="390" fill="#ffffff"/>
+  <style>
+    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #172033; }
+    .muted { fill: #5c667a; }
+    .grid { stroke: #d9deea; stroke-width: 1; }
+  </style>
+  <text x="38" y="42" font-size="22" font-weight="600">E04: Density expectation reuse</text>
+  <text x="38" y="70" font-size="14" class="muted">Parent: e02 probe VMAP · decision: discard (resource gate)</text>
+  <text x="38" y="137" font-size="13">Frozen memory limit</text>
+  <rect x="145" y="112" width="420.17" height="36" rx="4" fill="#d89b2b"/>
+  <text x="575.17" y="136" font-size="13">7.52 GB</text>
+  <text x="38" y="222" font-size="13">Failed allocation</text>
+  <rect x="145" y="197" width="517.86" height="36" rx="4" fill="#c14b4b"/>
+  <text x="672.86" y="221" font-size="13">9.26 GB</text>
+  <line x1="565.17" y1="96" x2="565.17" y2="254" stroke="#d89b2b" stroke-width="2" stroke-dasharray="5 5"/>
+  <text x="38" y="305" font-size="15">reuse=True exceeded the limit by 1.75 GB before a valid runtime existed.</text>
+  <text x="38" y="336" font-size="13" class="muted">No speedup is plotted because the canonical evaluator did not pass.</text>
+</svg>

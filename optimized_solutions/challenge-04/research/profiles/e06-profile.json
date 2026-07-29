@@ -1,0 +1,52 @@
+{
+  "compile_seconds": 1.6386001409991877,
+  "configuration": {
+    "entangler_angle": 0.31,
+    "initial_p01": 0.07,
+    "initial_p10": 0.04,
+    "learning_rate": 0.04,
+    "max_steps": 120,
+    "n_qubits": 12,
+    "probability_absolute_tolerance": 0.0002,
+    "true_p01": 0.034,
+    "true_p10": 0.011
+  },
+  "cost_analysis": {
+    "bytes accessed": 209828224.0,
+    "flops": 411391808.0,
+    "transcendentals": 10.0
+  },
+  "first_compiled_step_seconds": 0.012280178998480551,
+  "lower_seconds": 0.39617327900487,
+  "projected_120_step_seconds": 1.224462524842238,
+  "schema_version": 1,
+  "solution": "optimized",
+  "solution_path": "src/solutions/task-04/solution_4.py",
+  "solution_sha256": "251f283d208ebb5316c8347ff71ea6da66aca5fd11b42f25032db32ada83ef0c",
+  "stablehlo_line_count": 3283,
+  "steady_step_mean_seconds": 0.010203854373685317,
+  "steady_step_median_seconds": 0.009878707496682182,
+  "steady_step_seconds": [
+    0.011008752000634558,
+    0.010126352004590444,
+    0.009561111000948586,
+    0.009999079993576743,
+    0.009758334999787621,
+    0.009717272987472825,
+    0.011852089010062627,
+    0.009607842992409132
+  ],
+  "structural_counts": {
+    "channel_nodes_per_probe": 11,
+    "channel_nodes_per_table": 44,
+    "kraus_branches_per_node": 9,
+    "observables_per_probe": 13,
+    "observables_per_table": 52,
+    "probes_per_table": 4,
+    "rxx_nodes_per_probe": 0,
+    "rxx_nodes_per_table": 0,
+    "training_steps": 120
+  },
+  "target_observable_table_seconds": 1.7058603390032658,
+  "task_id": "04"
+}
