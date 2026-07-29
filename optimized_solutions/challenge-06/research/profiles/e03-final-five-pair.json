@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "task_id": "06",
+  "recorded_at_utc": "2026-07-29T05:13:09.636685+00:00",
+  "purpose": "Final five-pair canonical reference-versus-e03 benchmark",
+  "configuration": {
+    "repeat": 5,
+    "max_steps": 100,
+    "timeout_sec": 300.0,
+    "cpus": 6.0,
+    "memory": "7g",
+    "pair_order": "odd reference->candidate; even candidate->reference",
+    "fresh_evaluator_process_per_cell": true,
+    "single_container": true,
+    "network": "none"
+  },
+  "provenance": {
+    "image_id": "sha256:b059c5fa7f75702f9afbf94ec7866e102ac32afd59d25634ec0aca0fd56e2833",
+    "reference_sha256": "0e7fec8d11135241eb3f3501f3651f3f337e08c636407b3da8a2858c2b3d85d1",
+    "candidate_sha256": "158063c23d609b01c9cf057d2e8574e2b0bb101e781cf770584d8aef2473e2a1",
+    "evaluator_sha256": "0d2dfc7f30087896fb599925f9110190a3a61358263688dbb09cc36115a23998",
+    "raw_results_sha256": "a7488be88dd1faae070fb7b3efc51564f86fc9a55b51e835a71e9b029fe77a82"
+  },
+  "reference_runtime_sec": [
+    41.389616,
+    41.389259,
+    41.441489,
+    41.58251,
+    41.326743
+  ],
+  "candidate_runtime_sec": [
+    27.290641,
+    27.643293,
+    27.625098,
+    27.380896,
+    27.743136
+  ],
+  "paired_speedup": [
+    1.516623079685083,
+    1.4972622473017236,
+    1.5001390764297016,
+    1.5186687097456562,
+    1.489620459633691
+  ],
+  "summary": {
+    "reference_mean_sec": 41.4259234,
+    "reference_stderr_sec": 0.0431630129,
+    "candidate_mean_sec": 27.5366128,
+    "candidate_stderr_sec": 0.0856188716,
+    "ratio_of_means": 1.5043943023,
+    "mean_paired_speedup": 1.5044627146,
+    "paired_speedup_stderr": 0.0056591425,
+    "paired_speedup_95pct_t_ci": [
+      1.488750416,
+      1.5201750132
+    ],
+    "runtime_reduction_pct": 33.528065,
+    "candidate_wins": 5,
+    "pairs": 5,
+    "reference_passes": 5,
+    "candidate_passes": 5
+  },
+  "runner_note": "The campaign runner's legacy promotion booleans require a six-run known-hash gate. They are inapplicable to this user-requested five-pair comparison; all ten functional benchmark cells passed."
+}
