@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "task_id": "07",
+  "experiment": "e05",
+  "candidate_commit": "5c4f0ba61509625c4c2bf76bcb3e21adf9fc09c9",
+  "candidate_sha256": "5f4ec8d45e1fa91c053f3ed2027c90bdb1abf1e9e7d87add399c6c5ce883add7",
+  "candidate_diff_sha256": "d4a0277c7c1184b22be90dc51215a63690b39cb23871d9fcd3d6d6818aafd64b",
+  "screens": [
+    {
+      "max_steps": 1,
+      "accepted_e04a_runtime_sec": 20.672377,
+      "candidate_runtime_sec": 4.606171,
+      "candidate_initial_energy": -6.8462643623,
+      "candidate_post_update_trajectory_mean": -6.9686303139,
+      "physical_outputs_within_tolerance": true
+    },
+    {
+      "max_steps": 50,
+      "reference_runtime_sec": 91.540316,
+      "accepted_e04a_runtime_sec": 21.473078,
+      "candidate_runtime_sec": 14.522625,
+      "speedup_over_reference": 6.3033,
+      "candidate_final_history_energy": -8.7917070389,
+      "candidate_post_update_trajectory_mean": -8.8286552429,
+      "candidate_passed": true
+    },
+    {
+      "max_steps": 100,
+      "reference_runtime_sec": 135.815605,
+      "accepted_e04a_runtime_sec": 24.362414,
+      "candidate_runtime_sec": 26.530668,
+      "candidate_over_e04a_ratio": 1.089,
+      "speedup_over_reference": 5.11841,
+      "candidate_initial_energy": -6.8462643623,
+      "candidate_final_history_energy": -10.0279579163,
+      "candidate_improvement": 3.1816935539,
+      "candidate_post_update_trajectory_mean": -10.033449173,
+      "candidate_post_update_trajectory_std": 3.3379e-06,
+      "candidate_passed": true
+    }
+  ],
+  "decision": "discard for the canonical metric; it is fastest for one and 50 steps, but dense state materialization makes 100 steps 8.90% slower than accepted e04a"
+}

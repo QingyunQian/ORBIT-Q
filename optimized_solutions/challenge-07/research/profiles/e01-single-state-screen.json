@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "task_id": "07",
+  "experiment": "e01",
+  "candidate_commit": "1e21dd41f47e3beb84b937144324227eac544b6d",
+  "candidate_sha256": "30f0f45073e866c7fbb24cd9a5c33d8c1254e6985136937cd454b82990681678",
+  "candidate_diff_sha256": "3396c6b65d3f6c2eaebc647d6251547dd6561d1defac4526f9f503b2dcac8b7e",
+  "environment_image_id": "sha256:b059c5fa7f75702f9afbf94ec7866e102ac32afd59d25634ec0aca0fd56e2833",
+  "cpus": 6,
+  "memory": "7 GiB",
+  "performance_screens": [
+    {
+      "max_steps": 1,
+      "reference_runtime_sec": 47.853128,
+      "candidate_runtime_sec": 44.91711,
+      "reference_initial_energy": -6.8462719917,
+      "candidate_initial_energy": -6.8462643623,
+      "reference_post_update_trajectory_mean": -6.9686288834,
+      "candidate_post_update_trajectory_mean": -6.9686059952,
+      "expected_threshold_failure": true
+    },
+    {
+      "max_steps": 10,
+      "reference_runtime_sec": 51.638506,
+      "candidate_runtime_sec": 46.100052,
+      "reference_final_history_energy": -7.4798407555,
+      "candidate_final_history_energy": -7.479578495,
+      "expected_threshold_failure": true
+    },
+    {
+      "max_steps": 50,
+      "reference_runtime_sec": 91.540316,
+      "candidate_runtime_sec": 52.769482,
+      "screen_speedup": 1.73434,
+      "reference_final_history_energy": -8.7927856445,
+      "candidate_final_history_energy": -8.7949237823,
+      "reference_post_update_trajectory_mean": -8.8296632767,
+      "candidate_post_update_trajectory_mean": -8.8320827484,
+      "reference_passed": true,
+      "candidate_passed": true
+    },
+    {
+      "max_steps": 100,
+      "reference_runtime_sec": 135.815605,
+      "candidate_runtime_sec": 61.396553,
+      "screen_speedup": 2.2121,
+      "reference_final_history_energy": -10.0279636383,
+      "candidate_final_history_energy": -10.0263500214,
+      "reference_post_update_trajectory_mean": -10.0333871841,
+      "candidate_post_update_trajectory_mean": -10.0319023132,
+      "reference_passed": true,
+      "candidate_passed": true
+    }
+  ],
+  "one_trajectory_equivalence": {
+    "tolerances": {
+      "energy_abs": 5e-05,
+      "gradient_max_abs": 0.0005,
+      "adam_parameter_max_abs": 2e-05
+    },
+    "reference_energy": -6.846258640289307,
+    "candidate_energy": -6.846261978149414,
+    "energy_abs_error": 3.337860107421875e-06,
+    "gradient_max_abs_error": 1.0132789611816406e-06,
+    "gradient_mean_abs_error": 2.6805633979165577e-07,
+    "adam_parameter_max_abs_error": 0.031341224908828735,
+    "adam_parameter_mean_abs_error": 0.002425061771646142,
+    "energy_check": true,
+    "gradient_check": true,
+    "strict_parameter_check": false
+  },
+  "decision": "keep provisionally; exact quantum identity and physical output checks pass, while a predeclared strict first-Adam parameter metric is retained as a failed diagnostic because elementwise Adam normalization amplifies near-zero complex64 gradient sign changes"
+}

@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "task_id": "07",
+  "experiment": "e03",
+  "candidate_commit": "8b977faa5a9eea4e4ead88e24f4193cbfbc66aa0",
+  "candidate_sha256": "767c82d6c0be9af2ee526d130afba3f6eb95d81d42efcbb7f62665a9753a3b2c",
+  "candidate_diff_sha256": "5bffe6df6108a72656dfd56cdc9d4a39aeaaa0037e3545e3d4bb1a754d4229d3",
+  "environment_image_id": "sha256:b059c5fa7f75702f9afbf94ec7866e102ac32afd59d25634ec0aca0fd56e2833",
+  "cpus": 6,
+  "memory": "7 GiB",
+  "screens": [
+    {
+      "max_steps": 50,
+      "accepted_e02_runtime_sec": 31.299628,
+      "candidate_runtime_sec": 34.916768,
+      "candidate_over_e02_ratio": 1.11556,
+      "candidate_final_history_energy": -8.7939605713,
+      "candidate_post_update_trajectory_mean": -8.8310813904,
+      "candidate_passed": true
+    },
+    {
+      "max_steps": 100,
+      "accepted_e02_runtime_sec": 33.54617,
+      "candidate_runtime_sec": 36.747307,
+      "candidate_over_e02_ratio": 1.09542,
+      "candidate_initial_energy": -6.8462719917,
+      "candidate_final_history_energy": -10.0262737274,
+      "candidate_improvement": 3.1800017357,
+      "candidate_post_update_trajectory_mean": -10.031832695,
+      "candidate_post_update_trajectory_std": 0.0054257438,
+      "candidate_passed": true
+    }
+  ],
+  "decision": "discard; all semantic gates pass but scan is 9.54% slower on the canonical screen because added control-flow compile cost exceeds 100 host dispatches"
+}

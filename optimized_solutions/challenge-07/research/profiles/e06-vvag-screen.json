@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "task_id": "07",
+  "experiment": "e06",
+  "candidate_commit": "828e921ddf69709054d5fa52a5e3e62d9fac475e",
+  "candidate_sha256": "4f0a8757af372c41db677981f1551c363f82f128e0f295073228defece065c68",
+  "candidate_diff_sha256": "82e90bad5bb428a53d623e268808a22a1ca321a686540f8e7c8ea5b46a15d7fa",
+  "screen": {
+    "max_steps": 1,
+    "accepted_e04a_runtime_sec": 20.672377,
+    "candidate_runtime_sec": 39.419801,
+    "candidate_over_e04a_ratio": 1.90687,
+    "candidate_initial_energy": -6.8462719917,
+    "candidate_post_update_trajectory_mean": -6.9686336517,
+    "physical_outputs_within_tolerance": true
+  },
+  "decision": "discard; vvag duplicates per-trajectory reverse-mode structure and is 90.69% slower at the frozen screen"
+}

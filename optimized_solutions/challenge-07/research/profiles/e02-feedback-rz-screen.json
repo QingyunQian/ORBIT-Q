@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "task_id": "07",
+  "experiment": "e02",
+  "candidate_commit": "067a1d365e8ef4a9e3f81d6dd62939c0b3af6b39",
+  "candidate_sha256": "b3dcbaa35a233d8dde4576de7257c79a1a81034eee49f1f0bef6489116dcafcd",
+  "candidate_diff_sha256": "759b7139a8463d53c80f2d48148eca189235a872fac5402ae9f64be4100bac45",
+  "environment_image_id": "sha256:b059c5fa7f75702f9afbf94ec7866e102ac32afd59d25634ec0aca0fd56e2833",
+  "cpus": 6,
+  "memory": "7 GiB",
+  "identity_audit": {
+    "dtype": "complex64",
+    "tolerance": 1e-07,
+    "cases": [
+      {"bit": 0, "theta": -0.37, "max_abs_error": 0.0},
+      {"bit": 0, "theta": 1.23, "max_abs_error": 2.9802322387695312e-08},
+      {"bit": 1, "theta": -0.37, "max_abs_error": 0.0},
+      {"bit": 1, "theta": 1.23, "max_abs_error": 0.0}
+    ],
+    "max_abs_error": 2.9802322387695312e-08,
+    "passed": true
+  },
+  "performance_screens": [
+    {
+      "max_steps": 1,
+      "accepted_e01_runtime_sec": 44.91711,
+      "candidate_runtime_sec": 29.918828,
+      "accepted_e01_initial_energy": -6.8462643623,
+      "candidate_initial_energy": -6.8462657928,
+      "initial_energy_abs_error": 1.4305e-06,
+      "accepted_e01_post_update_trajectory_mean": -6.9686059952,
+      "candidate_post_update_trajectory_mean": -6.9686813354,
+      "post_update_mean_abs_error": 7.53402e-05,
+      "physical_checks_passed": true
+    },
+    {
+      "max_steps": 50,
+      "reference_runtime_sec": 91.540316,
+      "accepted_e01_runtime_sec": 52.769482,
+      "candidate_runtime_sec": 31.299628,
+      "speedup_over_reference": 2.92465,
+      "candidate_final_history_energy": -8.7978668213,
+      "candidate_post_update_trajectory_mean": -8.8353881836,
+      "candidate_passed": true
+    },
+    {
+      "max_steps": 100,
+      "reference_runtime_sec": 135.815605,
+      "accepted_e01_runtime_sec": 61.396553,
+      "candidate_runtime_sec": 33.54617,
+      "speedup_over_reference": 4.0487,
+      "speedup_over_e01": 1.83023,
+      "candidate_initial_energy": -6.846265316,
+      "candidate_final_history_energy": -10.0280771255,
+      "candidate_improvement": 3.1818118095,
+      "candidate_post_update_trajectory_mean": -10.0335464478,
+      "candidate_post_update_trajectory_std": 2.666e-07,
+      "candidate_passed": true
+    }
+  ],
+  "decision": "keep; exact branch identity and all predeclared physical/public checks pass, with a 4.0487x canonical single-screen speedup over the immutable reference"
+}
