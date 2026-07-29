@@ -19,3 +19,9 @@ Host: MacBook Pro with Apple M4 Pro, 14-core CPU, 48 GB memory. Software: JAX 0.
 | --- | --- | --- | ---: | --- |
 | `challenge-01/solution_1_mpo.py` | 2026-07-07 | `evaluate_1.py --solution solution_1_mpo --max-steps 500` | 19.34s | PASS |
 | `challenge-05/solution_5_omeco.py` | 2026-07-07 | `evaluate_5.py --solution solution_5_omeco --max-steps 600` (reference baseline 48.27s) | 34.85s | PASS |
+| `challenge-07/solution_7_classical_ancilla.py` | 2026-07-29 | six paired canonical Docker runs; see `docs/challenge-07-classical-ancilla-reduction.md` | 3.070839s mean | PASS |
+
+The Challenge 07 variant is intentionally labeled a challenge-design
+reduction. It analytically removes the measured ancilla subsystem and should
+not be interpreted as a generic speedup of framework-native mid-circuit
+measurement.
