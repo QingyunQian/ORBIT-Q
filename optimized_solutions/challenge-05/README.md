@@ -13,7 +13,13 @@
 | Fuse gates while keeping the dense representation | 1.023x, CI crosses 1x | Discard |
 | Absorb `RX` into the rank-2 MPS filter MPO | 0.844x | Discard — regression |
 
-![Task 05 end-to-end result](factor-ablation.svg)
+![Task 05 overall and direct factor-ablation comparisons](factor-ablation.svg)
+
+*Figure — Panel a shows the complete expert comparison: without exact no-QR
+MPS, runtime is about `14.08x` higher. Panels b–c restore the two direct factor
+tests from the full campaign: dense gate fusion is unresolved, while absorbing
+`RX` into the MPS filter is a consistent regression. These ratios are not
+multiplied.*
 
 ## What the factors mean
 
