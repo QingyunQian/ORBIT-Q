@@ -15,7 +15,12 @@
 | Default local contractor over greedy | 1.044x | Keep default — minor |
 | Default local contractor over OMECo 1x1 | 1.040x, CI crosses 1x | Do not switch |
 
-![Task 07 expert and reduced runtimes](factor-ablation.svg)
+![Task 07 exact-reduction and post-reduction factor comparisons](factor-ablation.svg)
+
+*Figure — Panel a shows the complete effect of removing the exact
+classical-ancilla/trajectory reduction. Panels b–c test scan and dense local
+fusion only after the graph is already reduced; both regress. The secondary
+contractor results remain in the table.*
 
 ## What the factors mean
 
