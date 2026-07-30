@@ -21,7 +21,12 @@ accepted parent, so retained rows are incremental rather than cumulative.
 | Fuse each RXX gate into its paired Kraus node | 1.104x | Keep |
 | Use a static Kraus matrix-unit basis | 0.969x | Discard |
 
-![Incremental factor speedups and final cumulative result](factor-ablation.svg)
+![Task 04 direct factor-removal comparisons](factor-ablation.svg)
+
+*Figure — Each panel normalizes the accepted implementation to `1.0x` and
+shows runtime after removing that factor. Shared probe-network vectorization
+is the dominant contribution; the two node-fusion changes are secondary.
+Ratios use their direct matched parents and are not multiplied.*
 
 ## What the factors mean
 
