@@ -1,19 +1,44 @@
-# Challenge 03 optimized expert solution
+# Challenge 03: exact product-state contraction
 
-This directory packages the final reviewed Task 03 campaign from Benchmark
-PR [#16](https://github.com/hmyuuu/OrbitBreakersExpertBenchmarks/pull/16),
-with the final tree taken from Benchmark `main` at `7e2298b`.
+**Take-home insight.** Post-selecting every even qubit after each brickwork
+layer prevents the surviving odd qubits from ever becoming mutually
+entangled. The optimized solution therefore evolves six exact two-component
+states and batches their identical local conditional maps with TensorCircuit
+`K.vmap`, instead of constructing a 12-qubit circuit; these two factors give
+`1.660x` and `2.063x` incremental speedups.
 
-- `solution_3_product_contraction.py` is the optimized TensorCircuit-NG
-  variant.
-- `research/IMPLEMENTATION_COMPARISON.md` is the final report.
-- `research/profiles/`, `research/figures/`, and the profiling/equivalence
-  scripts preserve every retained factor and rejected-factor result.
+## Factor speedups
 
-All six matched pairs passed. Mean runtime changed from `4.101350 s` to
-`0.924608 s`; mean paired speedup was `4.435277x` with a 95% t-interval of
-`[4.287006x, 4.583549x]`.
+Each multiplier is the measured paired speedup relative to that factor's
+immediate parent, so the rows are incremental rather than cumulative.
 
-The canonical expert under `tasks/challenge-03/solution/` is intentionally
-unchanged. Benchmark-harness reproduction commands in the research record
-should be run in the Benchmark repository pinned above.
+| Factor | Speedup vs parent | Decision |
+| --- | ---: | --- |
+| Exact product-state reduction | **1.660x** | **Keep** |
+| Batch local conditional maps with `K.vmap` | **2.063x** | **Keep** |
+| Put the dependent evolution/training loops in `K.jaxy_scan` | 1.149x | Keep |
+| Batch product-state observables with `K.vmap` | 1.093x | Keep |
+
+![Incremental factor speedups and final cumulative result](factor-ablation.svg)
+
+## What the factors mean
+
+- **Product-state reduction:** projection removes every even qubit before
+  another layer can connect two survivors, so the selected branch remains an
+  exact six-qubit product state.
+- **Vectorized local maps:** `K.vmap` evaluates the six independent
+  `<0_even|U|even_input>` contractions as one TensorCircuit computation.
+- **TensorCircuit scans:** `K.jaxy_scan` stages the dependent circuit evolution
+  and optimizer updates instead of dispatching Python loops.
+- **Vectorized observables:** `K.vmap` evaluates the independent one-qubit
+  expectations together.
+
+## End-to-end result
+
+Across six alternating matched pairs, the unchanged expert averaged
+`4.101350 s` and
+[`solution_3_product_contraction.py`](solution_3_product_contraction.py)
+averaged `0.924608 s`. The mean paired speedup was **4.435277x** (6/6
+candidate wins; 95% t-interval `4.287006x–4.583549x`). These timings are a
+same-host, same-container comparison using the local evaluator; absolute
+runtimes should not be compared across machines.
