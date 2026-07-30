@@ -164,7 +164,7 @@ def ultra_resource_figure() -> None:
         fontweight="bold",
     )
     axes[2].annotate(
-        "Ultra\n(10/12)",
+        "Ultra\n(11/12)",
         (
             ultra["solve_time_per_valid_solution_min"],
             ultra["cost_per_valid_solution_usd"],
@@ -176,7 +176,7 @@ def ultra_resource_figure() -> None:
     )
     axes[2].set_xlabel("Solve time per valid solution (min)")
     axes[2].set_ylabel("Cost per valid solution (USD)")
-    axes[2].set_xlim(16.5, 21.2)
+    axes[2].set_xlim(16.0, 21.2)
     axes[2].set_ylim(2.30, 3.20)
     axes[2].text(
         0.98,
@@ -247,7 +247,7 @@ def outcomes_figure() -> None:
     axes[0].text(
         0.0,
         -0.22,
-        "Both: 02–06, 09–12\nHigh only: 07  |  Ultra only: 08  |  Neither: 01",
+        "Both: 02–07, 09–12\nUltra only: 08  |  Neither: 01",
         transform=axes[0].transAxes,
         fontsize=9,
         va="top",

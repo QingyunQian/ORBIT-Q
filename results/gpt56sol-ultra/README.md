@@ -6,12 +6,15 @@ previous GPT-5.6 Sol `high` run.
 
 ## Headline
 
-- Final verified rewards: **10 / 12**
+- Final adjudicated validity: **11 / 12**
+- Raw verifier rewards: **10 / 12**
 - Functional checks: **12 / 12**
 - Static policy checks: **12 / 12**
-- Final audit checks: **10 / 12**
+- Raw audit checks: **10 / 12**
 
-The two remaining semantic failures are challenges 01 and 07.
+Challenge 01 is the only final failure. Challenge 07's original audit failure
+is retained as a raw artifact but was overturned by a later exact
+source-level adjudication.
 
 ## Protocol
 
@@ -55,37 +58,44 @@ c404ed272d55d85b23820182781ae8f43299c3409bf5c254624f49a33884d66a
 
 ## Ultra results
 
-| Challenge | Reward | Functional | Static | Final audit | Runtime (s) |
-|---|---:|---:|---:|---:|---:|
-| 01 | 0.0 | 1.0 | 1.0 | 0.0 | 127.87 |
-| 02 | 1.0 | 1.0 | 1.0 | 1.0 | 14.32 |
-| 03 | 1.0 | 1.0 | 1.0 | 1.0 | 18.45 |
-| 04 | 1.0 | 1.0 | 1.0 | 1.0 | 4.96 |
-| 05 | 1.0 | 1.0 | 1.0 | 1.0 | 75.51 |
-| 06 | 1.0 | 1.0 | 1.0 | 1.0 | 152.16 |
-| 07 | 0.0 | 1.0 | 1.0 | 0.0 | 84.99 |
-| 08 | 1.0 | 1.0 | 1.0 | 1.0 | 60.94 |
-| 09 | 1.0 | 1.0 | 1.0 | 1.0 | 7.18 |
-| 10 | 1.0 | 1.0 | 1.0 | 1.0 | 71.27 |
-| 11 | 1.0 | 1.0 | 1.0 | 1.0 | 120.07 |
-| 12 | 1.0 | 1.0 | 1.0 | 1.0 | 8.61 |
-| **Total / mean** | **10 / 12** | **12 / 12** | **12 / 12** | **10 / 12** | **62.19 mean** |
+| Challenge | Raw reward | Functional | Static | Raw audit | Final validity | Runtime (s) |
+|---|---:|---:|---:|---:|---:|---:|
+| 01 | 0.0 | 1.0 | 1.0 | 0.0 | Fail | 127.87 |
+| 02 | 1.0 | 1.0 | 1.0 | 1.0 | Pass | 14.32 |
+| 03 | 1.0 | 1.0 | 1.0 | 1.0 | Pass | 18.45 |
+| 04 | 1.0 | 1.0 | 1.0 | 1.0 | Pass | 4.96 |
+| 05 | 1.0 | 1.0 | 1.0 | 1.0 | Pass | 75.51 |
+| 06 | 1.0 | 1.0 | 1.0 | 1.0 | Pass | 152.16 |
+| 07 | 0.0 | 1.0 | 1.0 | 0.0 | **Pass†** | 84.99 |
+| 08 | 1.0 | 1.0 | 1.0 | 1.0 | Pass | 60.94 |
+| 09 | 1.0 | 1.0 | 1.0 | 1.0 | Pass | 7.18 |
+| 10 | 1.0 | 1.0 | 1.0 | 1.0 | Pass | 71.27 |
+| 11 | 1.0 | 1.0 | 1.0 | 1.0 | Pass | 120.07 |
+| 12 | 1.0 | 1.0 | 1.0 | 1.0 | Pass | 8.61 |
+| **Total / mean** | **10 / 12** | **12 / 12** | **12 / 12** | **10 / 12** | **11 / 12** | **62.19 mean** |
+
+† Post-hoc source adjudication; the original reward and audit files remain
+unchanged.
 
 The 12 solution runtimes total 746.33 seconds.
 
-## Semantic failures
+## Audit findings and adjudication
 
 - Challenge 01: the candidate capped the MPS bond dimension after two-qubit
   gates. The audit judged this unrequested truncation to change the prescribed
   unitary ansatz and objective. The candidate had already been written when the
   solver reached its 1,800-second limit, so Harbor still verified it.
-- Challenge 07: the candidate sampled measurement branches once from the
-  initial ancilla parameters and froze those branch outcomes throughout
-  optimization. This disconnects `theta_anc` from the objective and does not
-  implement fixed-uniform sampling evaluated at the current parameters.
+- Challenge 07: the raw audit rejected the candidate because it analytically
+  sampled the branches once and reused them. The later exact reduction study
+  showed that this is a false negative for the published workload. Only the
+  ancilla `RY` angles affect the measurement distribution; their pathwise
+  gradient through fixed discrete samples is zero, so they do not update and
+  the realized branches remain unchanged. Reusing those branches therefore
+  preserves the benchmark trajectory. The proof and evidence are summarized
+  in [`challenge-07/adjudication.md`](challenge-07/adjudication.md).
 
-Both candidates passed visible functional and static checks, but these are
-substantive problem-fidelity failures and remain failed.
+Challenge 01 remains failed. Challenge 07 is adjudicated to pass without
+altering the original `reward.json` or `audit-details.json`.
 
 ## High versus ultra solver effort
 
@@ -95,8 +105,8 @@ In the pinned package, `exp1` defaults to `half=False`; only named rotations
 such as `rxx` and `rzz` opt into `half=True`. Source inspection and direct
 matrix checks therefore established that high challenge 05 is valid.
 
-The comparable final result is **10/12 for high and 10/12 for ultra**, but on
-different task sets:
+The comparable final result is **10/12 for high and 11/12 for ultra**. Ultra
+passes every challenge high passes and additionally passes challenge 08:
 
 | Challenge | High final | Ultra final | High runtime (s) | Ultra runtime (s) | Ultra − high (s) |
 |---|---:|---:|---:|---:|---:|
@@ -106,17 +116,19 @@ different task sets:
 | 04 | Pass | Pass | 14.14 | 4.96 | -9.18 |
 | 05 | Pass | Pass | 124.92 | 75.51 | -49.41 |
 | 06 | Pass | Pass | 23.39 | 152.16 | +128.77 |
-| 07 | Pass | Fail | 155.52 | 84.99 | -70.53 |
+| 07 | Pass | Pass† | 155.52 | 84.99 | -70.53 |
 | 08 | Fail | Pass | 55.48 | 60.94 | +5.46 |
 | 09 | Pass | Pass | 87.31 | 7.18 | -80.13 |
 | 10 | Pass | Pass | 68.68 | 71.27 | +2.59 |
 | 11 | Pass | Pass | 100.41 | 120.07 | +19.66 |
 | 12 | Pass | Pass | 12.85 | 8.61 | -4.24 |
 
+† Post-hoc source adjudication.
+
 The overlap is:
 
-- both passed: challenges 02, 03, 04, 05, 06, 09, 10, 11, and 12;
-- high only: challenge 07;
+- both passed: challenges 02, 03, 04, 05, 06, 07, 09, 10, 11, and 12;
+- high only: none;
 - ultra only: challenge 08;
 - neither: challenge 01.
 
@@ -127,14 +139,12 @@ evolution and cap the bond dimension at `dmrg_chi` after two-qubit gates. This
 unrequested truncation changes the specified unitary ansatz. Ultra did not
 avoid the semantic shortcut taken by high.
 
-Challenge 07 is high-only. High keeps the measurement operation inside the
-current parameter-dependent trajectory objective while reusing fixed uniforms.
-The ancilla parameters therefore remain connected to the objective and
-optimization. Ultra instead samples the measurement branches once from the
-initial parameters, freezes `measured` and `pre_bits`, and optimizes a
-fixed-branch surrogate. This disconnects `theta_anc` from the objective. Here
-the more elaborate analytical reduction crossed the problem's semantic
-boundary.
+Challenge 07 is passed by both efforts. High keeps measurement inside the
+trajectory objective. Ultra recognizes an exact property of the published
+circuit: the fixed-discrete-sample pathwise gradient of the ancilla sampling
+angles is zero, so those angles and the realized branches do not change during
+optimization. Its analytic branch reuse is therefore an exact workload
+reduction, not a fixed-branch surrogate with different dynamics.
 
 Challenge 08 is ultra-only. High drives conditional `perfect_sampling` with a
 fixed scrambled Sobol low-discrepancy design. That produces correlated
@@ -148,9 +158,8 @@ Challenge 05 is not a solver difference. Both candidates use direct
 `exp1(theta=1j*...)`, which is the correct full-angle convention in the pinned
 TensorCircuit package.
 
-Overall, ultra explores more elaborate implementations, but the extra reasoning
-is not monotonically beneficial: it helps on challenge 08 and hurts on
-challenge 07. The final validity count remains unchanged.
+Overall, ultra preserves all ten high passes and adds challenge 08, raising the
+final validity count from 10/12 to 11/12.
 
 ## Figures
 
@@ -162,9 +171,9 @@ time-versus-cost per valid solution.
 
 ![GPT-5.6 Sol high versus ultra outcomes](figs/gpt56sol-high-vs-ultra-outcomes.png)
 
-The outcome figure makes the task-set swap explicit and compares both raw
-artifact runtime and same-reference runtime ratios on the nine tasks passed by
-both efforts.
+The outcome figure shows that ultra contains all high passes and adds challenge
+08. It compares both raw artifact runtime and same-reference runtime ratios on
+the ten tasks passed by both efforts.
 
 ![GPT-5.6 Sol high versus ultra resources](figs/gpt56sol-high-vs-ultra-resources.png)
 
@@ -175,28 +184,26 @@ tokens, and recorded solver cost.
 
 | Metric | High | Ultra | Ultra − high |
 |---|---:|---:|---:|
-| Final valid solutions | 10 | 10 | 0 |
+| Final valid solutions | 10 | 11 | +1 |
 | Agent solve wall time | 197.70 min | 182.80 min | -7.5% |
 | Non-cache input tokens | 1.709 M | 1.312 M | -23.2% |
 | Cache-read input tokens | 24.199 M | 31.478 M | +30.1% |
 | Output tokens | 0.163 M | 0.257 M | +58.1% |
 | Total solving-side tokens | 26.071 M | 33.048 M | +26.8% |
 | Recorded cost | USD 25.53 | USD 30.02 | +17.6% |
-| Cost per valid solution | USD 2.55 | USD 3.00 | +17.6% |
-| Solve time per valid solution | 19.77 min | 18.28 min | -7.5% |
+| Cost per valid solution | USD 2.55 | USD 2.73 | +6.9% |
+| Solve time per valid solution | 19.77 min | 16.62 min | -15.9% |
 | All-artifact runtime total | 770.70 s | 746.33 s | -3.2% |
 
 Ultra consumed substantially more total and output tokens and cost more, while
-its recorded agent wall time was shorter. It did not improve the final validity
-count in this single sample.
+its recorded agent wall time was shorter and it produced one additional valid
+solution.
 
-For the nine tasks passed by both runs (02, 03, 04, 05, 06, 09, 10, 11, and
-12), the geometric mean of `ultra_runtime / high_runtime` is 0.852, so ultra's
-artifacts were 14.8% faster by that aggregate. Against the shared expert
-references, the geometric-mean ratios are 1.47× for high and 1.25× for ultra.
-Their arithmetic runtime totals move the other way: 472.53 seconds for ultra
-versus 452.19 seconds for high, mainly because ultra challenge 06 was much
-slower. These runtime results compare the generated programs, not the reasoning
+For the ten tasks passed by both runs (02–07 and 09–12), the geometric mean of
+`ultra_runtime / high_runtime` is 0.815. Against the shared expert references,
+the geometric-mean ratios are 1.428× for high and 1.165× for ultra. Their
+arithmetic runtime totals are 557.52 seconds for ultra and 607.71 seconds for
+high. These runtime results compare the generated programs, not the reasoning
 service itself.
 
 This is only one trial per task. It supports a cost/behavior observation, not a
