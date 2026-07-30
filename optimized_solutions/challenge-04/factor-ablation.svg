@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="480" viewBox="0 0 860 480" role="img" aria-labelledby="title desc">
+  <title id="title">Task 04 factor ablation</title>
+  <desc id="desc">Incremental paired speedups for six timed factors and the cumulative end-to-end result. Probe batching is the dominant individual factor.</desc>
+  <rect width="860" height="480" fill="#ffffff"/>
+  <style>
+    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #172033; }
+    .muted { fill: #5c667a; }
+    .grid { stroke: #d9deea; stroke-width: 1; }
+  </style>
+  <text x="34" y="38" font-size="22" font-weight="600">Task 04 factor ablation</text>
+  <text x="34" y="62" font-size="13" class="muted">Individual factors are incremental vs their accepted parent; final is cumulative vs the expert</text>
+
+  <line x1="214" y1="82" x2="214" y2="411" stroke="#667085" stroke-width="1.5" stroke-dasharray="5 5"/>
+  <line x1="374" y1="82" x2="374" y2="411" class="grid"/>
+  <line x1="534" y1="82" x2="534" y2="411" class="grid"/>
+  <line x1="694" y1="82" x2="694" y2="411" class="grid"/>
+  <text x="214" y="434" text-anchor="middle" font-size="12" class="muted">1.0×</text>
+  <text x="374" y="434" text-anchor="middle" font-size="12" class="muted">1.5×</text>
+  <text x="534" y="434" text-anchor="middle" font-size="12" class="muted">2.0×</text>
+  <text x="694" y="434" text-anchor="middle" font-size="12" class="muted">2.5×</text>
+
+  <text x="198" y="105" text-anchor="end" font-size="12">Class alias</text>
+  <line x1="214" y1="101" x2="220" y2="101" stroke="#c14b4b" stroke-width="3"/>
+  <circle cx="220" cy="101" r="5" fill="#c14b4b"/>
+  <text x="230" y="105" font-size="12">1.018×</text>
+
+  <text x="198" y="150" text-anchor="end" font-size="12" font-weight="600">Probe K.vmap</text>
+  <line x1="214" y1="146" x2="587" y2="146" stroke="#138a72" stroke-width="4"/>
+  <circle cx="587" cy="146" r="7" fill="#138a72"/>
+  <text x="599" y="150" font-size="13" font-weight="600">2.165×</text>
+
+  <text x="198" y="195" text-anchor="end" font-size="12">Training scan</text>
+  <line x1="210" y1="191" x2="214" y2="191" stroke="#c14b4b" stroke-width="3"/>
+  <circle cx="210" cy="191" r="5" fill="#c14b4b"/>
+  <text x="220" y="195" font-size="12">0.987×</text>
+
+  <text x="198" y="240" text-anchor="end" font-size="12">Paired Kraus</text>
+  <line x1="214" y1="236" x2="231" y2="236" stroke="#138a72" stroke-width="3"/>
+  <circle cx="231" cy="236" r="5" fill="#138a72"/>
+  <text x="241" y="240" font-size="12">1.053×</text>
+
+  <text x="198" y="285" text-anchor="end" font-size="12">RXX–Kraus fusion</text>
+  <line x1="214" y1="281" x2="247" y2="281" stroke="#138a72" stroke-width="3"/>
+  <circle cx="247" cy="281" r="5" fill="#138a72"/>
+  <text x="257" y="285" font-size="12">1.104×</text>
+
+  <text x="198" y="330" text-anchor="end" font-size="12">Static basis</text>
+  <line x1="204" y1="326" x2="214" y2="326" stroke="#c14b4b" stroke-width="3"/>
+  <circle cx="204" cy="326" r="5" fill="#c14b4b"/>
+  <text x="220" y="330" font-size="12">0.969×</text>
+
+  <line x1="34" y1="352" x2="816" y2="352" class="grid"/>
+  <text x="198" y="386" text-anchor="end" font-size="13" font-weight="600">Final cumulative</text>
+  <line x1="214" y1="382" x2="727" y2="382" stroke="#315b8a" stroke-width="5"/>
+  <polygon points="727,373 736,382 727,391 718,382" fill="#315b8a"/>
+  <text x="742" y="386" font-size="13" font-weight="600">2.602×</text>
+
+  <circle cx="34" cy="458" r="5" fill="#138a72"/>
+  <text x="46" y="462" font-size="12">kept</text>
+  <circle cx="98" cy="458" r="5" fill="#c14b4b"/>
+  <text x="110" y="462" font-size="12">discarded</text>
+  <text x="207" y="462" font-size="12" class="muted">Expectation reuse omitted: no valid runtime under the 7 GiB memory gate</text>
+</svg>
