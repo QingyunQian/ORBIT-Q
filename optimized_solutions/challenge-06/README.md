@@ -15,6 +15,12 @@
 
 ![Task 06 factor ablation](factor-ablation.svg)
 
+*Figure — Each panel normalizes the recommended implementation to `1.0x`.
+Removing native `jaxode` produces the dominant slowdown. Euler fusion helps
+mainly in the cold kernel, while sparse BCOO actions are substantially slower.
+The panels retain their stated canonical-screen or isolated-profile context
+and are not multiplied.*
+
 ## What the factors mean
 
 - **Native `jaxode`:** run the same `tc.timeevol.ode_evol_global` problem
