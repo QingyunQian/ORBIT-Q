@@ -69,14 +69,6 @@ Each task is framework-neutral; the required framework is selected only through 
 
 The task-level map shows why a single pass rate is not enough: different frameworks and agents fail on different physical workflows, and valid artifacts can vary substantially in runtime relative to the expert TC reference.
 
-### Challenge-design notes
-
-- [Challenge 07 exact classical-ancilla reduction](optimized_solutions/challenge-07/CLASSICAL_ANCILLA_REDUCTION.md)
-  documents an unexpected reduction of the published measurement-feedback
-  circuit, provides an independently auditable proof of concept, and discusses
-  whether future revisions should accept the reduction or strengthen the
-  intended mid-circuit-measurement contract.
-
 ## What ORBIT-Q Measures
 
 Surface-level functional tests are not enough for scientific programming.
