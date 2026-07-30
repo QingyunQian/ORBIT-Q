@@ -26,7 +26,13 @@ direct parent, so retained rows are incremental rather than cumulative.
 | E10 | Cross-layer global gate batching | 1.079x (6 pairs) | Keep |
 | E11 | Algebraic contraction primitives | 1.205x (6 pairs) | Discard |
 
-![Incremental factor speedups and final cumulative result](factor-ablation.svg)
+![Task 01 direct factor-removal comparisons](factor-ablation.svg)
+
+*Figure — The recommended configuration in each direct parent comparison is
+normalized to `1.0x`; the red bar shows runtime without that factor. The three
+largest accepted factors are shown, while smaller and rejected factors remain
+in the table. Ratios come from different matched parents and are not
+multiplied.*
 
 ## What the factors mean
 
