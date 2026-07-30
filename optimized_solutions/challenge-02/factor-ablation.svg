@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="490" viewBox="0 0 920 490" role="img" aria-labelledby="title desc">
+  <title id="title">Task 02 factor ablation</title>
+  <desc id="desc">Incremental paired speedups for seven tested factors and the cumulative end-to-end result.</desc>
+  <rect width="920" height="490" fill="#ffffff"/>
+  <style>
+    text { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; fill: #172033; }
+    .muted { fill: #5c667a; }
+    .grid { stroke: #d9deea; stroke-width: 1; }
+  </style>
+  <text x="34" y="38" font-size="22" font-weight="600">Task 02 factor ablation</text>
+  <text x="34" y="62" font-size="13" class="muted">Individual factors are incremental vs their parent; final is cumulative vs the expert</text>
+
+  <line x1="280" y1="82" x2="280" y2="415" class="grid"/>
+  <line x1="430" y1="82" x2="430" y2="415" class="grid"/>
+  <line x1="580" y1="82" x2="580" y2="415" class="grid"/>
+  <line x1="730" y1="82" x2="730" y2="415" stroke="#667085" stroke-width="1.5" stroke-dasharray="5 5"/>
+  <line x1="880" y1="82" x2="880" y2="415" class="grid"/>
+
+  <text x="264" y="110" text-anchor="end" font-size="12">E01 · Gate fusion</text>
+  <line x1="730" y1="106" x2="704" y2="106" stroke="#c14b4b" stroke-width="3"/><circle cx="704" cy="106" r="5" fill="#c14b4b"/><text x="662" y="110" font-size="11">0.966×</text>
+  <text x="264" y="150" text-anchor="end" font-size="12">E02 · Training scan</text>
+  <line x1="730" y1="146" x2="757" y2="146" stroke="#138a72" stroke-width="3"/><circle cx="757" cy="146" r="5" fill="#138a72"/><text x="767" y="150" font-size="11">1.036×</text>
+  <text x="264" y="190" text-anchor="end" font-size="12">E03 · Frobenius purity</text>
+  <line x1="730" y1="186" x2="749" y2="186" stroke="#c14b4b" stroke-width="3"/><circle cx="749" cy="186" r="5" fill="#c14b4b"/><text x="759" y="190" font-size="11">1.025×</text>
+  <text x="264" y="230" text-anchor="end" font-size="12">E04 · Sparse XXZ</text>
+  <line x1="730" y1="226" x2="710" y2="226" stroke="#c14b4b" stroke-width="3"/><circle cx="710" cy="226" r="5" fill="#c14b4b"/><text x="668" y="230" font-size="11">0.973×</text>
+  <text x="264" y="270" text-anchor="end" font-size="12">E05 · Packed parameters</text>
+  <line x1="301" y1="266" x2="730" y2="266" stroke="#c14b4b" stroke-width="3"/><circle cx="301" cy="266" r="5" fill="#c14b4b"/><text x="311" y="258" font-size="11">0.428×</text>
+  <text x="264" y="310" text-anchor="end" font-size="12">E06 · Entropy vmap</text>
+  <line x1="730" y1="306" x2="765" y2="306" stroke="#c14b4b" stroke-width="3"/><circle cx="765" cy="306" r="5" fill="#c14b4b"/><text x="775" y="310" font-size="11">1.047×</text>
+  <text x="264" y="350" text-anchor="end" font-size="12" font-weight="600">E07 · Batched purity</text>
+  <line x1="730" y1="346" x2="786" y2="346" stroke="#138a72" stroke-width="4"/><circle cx="786" cy="346" r="7" fill="#138a72"/><text x="798" y="350" font-size="12" font-weight="600">1.074×</text>
+
+  <line x1="34" y1="371" x2="886" y2="371" class="grid"/>
+  <text x="264" y="405" text-anchor="end" font-size="13" font-weight="600">Final cumulative</text>
+  <line x1="730" y1="401" x2="817" y2="401" stroke="#315b8a" stroke-width="5"/><polygon points="817,392 826,401 817,410 808,401" fill="#315b8a"/><text x="832" y="405" font-size="13" font-weight="600">1.116×</text>
+
+  <text x="280" y="444" text-anchor="middle" font-size="11" class="muted">0.4×</text>
+  <text x="430" y="444" text-anchor="middle" font-size="11" class="muted">0.6×</text>
+  <text x="580" y="444" text-anchor="middle" font-size="11" class="muted">0.8×</text>
+  <text x="730" y="444" text-anchor="middle" font-size="11" class="muted">1.0×</text>
+  <text x="880" y="444" text-anchor="middle" font-size="11" class="muted">1.2×</text>
+  <text x="34" y="475" font-size="11" class="muted">Dashed line: 1× no change · green: kept · red: discarded · blue: final cumulative</text>
+</svg>
