@@ -55,9 +55,7 @@ def pair_map(odd, even, xx, zz, odd_rx, even_rx, even_left):
         1,
     )
     state = K.reshape(state, [2, 2])
-    selected = state[0, :] if even_left else state[:, 0]
-    probability = K.real(K.sum(K.conj(selected) * selected))
-    return selected / K.sqrt(probability + 1e-12), probability
+    return state[0, :] if even_left else state[:, 0]
 
 
 def cooling_product(params, config):
@@ -69,8 +67,10 @@ def cooling_product(params, config):
         [plus] + [zero for _ in range(config["n_steps"] // 2 - 1)]
     )
 
-    def block_step(states, inputs):
+    def block_step(carry, inputs):
+        states, boundary_amplitude = carry
         even_params, odd_params, even_input = inputs
+
         def even_map(odd, xx, zz, odd_rx, even_rx):
             return pair_map(
                 odd,
@@ -82,7 +82,7 @@ def cooling_product(params, config):
                 True,
             )
 
-        states, even_probabilities = K.vmap(
+        states = K.vmap(
             even_map, vectorized_argnums=(0, 1, 2, 3, 4)
         )(
             states,
@@ -95,7 +95,7 @@ def cooling_product(params, config):
         even_only = K.tensordot(
             tc.gates.rx_gate(theta=odd_params["rx"][0]).tensor, zero, 1
         )
-        even_only_probability = K.real(K.conj(even_only[0]) * even_only[0])
+        boundary_amplitude = boundary_amplitude * even_only[0]
 
         def odd_map(odd, xx, zz, odd_rx, even_rx):
             return pair_map(
@@ -108,7 +108,7 @@ def cooling_product(params, config):
                 False,
             )
 
-        paired_states, odd_probabilities = K.vmap(
+        paired_states = K.vmap(
             odd_map, vectorized_argnums=(0, 1, 2, 3, 4)
         )(
             states[:-1],
@@ -122,21 +122,26 @@ def cooling_product(params, config):
             states[-1],
             1,
         )
-        log_probabilities = K.concat(
-            [
-                K.log(even_probabilities + 1e-12),
-                K.reshape(K.log(even_only_probability + 1e-12), [1]),
-                K.log(odd_probabilities + 1e-12),
-            ]
+        states = K.concat(
+            [paired_states, K.reshape(last_state, [1, 2])]
         )
-        return K.concat([paired_states, K.reshape(last_state, [1, 2])]), log_probabilities
+        return (states, boundary_amplitude), K.zeros([])
 
-    states, log_probabilities = K.jaxy_scan(
+    (states, boundary_amplitude), _ = K.jaxy_scan(
         block_step,
-        states,
+        (states, K.convert_to_tensor(np.complex64(1.0))),
         (params["even"], params["odd"], even_inputs),
     )
-    return states, K.reshape(log_probabilities, [-1])
+    probabilities = K.real(K.sum(K.conj(states) * states, axis=1))
+    states = states / K.reshape(K.sqrt(probabilities + 1e-12), [-1, 1])
+    boundary_probability = K.real(
+        K.conj(boundary_amplitude) * boundary_amplitude
+    )
+    log_probability_sum = (
+        K.sum(K.log(probabilities + 1e-12))
+        + K.log(boundary_probability + 1e-12)
+    )
+    return states, log_probability_sum
 
 
 def one_qubit_expectation(state, operator):
@@ -146,7 +151,7 @@ def one_qubit_expectation(state, operator):
 
 
 def observables(params, config):
-    states, log_probabilities = cooling_product(params, config)
+    states, log_probability_sum = cooling_product(params, config)
     x_gate = tc.gates.x()
     z_gate = tc.gates.z()
     xs = K.vmap(lambda state: one_qubit_expectation(state, x_gate))(states)
@@ -154,8 +159,9 @@ def observables(params, config):
     zz_sum = 2.0 * K.sum(zs[:-1]) + zs[-1]
     energy = -(zz_sum + config["transverse_field"] * K.sum(xs))
     energy_density = energy / config["n_qubits"]
-    mean_log_probability = K.mean(log_probabilities)
-    success_probability = K.exp(K.sum(log_probabilities))
+    n_events = config["n_steps"] * (config["n_qubits"] // 2)
+    mean_log_probability = log_probability_sum / n_events
+    success_probability = K.exp(log_probability_sum)
     loss = (
         energy_density
         - config["log_probability_weight"] * mean_log_probability

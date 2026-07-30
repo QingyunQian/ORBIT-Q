@@ -112,21 +112,3 @@ A run is considered functionally successful when all of the following hold for t
 - All returned values are NumPy arrays or NumPy-compatible scalars.
 
 The evaluator reports these metrics directly so another framework's `solution_3.py` can be compared without changing `evaluate_3.py`.
-
-## Submission Requirements
-
-Create `/root/solution_3.py` and expose:
-
-```python
-def run_solution(config):
-    ...
-```
-
-The evaluator will import `solution_3` from `/root` and call
-`run_solution(config)`. Do not modify files under `/tests`, `/logs`, or any
-verifier reward files. Do not read hidden oracle solution files.
-
-Your implementation should be concise. More than 200 non-empty, non-comment
-Python lines in `/root/solution_3.py` will receive zero static-policy
-score.
-
