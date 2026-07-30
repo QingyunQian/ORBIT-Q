@@ -19,7 +19,13 @@ immediate parent, so the rows are incremental rather than cumulative.
 | Put the dependent evolution/training loops in `K.jaxy_scan` | 1.149x | Keep |
 | Batch product-state observables with `K.vmap` | 1.093x | Keep |
 
-![Incremental factor speedups and final cumulative result](factor-ablation.svg)
+![Task 03 direct factor-removal comparisons](factor-ablation.svg)
+
+*Figure — Each panel normalizes the implementation containing the named factor
+to `1.0x` and shows the runtime without it. The three largest accepted factors
+are plotted; the smaller `1.093x` observable-batching result remains in the
+table. Ratios are direct parent comparisons, not multiplicative shares of the
+final speedup.*
 
 ## What the factors mean
 
