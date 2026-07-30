@@ -19,6 +19,12 @@ dominant reason the final implementation is faster.
 
 ![Task 09 factor ablation](factor-ablation.svg)
 
+*Figure — Panel a shows the complete compact-cone solution against the public
+expert. Panel b is a removal lower bound: disabling TensorCircuit's inner
+light-cone cancellation exceeds the 300-second limit. Panel c directly removes
+cone separation. Unisolated packing and scan contributions are not assigned
+invented percentages.*
+
 ## What the factors mean
 
 - **Pre-construction causal cones** remove irrelevant gates before TensorCircuit allocates their tensor nodes, while packing keeps only the 154 active optimizer coordinates.
