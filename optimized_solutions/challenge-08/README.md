@@ -19,9 +19,12 @@ algorithm.
 
 ![Task 08 factor attribution](factor-ablation.svg)
 
-*Figure — On the complete sufficient-memory five-pair comparison, chunking
-does not resolve a runtime speedup. The 256-shot setting is retained because it
-has the best full-workload chunk-size screen and bounds peak intermediates.*
+*Figure — Panel a keeps the complete sufficient-memory five-pair comparison
+and makes clear that its confidence interval includes `1x`. Panels b–c
+normalize the 256-shot screen to `1.0x` and show the additional runtime from
+512- and 128-shot blocks. The 256-shot setting is retained for bounded
+execution and the best full-workload chunk-size screen, not a confirmed
+end-to-end speedup.*
 
 ## What the factors mean
 
