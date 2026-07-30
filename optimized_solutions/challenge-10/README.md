@@ -17,6 +17,12 @@ gain.
 
 ![Task 10 factor ablation](factor-ablation.svg)
 
+*Figure — Panel a shows that replacing the exact MPS/MPO representation with
+the public expert raises runtime by about `4.89x`. Panels b–c are direct
+five-pair removal tests: scan is neutral, while rotation fusion is a small
+secondary factor. The structural subcomponents are representation-coupled and
+are not assigned invented independent percentages.*
+
 ## What the factors mean
 
 - **Bounded-rank contraction** applies the exact bond-2 CMZ and bond-3 TFIM MPO to the low-rank MPS without generic OMECo path search.
