@@ -1,39 +1,62 @@
-# Challenge 10: exact bounded-rank MPS/MPO contraction
+# Challenge 10: exact low-rank contraction
 
-**Take-home insight.** Keep the state and operators in their exact small-bond
-MPS/MPO forms, and contract the fixed local network directly through
-TensorCircuit-NG. This removes the expert's generic
-circuit-bra/MPO/circuit-ket contraction-path search and large cold compilation
-graph; the scan and local rotation fusion are not the source of the headline
-gain.
+**Take-home insight.** The `4.90x` speedup comes from keeping the complete VQE
+calculation in its exact low-bond-dimension MPS form and applying local
+operators directly. It does **not** come from an intrinsically cheaper MPO
+replacement for TensorCircuit-NG's native CMZ hyperedge.
 
-## Factor speedups
+## Result and attribution
 
-| Factor | Measured speedup or effect | Decision |
+| Change or ablation | Five-pair result | Interpretation |
 |---|---:|---|
-| Exact bounded-rank MPS/MPO representation | At least `4.67x` end to end even in the slower unfused ablation | **Keep — dominant** |
-| Whole-training `K.jaxy_scan` | `0.9857x`, 95% CI `[0.9394x, 1.0320x]` | Discard from the performance claim |
-| Fused `RX -> RZ -> RY` application | `1.0515x`, 95% CI `[0.9753x, 1.1277x]` | Keep in code; secondary |
+| Public expert → exact low-rank solver | **`4.898x`** (`4.598–5.199x`) | Dominant algorithmic gain |
+| Generic hyperedge → generic MPO, normal preprocessing | `1.535x` (`1.505–1.566x`) | MPO appears faster |
+| Same generic comparison, preprocessing disabled | `0.963x` (`0.899–1.027x`) | No resolved gate-level advantage |
+| Hyperedge → MPO inside the exact low-rank solver | `1.000x` (`0.977–1.023x`) | End-to-end neutral |
 
-![Task 10 factor ablation](factor-ablation.svg)
+Intervals are 95% paired t-intervals. Values above one favor the method after
+the arrow.
 
-*Figure — Panel a shows that replacing the exact MPS/MPO representation with
-the public expert raises runtime by about `4.89x`. Panels b–c are direct
-five-pair removal tests: scan is neutral, while rotation fusion is a small
-secondary factor. The structural subcomponents are representation-coupled and
-are not assigned invented independent percentages.*
+![Task 10 CMZ representation ablation](factor-ablation.svg)
 
-## What the factors mean
+*Figure — **a**, the generic MPO wins only when TensorCircuit's preprocessing
+is available; with preprocessing matched, and inside the optimized solver,
+hyperedge and MPO are indistinguishable. **b**, the reason is structural:
+the native CMZ's `CopyNode`s prevent the current single-gate merge pass, whereas
+the ordinary MPO is reduced from 424 contraction tensors to 86.*
 
-- **Bounded-rank contraction** applies the exact bond-2 CMZ and bond-3 TFIM MPO to the low-rank MPS without generic OMECo path search.
-- **Whole-training scan** moves all 200 Adam updates into one backend scan, but its removal did not slow this cold end-to-end workload.
-- **Rotation fusion** builds each local `RX -> RZ -> RY` sequence as one differentiable 2x2 gate and provides only a small measured benefit.
+## Why the apparently cheaper MPO wins
 
-## End-to-end result
+TensorCircuit-NG's built-in
+[`cmz_gate`](https://github.com/tensorcircuit/tensorcircuit-ng/blob/master/tensorcircuit/gates.py#L1051)
+is already an exact bond-2 diagonal MPS connected through `CopyNode`
+hyperedges. The representation is not computationally inferior. However, the
+current
+[contractor preprocessing](https://github.com/tensorcircuit/tensorcircuit-ng/blob/master/tensorcircuit/cons.py#L1035-L1038)
+skips `_merge_single_gates` whenever a `CopyNode` is present.
 
-All ten cells in five counterbalanced Docker pairs passed. Expert and optimized
-means were `18.931296 s` and `3.869287 s`; mean paired speedup was `4.898251x`
-with a 95% t-interval of `[4.597784x, 5.198719x]` (the supplemental sixth
-pair also passed). Both sides used the same network-disabled 6-CPU/7-GiB
-container and TensorCircuit nightly `1.8.0.dev20260726`; the result is not a
-cross-version or cross-hardware claim.
+That implementation detail changes the generic network:
+
+| Generic contraction | Contracted tensors | Path search |
+|---|---:|---:|
+| Native hyperedge | 424 | 3.54 s |
+| MPO with preprocessing | 86 | 0.73 s |
+| MPO without preprocessing | 424 | 3.72 s |
+
+Accordingly, enabling preprocessing for the generic MPO is itself a `1.56x`
+end-to-end improvement. Once that advantage is removed, the hyperedge is
+nominally faster, but the five-pair interval includes equality.
+
+## Correctness and final decision
+
+The low-rank MPO and hyperedge variants produced bitwise-identical initial
+energy and gradient and the same final energy (`-1.1781773567`) in every pair.
+The submitted solution therefore keeps the deterministic low-rank algorithm;
+its local MPO is an implementation choice, not the source of the headline
+gain. A framework-level opportunity would be a hyperedge-aware gate-fusion
+pass that preserves `CopyNode` semantics.
+
+The original expert-versus-optimized comparison used the same
+network-disabled 6-CPU/7-GiB container and TensorCircuit-NG
+`1.8.0.dev20260726`: `18.931296 s` versus `3.869287 s` over five
+counterbalanced pairs.
