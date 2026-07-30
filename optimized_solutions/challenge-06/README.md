@@ -1,18 +1,34 @@
-# Challenge 06 optimized expert solution
+# Task 06 — use TensorCircuit's native `jaxode` backend
 
-This directory packages the final reviewed Task 06 campaign from Benchmark
-PR [#12](https://github.com/hmyuuu/OrbitBreakersExpertBenchmarks/pull/12),
-with the final tree taken from Benchmark `main` at `7e2298b`.
+> **Take-home insight:** the acceleration comes from selecting TensorCircuit's
+> native `jaxode` ODE backend for the unchanged adaptive evolution. Gate fusion
+> is secondary; automatic `dt0` and sparse BCOO Hamiltonians do not help.
 
-- `solution_6_native_jaxode.py` is the optimized TensorCircuit-NG variant.
-- `research/IMPLEMENTATION_COMPARISON.md` is the final report.
-- `research/profiles/`, `research/figures/`, and the validation/profiling
-  scripts preserve the factor ablations and five-pair result.
+## Factor speedups
 
-All five matched pairs passed. Mean runtime changed from `41.4259 s` to
-`27.5366 s`; mean paired speedup was `1.50446x` with a 95% t-interval of
-`[1.48875x, 1.52018x]`.
+| Factor | Measured speedup | Decision |
+|---|---:|---|
+| TensorCircuit native `jaxode` | **1.529x** single-screen | Keep — dominant |
+| Exact `RZ → RY → RZ` Euler fusion | 1.152x cold; 1.004x steady | Keep — secondary |
+| Diffrax automatic `dt0` | 1.001x | Discard — neutral |
+| BCOO Hamiltonian actions | 0.29x–0.30x | Discard — regression |
 
-The canonical expert under `tasks/challenge-06/solution/` is intentionally
-unchanged. Benchmark-harness reproduction commands in the research record
-should be run in the Benchmark repository pinned above.
+![Task 06 factor ablation](factor-ablation.svg)
+
+## What the factors mean
+
+- **Native `jaxode`:** run the same `tc.timeevol.ode_evol_global` problem
+  through TensorCircuit's faster native backend without changing the vector
+  field, tolerances, endpoints, or step bound.
+- **Euler fusion:** replace each exact three-gate Euler sequence with one
+  phase-corrected TensorCircuit `U` gate while retaining all parameters.
+- **Automatic `dt0`:** let the solver choose its initial step instead of using
+  the expert's explicit value.
+- **BCOO actions:** replace the small termwise Hamiltonian products with sparse
+  matrix multiplication; this stack makes them substantially slower.
+
+## End-to-end result
+
+All five matched pairs passed. Mean runtime fell from `41.4259 s` to
+`27.5366 s`, for a mean paired speedup of **1.50446x** (5/5 candidate wins).
+These are same-container local-engine measurements.
