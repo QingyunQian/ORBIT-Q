@@ -1,27 +1,30 @@
-# Challenge 12 optimized expert solutions
+# Challenge 12: batched fixed-order SU4 construction
 
-This directory packages the final reviewed Task 12 campaign from Benchmark
-PR [#6](https://github.com/hmyuuu/OrbitBreakersExpertBenchmarks/pull/6) plus
-the Task 12 half of ablation PR
-[#13](https://github.com/hmyuuu/OrbitBreakersExpertBenchmarks/pull/13), with
-the final tree taken from Benchmark `main` at `7e2298b`.
+**Take-home insight.** Build all 31 SU4 generators in one batch and replace
+31 separate adaptive Pade-13 exponentials with one fixed-order batched
+Pade(3,3) scaling-and-squaring kernel. This shrinks the differentiated
+compilation graph and is the dominant source of the end-to-end speedup.
 
-- `solution_12_batched_su4.py` is the promoted campaign candidate.
-- `solution_12_pair_fused.py` is the separately tracked, faster exact
-  pair-fused variant.
-- `research/IMPLEMENTATION_COMPARISON.md` is the final report.
-- `research/profiles/`, `research/figures/`, and the component profiler
-  preserve the post-merge factor attribution.
+## Factor speedups
 
-For upstream review, both optimized files restore the immutable expert's
-module docstring verbatim. Only comments changed relative to the reviewed
-Benchmark artifacts; executable code is identical.
+| Factor | Measured speedup or effect | Decision |
+|---|---:|---|
+| Batched fixed-order Pade gate construction | `3.109x` for the isolated gate-build/gradient/Adam kernel | **Keep — dominant** |
+| Whole-training scan | `1.270x` for execution, but only `1.083x` including cold lowering and compilation | Keep; secondary |
+| Pair-fused ququart contraction | `1.093x` incremental end to end | Discard from the promoted upstream solution |
 
-All six local-engine matched pairs passed in both sessions. The promoted
-candidate measured `3.914003x` mean paired speedup; the pair-fused variant
-measured `4.247771x`. The report explicitly marks the formal Docker promotion
-rerun as pending rather than overstating the claim.
+![Task 12 factor ablation](factor-ablation.svg)
 
-The canonical expert under `tasks/challenge-12/solution/` is intentionally
-unchanged. Benchmark-harness reproduction commands in the research record
-should be run in the Benchmark repository pinned above.
+## What the factors mean
+
+- **Batched fixed Pade** forms and exponentiates the complete `(31, 4, 4)` SU4 batch with one static TensorCircuit/JAX kernel.
+- **Whole-training scan** runs all 5,000 Adam updates in one compiled backend loop.
+- **Pair fusion** rewrites the network on 16 four-level sites, but its small tracked gain does not justify a second upstream solution.
+
+## End-to-end result
+
+All six matched local-engine pairs passed for the promoted
+`solution_12_batched_su4.py`. Expert and optimized means were `9.082742 s`
+and `2.320613 s`; mean paired speedup was `3.914003x` with a 95% t-interval
+of `[3.876545x, 3.951460x]`. This is same-host local-engine evidence (4 vCPU,
+pinned dependencies); the formal Docker promotion rerun remains outstanding.
