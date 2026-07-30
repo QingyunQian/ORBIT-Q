@@ -4,25 +4,24 @@
 
 **Keep the public expert’s TensorCircuit circuit and all 8192
 `perfect_sampling` trajectories, but execute the mapped sampler in contiguous
-256-shot blocks.** The expert’s single 8192-shot `vmap` puts the shot axis into
-every XLA contraction intermediate; bounding that axis is the only material
-change and converts the canonical 7-GiB workload from **0/5 OOM** to
-**5/5 PASS**.
+256-shot blocks.** A single 8192-shot `vmap` puts the shot axis into every XLA
+contraction intermediate; bounding that axis is the only material change and
+reduces the peak live tensor-network workload without changing the sampling
+algorithm.
 
 ## Factor attribution
 
-| Factor | Canonical/full-workload result | Decision |
+| Factor | Full-workload result | Decision |
 | --- | ---: | --- |
-| One 8192-shot mapped batch | 0/5 PASS; attempted buffers 9.31–17.97 GiB | Root cause |
 | 512-shot blocks | 50.843 s single screen | Feasible, not best |
 | **256-shot blocks** | **44.028 s single screen** | **Promote** |
 | 128-shot blocks | 55.182 s single screen | Dispatch overhead |
 
 ![Task 08 factor attribution](factor-ablation.svg)
 
-*Figure — The bounded 256-shot execution is the necessary OOM-to-PASS factor
-and the best of the three feasible chunk-size screens. Chunk-size timings are
-single full-workload screens, not uncertainty estimates.*
+*Figure — On the complete sufficient-memory five-pair comparison, chunking
+does not resolve a runtime speedup. The 256-shot setting is retained because it
+has the best full-workload chunk-size screen and bounds peak intermediates.*
 
 ## What the factors mean
 
@@ -34,15 +33,22 @@ single full-workload screens, not uncertainty estimates.*
   excess host dispatch. A 256-shot block is the measured balance for this
   workload.
 
-## Result and claim boundary
+## Complete canonical result
 
-At 7 GiB, the immutable expert failed all five canonical attempts, while the
-candidate passed all five with a mean runtime of **47.356 s**. This establishes
-a peak-memory and reproducibility improvement; it does not provide a numerical
-speedup denominator.
+A sufficient-memory, same-node, six-CPU-affinity five-pair session ran the
+complete 8192-shot workload for both implementations:
 
-With sufficient memory, the expert is algorithmically runnable. A separate
-64-GiB, six-CPU-affinity five-pair session produced 126.675 s expert and
-123.188 s candidate means. The candidate won only 3/5 pairs and its mean
-pairwise speedup was 1.045x with 95% t-CI [0.818, 1.273]. Therefore this PR
-does **not** claim a confirmed runtime speedup.
+| Metric | Public expert | 256-shot candidate |
+| --- | ---: | ---: |
+| Passing runs | 5/5 | 5/5 |
+| Mean runtime | 126.675 s | 123.188 s |
+| Pair wins | 2/5 | 3/5 |
+| Mean pairwise speedup | — | 1.045x |
+| 95% Student-t interval | — | [0.818, 1.273] |
+
+The interval crosses 1.0, so there is **no confirmed runtime speedup**. The
+promoted benefit is bounded peak memory: under tighter allocations the
+monolithic mapped batch can exhaust memory, while the 256-shot implementation
+completes the unchanged workload. The exact memory threshold is hardware and
+contraction-path dependent; the full allocation study remains in the benchmark
+research repository.
