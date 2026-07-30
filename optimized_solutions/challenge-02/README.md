@@ -21,7 +21,12 @@ direct parent, so retained rows are incremental rather than cumulative.
 | E06 | Checkpoint entropy `K.vmap` alone | 1.047x | Discard (inconclusive) |
 | E07 | `K.vmap` plus exact Frobenius purity | **1.074x** | **Keep** |
 
-![Incremental factor speedups and final cumulative result](factor-ablation.svg)
+![Task 02 direct factor-removal and rejected-variant comparisons](factor-ablation.svg)
+
+*Figure — Each panel normalizes its recommended direct parent to `1.0x`.
+Removing the two accepted factors causes modest slowdowns; packing the
+parameter PyTree is the largest measured regression. Ratios come from direct
+matched-parent experiments and are not multiplied.*
 
 ## What the factors mean
 
