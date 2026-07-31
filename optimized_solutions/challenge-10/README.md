@@ -1,62 +1,45 @@
-# Challenge 10: exact low-rank contraction
+# Challenge 10: specialize the cold contraction program
 
-**Take-home insight.** The `4.90x` speedup comes from keeping the complete VQE
-calculation in its exact low-bond-dimension MPS form and applying local
-operators directly. It does **not** come from an intrinsically cheaper MPO
-replacement for TensorCircuit-NG's native CMZ hyperedge.
+**Take-home insight.** The speedup is not caused by an intrinsically cheaper
+MPO gate or by a large reduction in contraction FLOPs. It comes from replacing
+a generic TensorNetwork that must be built, planned, differentiated, and
+compiled in every cold process with a static sequence of local MPS/MPO
+contractions. The known bond-dimension bound (`1 -> 2 -> 4`) makes this
+specialization exact.
 
 ## Result and attribution
 
-| Change or ablation | Five-pair result | Interpretation |
+The public expert-to-candidate campaign measured **`4.898x`**
+(`4.598–5.199x`, five paired runs): `18.931 s` to `3.869 s`.
+
+Additional five-pair cold-JIT ablations separate the mechanism:
+
+| Change | Paired speedup (95% t-CI) | Meaning |
 |---|---:|---|
-| Public expert → exact low-rank solver | **`4.898x`** (`4.598–5.199x`) | Dominant algorithmic gain |
-| Generic hyperedge → generic MPO, normal preprocessing | `1.535x` (`1.505–1.566x`) | MPO appears faster |
-| Same generic comparison, preprocessing disabled | `0.963x` (`0.899–1.027x`) | No resolved gate-level advantage |
-| Hyperedge → MPO inside the exact low-rank solver | `1.000x` (`0.977–1.023x`) | End-to-end neutral |
+| Native hyperedge → same graph with a fixed path | **`1.626x`** (`1.373–1.878x`) | CopyNode-amplified path search is the largest isolated factor |
+| Fixed-path hyperedge → fixed-path MPO | `1.011x` (`0.965–1.057x`) | No resolved gate-level MPO advantage |
+| Fixed-path generic MPO → fused rotations | **`1.210x`** (`1.161–1.258x`) | Less graph construction and preprocessing |
+| Fused fixed-path generic graph → local MPS | **`1.158x`** (`1.119–1.198x`) | A smaller, more regular traced and differentiated program |
 
-Intervals are 95% paired t-intervals. Values above one favor the method after
-the arrow.
+The rows are independent paired experiments; their ratios are not additive.
 
-![Task 10 CMZ representation ablation](factor-ablation.svg)
+![Task 10 factor ablation](factor-ablation.svg)
 
-*Figure — **a**, the generic MPO wins only when TensorCircuit's preprocessing
-is available; with preprocessing matched, and inside the optimized solver,
-hyperedge and MPO are indistinguishable. **b**, the reason is structural:
-the native CMZ's `CopyNode`s prevent the current single-gate merge pass, whereas
-the ordinary MPO is reduced from 424 contraction tensors to 86.*
+## What is actually cheaper
 
-## Why the apparently cheaper MPO wins
+The native CMZ is already an exact bond-2 hyperedge representation. Its
+`CopyNode`s make the current contractor skip `_merge_single_gates`, so OMECo
+searches a 424-tensor/423-step graph instead of the preprocessed MPO's
+86-tensor/85-step graph (about `3.5 s` versus `0.7 s` of search).
 
-TensorCircuit-NG's built-in
-[`cmz_gate`](https://github.com/tensorcircuit/tensorcircuit-ng/blob/master/tensorcircuit/gates.py#L1051)
-is already an exact bond-2 diagonal MPS connected through `CopyNode`
-hyperedges. The representation is not computationally inferior. However, the
-current
-[contractor preprocessing](https://github.com/tensorcircuit/tensorcircuit-ng/blob/master/tensorcircuit/cons.py#L1035-L1038)
-skips `_merge_single_gates` whenever a `CopyNode` is present.
+This does not imply a large execution-cost difference: both generic paths have
+the same maximum intermediate size (`96` elements) and nearly identical
+estimated FLOPs. Once the path is fixed, hyperedge and MPO runtimes are
+indistinguishable.
 
-That implementation detail changes the generic network:
-
-| Generic contraction | Contracted tensors | Path search |
-|---|---:|---:|
-| Native hyperedge | 424 | 3.54 s |
-| MPO with preprocessing | 86 | 0.73 s |
-| MPO without preprocessing | 424 | 3.72 s |
-
-Accordingly, enabling preprocessing for the generic MPO is itself a `1.56x`
-end-to-end improvement. Once that advantage is removed, the hyperedge is
-nominally faster, but the five-pair interval includes equality.
-
-## Correctness and final decision
-
-The low-rank MPO and hyperedge variants produced bitwise-identical initial
-energy and gradient and the same final energy (`-1.1781773567`) in every pair.
-The submitted solution therefore keeps the deterministic low-rank algorithm;
-its local MPO is an implementation choice, not the source of the headline
-gain. A framework-level opportunity would be a hyperedge-aware gate-fusion
-pass that preserves `CopyNode` semantics.
-
-The original expert-versus-optimized comparison used the same
-network-disabled 6-CPU/7-GiB container and TensorCircuit-NG
-`1.8.0.dev20260726`: `18.931296 s` versus `3.869287 s` over five
-counterbalanced pairs.
+The headline campaign was therefore a **cold specialization** win. Profiling
+measured lowering plus XLA compilation at `17.514 s` for the expert and
+`3.541 s` for the candidate, while compiled numerical execution took only
+milliseconds. The local MPO is an implementation choice; the important change
+is replacing dynamic generic graph planning and compilation with a fixed exact
+contraction program.
