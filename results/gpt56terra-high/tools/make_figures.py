@@ -49,64 +49,37 @@ def save(fig: plt.Figure, stem: str) -> None:
 
 
 def outcome_figure() -> None:
-    fig = plt.figure(figsize=(13.6, 4.8), constrained_layout=True)
-    grid = fig.add_gridspec(1, 3, width_ratios=[1.45, 1.75, 0.95])
-
+    fig, ax = plt.subplots(figsize=(10.8, 3.5), constrained_layout=True)
     runs = COMPARISON["runs"]
     labels = [run["label"] for run in runs]
     colors = [BLUE, ORANGE, PASS]
-
-    ax0 = fig.add_subplot(grid[0, 0])
     matrix = np.array([[1 if task in run["passes"] else 0 for task in TASKS] for run in runs])
-    ax0.imshow(matrix, aspect="auto", cmap=ListedColormap(["#FFFFFF", PALE_PASS]), vmin=0, vmax=1)
+    ax.imshow(matrix, aspect="auto", cmap=ListedColormap(["#FFFFFF", PALE_PASS]), vmin=0, vmax=1)
     for row, color in enumerate(colors):
         for col in range(matrix.shape[1]):
-            ax0.text(col, row, "P" if matrix[row, col] else "F", color=color if matrix[row, col] else TEXT, ha="center", va="center", weight="bold", fontsize=8)
-    ax0.set_xticks(np.arange(12), [f"{task:02d}" for task in TASKS])
-    ax0.set_yticks(np.arange(3), labels)
-    ax0.tick_params(length=0)
-    ax0.set_xlabel("Challenge")
-    ax0.set_title("Final task outcomes", loc="left")
-    ax0.text(-0.13, 1.08, "(a)", transform=ax0.transAxes, fontsize=15, weight="bold")
-    ax0.text(0, -0.24, "All three: 02–07, 09, 11, 12\nSol only: 10   |   Ultra only: 08   |   Neither: 01", transform=ax0.transAxes, fontsize=8, va="top")
-
-    ax1 = fig.add_subplot(grid[0, 1])
-    rows = SUMMARY["tasks"]
-    runtime = np.array([row["runtime_sec"] if row["runtime_sec"] >= 0 else np.nan for row in rows])
-    passed = np.array([row["reward"] == 1 for row in rows])
-    ax1.bar(TASKS[passed], runtime[passed], color=PASS, edgecolor="black", linewidth=0.8, width=0.72, label="Passed")
-    measured_fail = (~passed) & np.isfinite(runtime)
-    ax1.bar(TASKS[measured_fail], runtime[measured_fail], color="white", edgecolor=PASS, hatch="//", linewidth=1.2, width=0.72, label="Failed reward")
-    for task, value, ok in zip(TASKS, runtime, passed):
-        if not ok and np.isnan(value):
-            ax1.text(task, 6.0, "F\nn/a", ha="center", va="bottom", color=TEXT, fontsize=8, weight="bold")
-    ax1.set_yscale("log")
-    ax1.set_ylim(5, 170)
-    ax1.set_xticks(TASKS, [f"{task:02d}" for task in TASKS])
-    ax1.set_xlabel("Challenge")
-    ax1.set_ylabel("Candidate runtime (s, log scale)")
-    ax1.set_title("Terra/high task-level artifact runtime", loc="left")
-    ax1.text(-0.13, 1.08, "(b)", transform=ax1.transAxes, fontsize=15, weight="bold")
-    ax1.legend(frameon=False, loc="upper left", fontsize=8)
-    ax1.grid(axis="y", alpha=0.35, which="both")
-
-    ax2 = fig.add_subplot(grid[0, 2])
-    counts = np.array([len(run["passes"]) for run in runs])
-    x = np.arange(3)
-    ax2.bar(x, counts, color=PASS, edgecolor="black", linewidth=0.8, width=0.68, label="Passed")
-    ax2.bar(x, 12 - counts, bottom=counts, color="white", edgecolor="black", linewidth=0.8, width=0.68, label="Failed")
-    for xi, count in zip(x, counts):
-        ax2.text(xi, count - 0.35, f"{count}/12", ha="center", va="top", color="white", weight="bold", fontsize=9)
-    ax2.set_ylim(0, 12.4)
-    ax2.set_yticks([0, 3, 6, 9, 12])
-    ax2.set_xticks(x, labels, rotation=28, ha="right")
-    ax2.set_ylabel("Tasks")
-    ax2.set_title("Aggregate validity", loc="left")
-    ax2.text(-0.18, 1.08, "(c)", transform=ax2.transAxes, fontsize=15, weight="bold")
-    ax2.legend(frameon=False, loc="upper right", fontsize=8)
-    ax2.grid(axis="y", alpha=0.35)
-
-    fig.suptitle("GPT-5.6 TensorCircuit solver comparison: validity and Terra/high runtime", fontsize=14, weight="bold")
+            ax.text(
+                col,
+                row,
+                "P" if matrix[row, col] else "F",
+                color=color if matrix[row, col] else TEXT,
+                ha="center",
+                va="center",
+                weight="bold",
+                fontsize=10,
+            )
+    ax.set_xticks(np.arange(12), [f"{task:02d}" for task in TASKS])
+    ax.set_yticks(np.arange(3), labels)
+    ax.tick_params(length=0)
+    ax.set_xlabel("Challenge")
+    ax.set_title("GPT-5.6 TensorCircuit solver comparison: final task outcomes", fontsize=14, weight="bold", pad=14)
+    ax.text(
+        0,
+        -0.24,
+        "All three: 02–07, 09, 11, 12   |   Sol only: 10   |   Ultra only: 08   |   Neither: 01",
+        transform=ax.transAxes,
+        fontsize=9,
+        va="top",
+    )
 
     save(fig, "gpt56terra-high-outcomes")
 
