@@ -8,15 +8,27 @@ RUN_ROOT="${DEEPSEEK_RUN_ROOT:-$ROOT/jobs/deepseek-v4-flash-high-solaudit-202608
 SOURCE_RUN_ROOT="${SOURCE_RUN_ROOT:-$ROOT/jobs/gpt56terra-high-solaudit-20260731-valid}"
 HARBOR="$ROOT/.conda/harbor-py312/bin/harbor"
 IMAGE="challenge-benchmark-quantum-tensorcircuit:py311"
-DEEPSEEK_CONFIG="$RESULT_ROOT/deepseek-v4-flash.config.toml"
-DEEPSEEK_CATALOG="$RESULT_ROOT/deepseek-v4-models.json"
+TRACKED_DEEPSEEK_CONFIG="$RESULT_ROOT/deepseek-v4-flash.config.toml"
+TRACKED_DEEPSEEK_CATALOG="$RESULT_ROOT/deepseek-v4-models.json"
+DEEPSEEK_CODEX_HOME="${DEEPSEEK_CODEX_HOME:-$HOME/.codex-orbitq-deepseek}"
+DEEPSEEK_CONFIG="$TRACKED_DEEPSEEK_CONFIG"
+DEEPSEEK_CATALOG="$TRACKED_DEEPSEEK_CATALOG"
 AUDIT_CONFIG="$RESULT_ROOT/audit-high.config.toml"
 BASE_COMMIT="0201238ec2983907e2891f5319f5fff2d00844d5"
 PROXY="${BENCHMARK_PROXY:-http://172.17.0.1:7892}"
+USE_OFFICIAL_PROFILE=0
+LOCAL_PROFILE_COPY=""
 
 if [[ -z "${DEEPSEEK_API_KEY:-}" ]]; then
-  printf 'DEEPSEEK_API_KEY is not set; refusing to start.\n' >&2
-  exit 2
+  if [[ -s "$DEEPSEEK_CODEX_HOME/config.toml" && -s "$DEEPSEEK_CODEX_HOME/models.json" ]]; then
+    USE_OFFICIAL_PROFILE=1
+    DEEPSEEK_CATALOG="$DEEPSEEK_CODEX_HOME/models.json"
+  else
+    printf 'DeepSeek credentials are unavailable; refusing to start.\n' >&2
+    printf 'Set DEEPSEEK_API_KEY or use the official setup script with CODEX_HOME=%s.\n' \
+      "$DEEPSEEK_CODEX_HOME" >&2
+    exit 2
+  fi
 fi
 
 if (($#)); then
@@ -34,10 +46,28 @@ if [[ ! -f "$RUN_ROOT/task-copy-manifest.json" ]]; then
 fi
 mkdir -p "$RUN_ROOT/jobs"
 
+if ((USE_OFFICIAL_PROFILE == 1)); then
+  secret_dir="$RUN_ROOT/.secrets"
+  LOCAL_PROFILE_COPY="$secret_dir/deepseek-v4-flash.config.toml"
+  mkdir -p "$secret_dir"
+  chmod 700 "$secret_dir"
+  sed -E \
+    's|^model_catalog_json[[:space:]]*=.*$|model_catalog_json = "~/.codex/models.json"|' \
+    "$DEEPSEEK_CODEX_HOME/config.toml" >"$LOCAL_PROFILE_COPY"
+  chmod 600 "$LOCAL_PROFILE_COPY"
+  DEEPSEEK_CONFIG="$LOCAL_PROFILE_COPY"
+  trap 'rm -f "$LOCAL_PROFILE_COPY"' EXIT
+fi
+
 printf 'Run root: %s\n' "$RUN_ROOT"
 printf 'Frozen task base: %s\n' "$BASE_COMMIT"
 printf 'Task SHA-256: 19fe27b83eaf668b3df32d1a68902b08cbe28585f189290769018eb16d927895\n'
 printf 'Solver: deepseek-v4-flash/high; audit: gpt-5.6-sol/high\n'
+
+if [[ "${DEEPSEEK_DRY_RUN:-0}" == "1" ]]; then
+  printf 'Dry-run validation complete; no Harbor job was started.\n'
+  exit 0
+fi
 
 overall_rc=0
 for raw in "${challenges[@]}"; do
