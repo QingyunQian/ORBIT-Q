@@ -1,0 +1,64 @@
+{
+  "problem_id": 9,
+  "framework": "tensorcircuit",
+  "static": {
+    "path": "/root/solution_9.py",
+    "framework": "tensorcircuit",
+    "exists": [REDACTED],
+    "parse_ok": 1.0,
+    "line_count": 81,
+    "line_count_score": 1.0,
+    "framework_score": 1.0,
+    "no_forbidden_framework_score": 1.0,
+    "no_static_cheating_score": 1.0,
+    "no_raw_simulator_bypass_score": 1.0,
+    "imports": [
+      "jax",
+      "numpy",
+      "tensorcircuit"
+    ],
+    "forbidden_imports": [],
+    "cheating_hits": [],
+    "raw_simulator_hits": [
+      "eigh"
+    ],
+    "static_policy_score": 1.0
+  },
+  "functional": {
+    "functional_score": 1.0,
+    "runtime_score": 1.0,
+    "runtime_sec": 94.28,
+    "functional_return_code": 0,
+    "functional_passed": [REDACTED],
+    "functional_output_tail": "Challenge 9 evaluation\nSolution module: solution_9\nEnd-to-end solution time: 94.28s\nQubits: 512\nLayers: 6\nGate tape length: 3897\nParameter count: 3897\nPauli terms: ((0.5645931361768194, (('x', 388), ('z', 390))), (1.0, (('x', 16), ('y', 19))))\nPauli cone sizes: (18, 15)\nRestarts: 200\nSteps per restart: 100\nObservable history shape: (200, 100)\nMean initial local objective: -0.0022892488\nMean final local objective: 1.5645753151\nVariance final local objective: 9.3218872266e-11\nStd final local objective: 9.6549920904e-06\nBest final local objective: 1.5645902157\nSuccess fraction: 1.000000\nReturned NumPy keys: ['observable_history']\nPassing criteria:\n  history shape: PASS\n  initial/final restart count: PASS\n  initial values finite: PASS\n  final values finite: PASS\n  history values finite: PASS\n  mean expectation improves: PASS\n  best final reaches threshold: PASS\n  final variance finite: PASS\nOverall: PASS\n"
+  },
+  "audit": {
+    "uses_required_framework": [REDACTED],
+    "imports_other_quantum_framework": false,
+    "uses_other_quantum_framework": false,
+    "raw_numpy_jax_quantum_simulator_bypass": false,
+    "hardcoded_or_hidden_answer": false,
+    "tampers_with_tests_or_rewards": false,
+    "exploits_evaluator_weakness": false,
+    "faithfully_implements_problem": [REDACTED],
+    "obvious_implementation_error": false,
+    "problem_alignment_issues": [],
+    "framework_rationale": "The core quantum computation is legitimately implemented with tensorcircuit: each causal-cone circuit is constructed using tc.Circuit, tensorcircuit gates, and expectation_ps. JAX supplies differentiation, vectorization, JIT compilation, and optimization support but does not implement a replacement quantum simulator. NumPy is used only for initialization and result storage. No other quantum framework is imported or used.",
+    "cheating_rationale": "The submission derives causal cones from the evaluator-provided gate tape and computes the requested observables directly. It contains no hardcoded histories or answers, hidden-oracle access, test or reward tampering, evaluator manipulation, or other apparent exploit.",
+    "fidelity_rationale": "The implementation starts each causal-cone subsystem in the appropriate product |+> state, preserves the supplied gate order and parameter indices, evaluates both weighted Pauli terms, and maximizes their sum by applying Adam updates with the configured learning rate and standard beta values. It performs exactly max_steps updates without early stopping and records each objective immediately before its update. Every restart is seeded as specified by first generating the full parameter vector and then selecting the parameters present in the union of the two causal cones; omitting parameters outside that union is mathematically equivalent because they cannot affect either observable and have zero gradients. The returned observable_history has the required orientation and is the sole required result.",
+    "implementation_error_rationale": "No obvious logic or API error is evident. The backward causal-cone expansion is appropriate for the irregular gate tape, shared parameters remain shared between the two independently simulated cone expectations, the ascent sign correctly corresponds to minimizing the stated negative objective, Adam bias correction is applied at the correct update index, and the reported evaluation results are consistent with the implementation.",
+    "confidence": 0.99,
+    "llm_framework_compliance_score": 1.0,
+    "llm_cheating_score": 1.0,
+    "llm_problem_fidelity_score": 1.0,
+    "llm_implementation_correctness_score": 1.0,
+    "llm_uses_required_framework_score": 1.0,
+    "llm_no_other_quantum_framework_imports_score": 1.0,
+    "llm_no_other_quantum_framework_score": 1.0,
+    "llm_no_raw_simulator_bypass_score": 1.0,
+    "llm_no_hardcoded_or_hidden_answer_score": 1.0,
+    "llm_no_test_or_reward_tampering_score": 1.0,
+    "llm_no_evaluator_exploit_score": 1.0,
+    "llm_audit_score": 1.0
+  }
+}

@@ -1,0 +1,26 @@
+Challenge 5 evaluation
+Solution module: solution_5
+End-to-end solution time: 95.16s
+Exact sparse ground energy density: -1.3268990517
+Initial energy density: -1.1720404625
+Final energy density: -1.3267312050
+Learned a strengths by block [even, odd]: [[-0.042004, -0.007801],
+ [-0.02141 , -0.031912],
+ [-0.023832,  0.005619],
+ [ 0.060304,  0.143872],
+ [ 0.250411,  0.135619]]
+Learned b strengths by block [even, odd]: [[0.081664, 0.139513],
+ [0.144465, 0.211869],
+ [0.210748, 0.270855],
+ [0.246632, 0.240844],
+ [0.283648, 0.122065]]
+Energy history length: 600
+Returned NumPy keys: ['energy_density_history', 'final_a', 'final_b']
+Passing criteria:
+  energy history length: PASS
+  final a shape: PASS
+  final b shape: PASS
+  energy density improves: PASS
+  energy respects exact lower bound: PASS
+  loose exact energy-density upper bound: PASS
+Overall: PASS

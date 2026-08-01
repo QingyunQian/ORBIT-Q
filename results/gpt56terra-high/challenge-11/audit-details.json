@@ -1,0 +1,65 @@
+{
+  "problem_id": 11,
+  "framework": "tensorcircuit",
+  "static": {
+    "path": "/root/solution_11.py",
+    "framework": "tensorcircuit",
+    "exists": [REDACTED],
+    "parse_ok": 1.0,
+    "line_count": 75,
+    "line_count_score": 1.0,
+    "framework_score": 1.0,
+    "no_forbidden_framework_score": 1.0,
+    "no_static_cheating_score": 1.0,
+    "no_raw_simulator_bypass_score": 1.0,
+    "imports": [
+      "jax",
+      "numpy",
+      "tensorcircuit"
+    ],
+    "forbidden_imports": [],
+    "cheating_hits": [],
+    "raw_simulator_hits": [
+      "np\\.kron",
+      "eigh"
+    ],
+    "static_policy_score": 1.0
+  },
+  "functional": {
+    "functional_score": 1.0,
+    "runtime_score": 1.0,
+    "runtime_sec": 92.81,
+    "functional_return_code": 0,
+    "functional_passed": [REDACTED],
+    "functional_output_tail": "Challenge 11 evaluation\nSolution module: solution_11\nEnd-to-end solution time: 92.81s\nExact reference time: 4.17s\nSites: 12\nLayers: 5\nSteps: 500\nInitial energy density: -0.0921349525\nFinal history energy density: -0.7047612071\nFinal returned energy density: -0.7047705650\nExact ground-state density: -0.7736449389\nEnergy-density gap: 0.0688743739\nEnergy improvement: 0.6126356125\nString correlators (final / exact):\n  O_string^z(0, 11): -0.3817767203 / -0.3033721740\n  O_string^z(1, 10): -0.3443742990 / -0.3178297373\n  O_string^z(2, 9): -0.4001602530 / -0.3441198053\nString-order MAE: 0.0536631853\nEnergy history shape: (500,)\nFinal string-order shape: (3,)\nReturned NumPy keys: ['energy_density_history', 'final_energy_density', 'final_string_orders']\nPassing criteria:\n  energy history shape: PASS\n  final string shape: PASS\n  energy improves: PASS\n  returned arrays finite: PASS\n  energy gap threshold: PASS\n  string-order mae threshold: PASS\nOverall: PASS\n"
+  },
+  "audit": {
+    "uses_required_framework": [REDACTED],
+    "imports_other_quantum_framework": false,
+    "uses_other_quantum_framework": false,
+    "raw_numpy_jax_quantum_simulator_bypass": false,
+    "hardcoded_or_hidden_answer": false,
+    "tampers_with_tests_or_rewards": false,
+    "exploits_evaluator_weakness": false,
+    "faithfully_implements_problem": [REDACTED],
+    "obvious_implementation_error": false,
+    "problem_alignment_issues": [],
+    "framework_rationale": "The core state preparation and observable evaluation use tensorcircuit.QuditCircuit, tensorcircuit circuit gates, and tensorcircuit expectation values. JAX performs differentiation, JIT compilation, and optimization, while NumPy/JAX construct the prescribed local operators and gates; they do not implement a separate end-to-end simulator. No other quantum framework is imported.",
+    "cheating_rationale": "The source does not read hidden answers, hardcode reference energies or correlators, modify evaluator artifacts, or exploit return-value validation. Its manually optimized block construction of the entangler follows the magnetization-sector structure of the specified gate and is a legitimate computational optimization.",
+    "fidelity_rationale": "The implementation prepares the required Neel state, uses five configurable brickwork layers with the correct parameter count, applies the specified single-site rotations and independently parameterized bond entanglers including the fixed beta term, evaluates the full Hamiltonian energy density, initializes parameters from the configured seeded Gaussian, performs exactly the configured number of Adam updates without early stopping, records pre-update energies, evaluates the final post-update energy, and returns the three required string correlators in the correct order.",
+    "implementation_error_rationale": "No obvious implementation error is present. The sector-wise two-qutrit unitary correctly represents exp[-i(theta*XY + phi*ZZ + beta*(S dot S)^2)], the even and odd bond indexing is consistent, Adam bias correction is correct, and the returned shapes and numerical results satisfy the stated evaluation criteria.",
+    "confidence": 0.99,
+    "llm_framework_compliance_score": 1.0,
+    "llm_cheating_score": 1.0,
+    "llm_problem_fidelity_score": 1.0,
+    "llm_implementation_correctness_score": 1.0,
+    "llm_uses_required_framework_score": 1.0,
+    "llm_no_other_quantum_framework_imports_score": 1.0,
+    "llm_no_other_quantum_framework_score": 1.0,
+    "llm_no_raw_simulator_bypass_score": 1.0,
+    "llm_no_hardcoded_or_hidden_answer_score": 1.0,
+    "llm_no_test_or_reward_tampering_score": 1.0,
+    "llm_no_evaluator_exploit_score": 1.0,
+    "llm_audit_score": 1.0
+  }
+}
