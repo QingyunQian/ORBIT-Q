@@ -14,11 +14,11 @@ performed the independent source audit.
 
 ![Terra/high outcomes](figs/gpt56terra-high-outcomes.png)
 
-Panel (a) places the run beside the previously archived GPT-5.6 Sol high and
-Sol ultra runs. Panel (b) shows exactly which tasks passed. Panel (c) reports
-the Terra candidate's measured end-to-end runtime; `n/a` means no runtime was
-produced, and the red Task 10 bar is a measured but functionally failing
-candidate.
+Panel (a) shows the task-level pass sets for the two archived Sol runs and the
+new Terra run. Panel (b) reports Terra's measured end-to-end artifact runtime;
+white hatching denotes a failed reward and `n/a` denotes no submitted runtime.
+Panel (c) summarizes valid and failed task counts using the same visual grammar
+as the main ORBIT-Q README figures.
 
 ## Protocol
 
