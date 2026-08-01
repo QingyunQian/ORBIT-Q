@@ -11,6 +11,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import ListedColormap
+from matplotlib.patches import Patch
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -20,20 +21,20 @@ SUMMARY = json.loads((ROOT / "summary.json").read_text())
 COMPARISON = json.loads((ROOT / "model-comparison.json").read_text())
 TASKS = np.arange(1, 13)
 
-PASS = "#2A9D8F"
-FAIL = "#D1495B"
-BLUE = "#3B6FB6"
-ORANGE = "#E6863B"
-PURPLE = "#7B61A8"
-GRAY = "#D9D9D9"
+PASS = "#009E73"
+BLUE = "#0072B2"
+ORANGE = "#D55E00"
+LIGHT_BLUE = "#56B4E9"
+GRAY = "#555555"
+PALE_PASS = "#D9ECE7"
 TEXT = "#222222"
 
 plt.rcParams.update(
     {
         "font.family": "DejaVu Sans",
-        "font.size": 9,
-        "axes.titlesize": 10,
-        "axes.labelsize": 9,
+        "font.size": 10,
+        "axes.titlesize": 11,
+        "axes.labelsize": 10,
         "axes.spines.top": False,
         "axes.spines.right": False,
         "figure.dpi": 120,
@@ -48,57 +49,64 @@ def save(fig: plt.Figure, stem: str) -> None:
 
 
 def outcome_figure() -> None:
-    fig = plt.figure(figsize=(13.2, 4.5), constrained_layout=True)
-    grid = fig.add_gridspec(1, 3, width_ratios=[0.72, 1.65, 1.7])
+    fig = plt.figure(figsize=(13.6, 4.8), constrained_layout=True)
+    grid = fig.add_gridspec(1, 3, width_ratios=[1.45, 1.75, 0.95])
 
     runs = COMPARISON["runs"]
     labels = [run["label"] for run in runs]
-    colors = [BLUE, ORANGE, PURPLE]
+    colors = [BLUE, ORANGE, PASS]
 
     ax0 = fig.add_subplot(grid[0, 0])
-    counts = [len(run["passes"]) for run in runs]
-    bars = ax0.bar(np.arange(3), counts, color=colors, width=0.68)
-    for bar, count in zip(bars, counts):
-        ax0.text(bar.get_x() + bar.get_width() / 2, count + 0.2, f"{count}/12", ha="center", va="bottom", weight="bold")
-    ax0.set_ylim(0, 12.8)
-    ax0.set_yticks([0, 3, 6, 9, 12])
-    ax0.set_xticks(np.arange(3), labels, rotation=25, ha="right")
-    ax0.set_ylabel("Valid solutions")
-    ax0.set_title("a  Overall validity", loc="left", weight="bold")
-    ax0.grid(axis="y", alpha=0.22)
+    matrix = np.array([[1 if task in run["passes"] else 0 for task in TASKS] for run in runs])
+    ax0.imshow(matrix, aspect="auto", cmap=ListedColormap(["#FFFFFF", PALE_PASS]), vmin=0, vmax=1)
+    for row, color in enumerate(colors):
+        for col in range(matrix.shape[1]):
+            ax0.text(col, row, "P" if matrix[row, col] else "F", color=color if matrix[row, col] else TEXT, ha="center", va="center", weight="bold", fontsize=8)
+    ax0.set_xticks(np.arange(12), [f"{task:02d}" for task in TASKS])
+    ax0.set_yticks(np.arange(3), labels)
+    ax0.tick_params(length=0)
+    ax0.set_xlabel("Challenge")
+    ax0.set_title("Final task outcomes", loc="left")
+    ax0.text(-0.13, 1.08, "(a)", transform=ax0.transAxes, fontsize=15, weight="bold")
+    ax0.text(0, -0.24, "All three: 02–07, 09, 11, 12\nSol only: 10   |   Ultra only: 08   |   Neither: 01", transform=ax0.transAxes, fontsize=8, va="top")
 
     ax1 = fig.add_subplot(grid[0, 1])
-    matrix = np.array([[1 if task in run["passes"] else 0 for task in TASKS] for run in runs])
-    ax1.imshow(matrix, aspect="auto", cmap=ListedColormap([FAIL, PASS]), vmin=0, vmax=1)
-    for row in range(matrix.shape[0]):
-        for col in range(matrix.shape[1]):
-            ax1.text(col, row, "P" if matrix[row, col] else "F", color="white", ha="center", va="center", weight="bold", fontsize=8)
-    ax1.set_xticks(np.arange(12), [f"{task:02d}" for task in TASKS])
-    ax1.set_yticks(np.arange(3), labels)
-    ax1.tick_params(length=0)
-    ax1.set_xlabel("Challenge task")
-    ax1.set_title("b  Task-level outcome", loc="left", weight="bold")
-    for spine in ax1.spines.values():
-        spine.set_visible(False)
-
-    ax2 = fig.add_subplot(grid[0, 2])
     rows = SUMMARY["tasks"]
     runtime = np.array([row["runtime_sec"] if row["runtime_sec"] >= 0 else np.nan for row in rows])
     passed = np.array([row["reward"] == 1 for row in rows])
-    bars = ax2.bar(TASKS, np.nan_to_num(runtime), color=np.where(passed, PASS, FAIL), width=0.72)
-    for task, value in zip(TASKS, runtime):
-        if np.isnan(value):
-            ax2.text(task, 3.0, "n/a", ha="center", va="bottom", rotation=90, fontsize=7, color="#666666")
+    ax1.bar(TASKS[passed], runtime[passed], color=PASS, edgecolor="black", linewidth=0.8, width=0.72, label="Passed")
+    measured_fail = (~passed) & np.isfinite(runtime)
+    ax1.bar(TASKS[measured_fail], runtime[measured_fail], color="white", edgecolor=PASS, hatch="//", linewidth=1.2, width=0.72, label="Failed reward")
     for task, value, ok in zip(TASKS, runtime, passed):
-        if not ok and not np.isnan(value):
-            ax2.text(task, value + 3.0, "F", ha="center", va="bottom", color=FAIL, weight="bold")
-    ax2.set_xticks(TASKS, [f"{task:02d}" for task in TASKS])
-    ax2.set_ylim(0, max(np.nanmax(runtime) * 1.18, 125))
-    ax2.set_xlabel("Challenge task")
-    ax2.set_ylabel("End-to-end solution runtime (s)")
-    ax2.set_title("c  Terra/high artifact runtime", loc="left", weight="bold")
-    ax2.grid(axis="y", alpha=0.22)
-    ax2.text(0.02, 0.98, "Green: pass   Red: fail", transform=ax2.transAxes, va="top", fontsize=8, color=TEXT)
+        if not ok and np.isnan(value):
+            ax1.text(task, 6.0, "F\nn/a", ha="center", va="bottom", color=TEXT, fontsize=8, weight="bold")
+    ax1.set_yscale("log")
+    ax1.set_ylim(5, 170)
+    ax1.set_xticks(TASKS, [f"{task:02d}" for task in TASKS])
+    ax1.set_xlabel("Challenge")
+    ax1.set_ylabel("Candidate runtime (s, log scale)")
+    ax1.set_title("Terra/high task-level artifact runtime", loc="left")
+    ax1.text(-0.13, 1.08, "(b)", transform=ax1.transAxes, fontsize=15, weight="bold")
+    ax1.legend(frameon=False, loc="upper left", fontsize=8)
+    ax1.grid(axis="y", alpha=0.35, which="both")
+
+    ax2 = fig.add_subplot(grid[0, 2])
+    counts = np.array([len(run["passes"]) for run in runs])
+    x = np.arange(3)
+    ax2.bar(x, counts, color=PASS, edgecolor="black", linewidth=0.8, width=0.68, label="Passed")
+    ax2.bar(x, 12 - counts, bottom=counts, color="white", edgecolor="black", linewidth=0.8, width=0.68, label="Failed")
+    for xi, count in zip(x, counts):
+        ax2.text(xi, count - 0.35, f"{count}/12", ha="center", va="top", color="white", weight="bold", fontsize=9)
+    ax2.set_ylim(0, 12.4)
+    ax2.set_yticks([0, 3, 6, 9, 12])
+    ax2.set_xticks(x, labels, rotation=28, ha="right")
+    ax2.set_ylabel("Tasks")
+    ax2.set_title("Aggregate validity", loc="left")
+    ax2.text(-0.18, 1.08, "(c)", transform=ax2.transAxes, fontsize=15, weight="bold")
+    ax2.legend(frameon=False, loc="upper right", fontsize=8)
+    ax2.grid(axis="y", alpha=0.35)
+
+    fig.suptitle("GPT-5.6 TensorCircuit solver comparison: validity and Terra/high runtime", fontsize=14, weight="bold")
 
     save(fig, "gpt56terra-high-outcomes")
 
@@ -112,39 +120,53 @@ def resource_figure() -> None:
     output_tokens = np.array([row["n_output_tokens"] or 0 for row in rows])
     costs = np.array([row["cost_usd"] or 0 for row in rows])
     passed = np.array([row["reward"] == 1 for row in rows])
-    task_colors = np.where(passed, PASS, FAIL)
-
     fig, axes = plt.subplots(1, 3, figsize=(13.2, 4.4), constrained_layout=True)
     ax0, ax1, ax2 = axes
 
-    ax0.bar(TASKS, wall_min, color=task_colors, width=0.72)
-    ax0.axhline(30, color="#777777", linestyle="--", linewidth=1)
+    ax0.bar(TASKS[passed], wall_min[passed], color=PASS, edgecolor="black", linewidth=0.8, width=0.72)
+    ax0.bar(TASKS[~passed], wall_min[~passed], color="white", edgecolor="black", linewidth=0.8, width=0.72)
     ax0.set_xticks(TASKS, [f"{task:02d}" for task in TASKS])
-    ax0.set_xlabel("Challenge task")
+    ax0.set_xlabel("Challenge")
     ax0.set_ylabel("Agent solve time (min)")
-    ax0.set_title("a  Solver wall time", loc="left", weight="bold")
-    ax0.grid(axis="y", alpha=0.22)
+    ax0.set_title("Solver wall time", loc="left")
+    ax0.text(-0.14, 1.08, "(a)", transform=ax0.transAxes, fontsize=15, weight="bold")
+    ax0.text(0.02, 0.96, f"Total: {wall_min.sum():.1f} min", transform=ax0.transAxes, va="top")
+    ax0.legend(handles=[Patch(facecolor=PASS, edgecolor="black", label="Passed"), Patch(facecolor="white", edgecolor="black", label="Failed")], frameon=False, loc="upper right", fontsize=8)
+    ax0.grid(axis="y", alpha=0.35)
 
     scale = 1e6
-    ax1.bar(TASKS, cache_tokens / scale, color="#9EC1E6", width=0.72, label="Cache-read input")
-    ax1.bar(TASKS, noncache_tokens / scale, bottom=cache_tokens / scale, color=BLUE, width=0.72, label="Non-cache input")
-    ax1.bar(TASKS, output_tokens / scale, bottom=input_tokens / scale, color=ORANGE, width=0.72, label="Output")
+    ax1.bar(TASKS, noncache_tokens / scale, color=GRAY, edgecolor="black", linewidth=0.5, width=0.72, label="Non-cache-read prompt")
+    ax1.bar(TASKS, cache_tokens / scale, bottom=noncache_tokens / scale, color=LIGHT_BLUE, edgecolor="black", linewidth=0.5, width=0.72, label="Cache-read prompt")
+    ax1.bar(TASKS, output_tokens / scale, bottom=input_tokens / scale, color=ORANGE, edgecolor="black", linewidth=0.5, width=0.72, label="Output")
     ax1.set_xticks(TASKS, [f"{task:02d}" for task in TASKS])
-    ax1.set_xlabel("Challenge task")
-    ax1.set_ylabel("Tokens (millions)")
-    ax1.set_title("b  Solver token use", loc="left", weight="bold")
-    ax1.legend(frameon=False, fontsize=7, loc="upper left")
-    ax1.grid(axis="y", alpha=0.22)
+    ax1.set_xlabel("Challenge")
+    ax1.set_ylabel("Solving-side tokens (million)")
+    ax1.set_title("Solver token use", loc="left")
+    ax1.text(-0.14, 1.08, "(b)", transform=ax1.transAxes, fontsize=15, weight="bold")
+    ax1.text(0.02, 0.96, f"Total: {(input_tokens.sum() + output_tokens.sum()) / scale:.3f}M", transform=ax1.transAxes, va="top")
+    ax1.legend(frameon=False, fontsize=8, loc="upper left", bbox_to_anchor=(0.40, 1.0))
+    ax1.grid(axis="y", alpha=0.35)
 
-    ax2.scatter(wall_min[passed], costs[passed], s=70, color=PASS, edgecolor="white", linewidth=0.7, label="Pass", zorder=3)
-    ax2.scatter(wall_min[~passed], costs[~passed], s=70, color=FAIL, marker="X", edgecolor="white", linewidth=0.7, label="Fail", zorder=3)
-    for task, x, y in zip(TASKS, wall_min, costs):
-        ax2.annotate(f"{task:02d}", (x, y), xytext=(4, 3), textcoords="offset points", fontsize=7)
-    ax2.set_xlabel("Agent solve time (min)")
-    ax2.set_ylabel("Recorded solver cost (USD)")
-    ax2.set_title("c  Time–cost profile", loc="left", weight="bold")
-    ax2.legend(frameon=False, loc="upper left")
-    ax2.grid(alpha=0.22)
+    names = ["Sol high", "Sol ultra", "Terra high"]
+    valid = np.array([10, 11, 9])
+    solve_per_valid = np.array([19.77, 16.62, wall_min.sum() / 9])
+    cost_per_valid = np.array([2.55, 2.73, costs.sum() / 9])
+    total_cost = np.array([25.527418, 30.02, costs.sum()])
+    bubble_colors = [BLUE, ORANGE, PASS]
+    ax2.scatter(solve_per_valid, cost_per_valid, s=75 * total_cost, color=bubble_colors, edgecolor="black", linewidth=0.9, zorder=3)
+    offsets = [(32, -28), (32, 12), (-92, 10)]
+    for name, count, xval, yval, color, offset in zip(names, valid, solve_per_valid, cost_per_valid, bubble_colors, offsets):
+        ax2.annotate(f"{name}\n({count}/12)", (xval, yval), xytext=offset, textcoords="offset points", color=color, weight="bold", fontsize=9)
+    ax2.set_xlim(15.5, 24.5)
+    ax2.set_ylim(1.1, 3.05)
+    ax2.set_xlabel("Solve time per valid solution (min)")
+    ax2.set_ylabel("Cost per valid solution (USD)")
+    ax2.set_title("Configuration-level resource efficiency", loc="left")
+    ax2.text(-0.14, 1.08, "(c)", transform=ax2.transAxes, fontsize=15, weight="bold")
+    ax2.text(0.98, 0.04, "Marker area ∝ total cost", transform=ax2.transAxes, ha="right", fontsize=8)
+    ax2.grid(alpha=0.35)
+
+    fig.suptitle("GPT-5.6 Terra high agent-side resource use", fontsize=14, weight="bold")
 
     save(fig, "gpt56terra-high-agent-resource-use")
 
