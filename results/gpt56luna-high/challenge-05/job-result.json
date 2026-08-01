@@ -1,0 +1,160 @@
+{
+    "id": "dfa72ae7-10e6-4bf3-b93e-742d524c86c9",
+    "task_name": "challenge-05",
+    "trial_name": "challenge-05__T2ypXfg",
+    "trial_uri": "file:///Users/qqy/Desktop/2026Project/ORBIT-Q/jobs/gpt56luna-high-solaudit-20260801-valid/jobs/challenge-05-tensorcircuit-gpt-5.6-luna-high-20260801-r1/challenge-05__T2ypXfg",
+    "task_id": {
+        "path": "/Users/qqy/Desktop/2026Project/ORBIT-Q/jobs/gpt56luna-high-solaudit-20260801-valid/challenge-05"
+    },
+    "source": null,
+    "task_checksum": "73dacd0ea55b60e99eca41a43d61e45f2a2fba1b7643db23d13b599c078c4810",
+    "config": {
+        "task": {
+            "path": "/Users/qqy/Desktop/2026Project/ORBIT-Q/jobs/gpt56luna-high-solaudit-20260801-valid/challenge-05",
+            "git_url": null,
+            "git_commit_id": null,
+            "name": null,
+            "ref": null,
+            "overwrite": false,
+            "download_dir": null,
+            "source": null
+        },
+        "trial_name": "challenge-05__T2ypXfg",
+        "trials_dir": "/Users/qqy/Desktop/2026Project/ORBIT-Q/jobs/gpt56luna-high-solaudit-20260801-valid/jobs/challenge-05-tensorcircuit-gpt-5.6-luna-high-20260801-r1",
+        "install_only": false,
+        "timeout_multiplier": 1.0,
+        "agent_timeout_multiplier": null,
+        "verifier_timeout_multiplier": null,
+        "agent_setup_timeout_multiplier": null,
+        "environment_build_timeout_multiplier": null,
+        "agent": {
+            "name": null,
+            "import_path": "harbor.agents.installed.codex:Codex",
+            "model_name": "gpt-5.6-luna",
+            "n_concurrent": null,
+            "concurrency_group": null,
+            "skills": [],
+            "override_timeout_sec": null,
+            "override_setup_timeout_sec": null,
+            "max_timeout_sec": null,
+            "resume_trajectory": false,
+            "load_trajectory": null,
+            "extra_allowed_hosts": [],
+            "kwargs": {
+                "reasoning_effort": "high"
+            },
+            "env": {
+                "CODEX_FORCE_AUTH_JSON": "****",
+                "HTTP_PROXY": "http://172.17.0.1:7892",
+                "HTTPS_PROXY": "http://172.17.0.1:7892",
+                "NO_PROXY": "localhost,127.0.0.1"
+            },
+            "mcp_servers": []
+        },
+        "environment": {
+            "type": null,
+            "import_path": "adapters.framework_docker:FrameworkDockerEnvironment",
+            "force_build": false,
+            "delete": [REDACTED],
+            "cpu_enforcement_policy": "auto",
+            "memory_enforcement_policy": "auto",
+            "override_cpus": null,
+            "override_memory_mb": null,
+            "override_storage_mb": null,
+            "override_gpus": null,
+            "override_tpu": null,
+            "mounts": null,
+            "extra_docker_compose": [],
+            "kwargs": {
+                "framework": "tensorcircuit",
+                "docker_image": "challenge-benchmark-quantum-tensorcircuit:py311"
+            },
+            "extra_allowed_hosts": []
+        },
+        "verifier": {
+            "override_timeout_sec": null,
+            "max_timeout_sec": null,
+            "env": {
+                "REQUIRED_QUANTUM_FRAMEWORK": "tensorcircuit",
+                "HTTP_PROXY": "http://172.17.0.1:7892",
+                "HTTPS_PROXY": "http://172.17.0.1:7892",
+                "NO_PROXY": "localhost,127.0.0.1"
+            },
+            "import_path": "adapters.codex_para_verifier:CodexParaVerifier",
+            "kwargs": {
+                "audit_model": "gpt-5.6-sol",
+                "force_auth_json": [REDACTED],
+                "profile_config_path": "/Users/qqy/Desktop/2026Project/ORBIT-Q/results/gpt56luna-high/audit-high.config.toml"
+            },
+            "disable": false
+        },
+        "artifacts": [],
+        "extra_instruction_paths": [
+            "/Users/qqy/Desktop/2026Project/ORBIT-Q/prompts/frameworks/tensorcircuit.md"
+        ],
+        "job_id": "da34c9cc-b446-494a-86b6-b6401bf57053"
+    },
+    "agent_info": {
+        "name": "codex",
+        "version": "0.145.0",
+        "model_info": {
+            "name": "gpt-5.6-luna",
+            "provider": null
+        }
+    },
+    "agent_result": {
+        "n_input_tokens": 6657187,
+        "n_cache_tokens": 6514432,
+        "n_output_tokens": 28827,
+        "cost_usd": 0.19343204,
+        "rollout_details": null,
+        "metadata": null
+    },
+    "verifier_result": {
+        "rewards": {
+            "problem_id": 5,
+            "reward": 1.0,
+            "functional_score": 1.0,
+            "runtime_score": 0.0,
+            "runtime_sec": 313.09,
+            "static_policy_score": 1.0,
+            "llm_audit_score": 1.0,
+            "line_count_score": 1.0,
+            "framework_score": 1.0,
+            "no_forbidden_framework_score": 1.0,
+            "no_raw_simulator_bypass_score": 1.0,
+            "no_static_cheating_score": 1.0,
+            "llm_framework_compliance_score": 1.0,
+            "llm_cheating_score": 1.0,
+            "llm_problem_fidelity_score": 1.0,
+            "llm_implementation_correctness_score": 1.0,
+            "llm_uses_required_framework_score": 1.0,
+            "llm_no_other_quantum_framework_imports_score": 1.0,
+            "llm_no_other_quantum_framework_score": 1.0,
+            "llm_no_raw_simulator_bypass_score": 1.0,
+            "llm_no_hardcoded_or_hidden_answer_score": 1.0,
+            "llm_no_test_or_reward_tampering_score": 1.0,
+            "llm_no_evaluator_exploit_score": 1.0
+        }
+    },
+    "exception_info": null,
+    "started_at": "2026-08-01T10:00:20.511696Z",
+    "finished_at": "2026-08-01T10:36:02.845151Z",
+    "environment_setup": {
+        "started_at": "2026-08-01T10:00:20.595087Z",
+        "finished_at": "2026-08-01T10:00:21.685553Z"
+    },
+    "agent_setup": {
+        "started_at": "2026-08-01T10:00:21.685637Z",
+        "finished_at": "2026-08-01T10:00:22.020905Z"
+    },
+    "agent_execution": {
+        "started_at": "2026-08-01T10:00:22.021215Z",
+        "finished_at": "2026-08-01T10:29:24.857513Z"
+    },
+    "verifier": {
+        "started_at": "2026-08-01T10:29:38.189203Z",
+        "finished_at": "2026-08-01T10:36:02.845022Z"
+    },
+    "step_results": null
+}

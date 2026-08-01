@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "runs": [
+    {
+      "label": "Sol high",
+      "solver_model": "gpt-5.6-sol",
+      "solver_effort": "high",
+      "passes": [2, 3, 4, 5, 6, 7, 9, 10, 11, 12],
+      "source_commit": "a395c1cd0444630f2244fb89e3bcecde667e3372",
+      "source_file": "results/gpt56sol-high/README.md"
+    },
+    {
+      "label": "Sol ultra",
+      "solver_model": "gpt-5.6-sol",
+      "solver_effort": "ultra",
+      "passes": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      "source_commit": "d5b29107b4fd92671e4fbb0a3825b2907098ae30",
+      "source_file": "results/gpt56sol-ultra/README.md",
+      "note": "Task 07 includes the exact-reduction adjudication recorded in that run."
+    },
+    {
+      "label": "Terra high",
+      "solver_model": "gpt-5.6-terra",
+      "solver_effort": "high",
+      "passes": [2, 3, 4, 5, 6, 7, 9, 11, 12],
+      "source_file": "results/gpt56terra-high/summary.json"
+    },
+    {
+      "label": "Luna high",
+      "solver_model": "gpt-5.6-luna",
+      "solver_effort": "high",
+      "passes": [2, 3, 5, 6, 7, 8, 9, 10, 11, 12],
+      "source_file": "results/gpt56luna-high/summary.json"
+    }
+  ]
+}
