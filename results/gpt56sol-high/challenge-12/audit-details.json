@@ -1,0 +1,63 @@
+{
+  "problem_id": 12,
+  "framework": "tensorcircuit",
+  "static": {
+    "path": "/root/solution_12.py",
+    "framework": "tensorcircuit",
+    "exists": [REDACTED],
+    "parse_ok": 1.0,
+    "line_count": 79,
+    "line_count_score": 1.0,
+    "framework_score": 1.0,
+    "no_forbidden_framework_score": 1.0,
+    "no_static_cheating_score": 1.0,
+    "no_raw_simulator_bypass_score": 1.0,
+    "imports": [
+      "jax",
+      "numpy",
+      "optax",
+      "tensorcircuit"
+    ],
+    "forbidden_imports": [],
+    "cheating_hits": [],
+    "raw_simulator_hits": [],
+    "static_policy_score": 1.0
+  },
+  "functional": {
+    "functional_score": 1.0,
+    "runtime_score": 1.0,
+    "runtime_sec": 12.85,
+    "functional_return_code": 0,
+    "functional_passed": [REDACTED],
+    "functional_output_tail": "Challenge 12 evaluation\nSolution module: solution_12\nEnd-to-end solution time: 12.85s\nQubits: 32\nDMRG chi: 8\nDMRG sweeps: 4\nLayers: 2\nSteps: 5000\nTrainable circuit parameters: 465\nTarget MPS max bond dimension: 8\nInitial fidelity: 1.84869464e-09\nFinal fidelity: 8.70100915e-01\nInitial loss: 1.00000000e+00\nFinal loss: 1.29899085e-01\nFinal overlap phase: 8.76630425e-01\nFidelity history shape: (5000,)\nReturned NumPy keys: ['fidelity_history', 'final_overlap_phase', 'final_parameters', 'loss_history']\nPassing criteria:\n  loss history shape: PASS\n  fidelity history shape: PASS\n  final parameter shape: PASS\n  fidelity values finite: PASS\n  loss values finite: PASS\n  final values finite: PASS\n  fidelity improves: PASS\n  loss improves: PASS\n  final fidelity reaches threshold: PASS\n  fidelity bounded: PASS\n  target bond dimension valid: PASS\nOverall: PASS\n"
+  },
+  "audit": {
+    "uses_required_framework": [REDACTED],
+    "imports_other_quantum_framework": false,
+    "uses_other_quantum_framework": false,
+    "raw_numpy_jax_quantum_simulator_bypass": false,
+    "hardcoded_or_hidden_answer": false,
+    "tampers_with_tests_or_rewards": false,
+    "exploits_evaluator_weakness": false,
+    "faithfully_implements_problem": [REDACTED],
+    "obvious_implementation_error": false,
+    "problem_alignment_issues": [],
+    "framework_rationale": "The core state evolution and MPS overlap are implemented with tensorcircuit.MPSCircuit, tensorcircuit SU4 gates, apply_adjacent_double_gate, and proj_with_mps. JAX supplies TensorCircuit's backend, differentiation, JIT compilation, and optimization support rather than replacing TensorCircuit with a raw simulator. No non-required quantum framework is imported. Accessing the evaluator-supplied quimb MPS object's tensors and index metadata is required input conversion, not use of quimb as the circuit simulator or optimizer.",
+    "cheating_rationale": "The submission performs genuine parameterized-circuit optimization against the supplied target MPS. It contains no hardcoded histories, predetermined answer, hidden-file access, test or reward modification, evaluator tampering, or output-only shortcut.",
+    "fidelity_rationale": "The implementation consumes dmrg_state, initializes the 32-qubit Neel state by applying X on odd sites, constructs the required alternating brickwork bonds, uses one 15-parameter SU4 gate per bond for 465 parameters, directly contracts the circuit MPS with the target MPS, optimizes 1 minus squared overlap using Adam for exactly max_steps updates without early stopping, and records loss and fidelity immediately before each update. It respects the evaluator-provided seed, initialization scale, learning rate, layer count, qubit count, and step count, and returns all required NumPy-format keys with the specified meanings.",
+    "implementation_error_rationale": "No obvious implementation error is present. The bond construction yields 16 first-layer gates and 15 second-layer gates, the histories come from all 5000 pre-update objective evaluations, final_parameters are the post-update parameters, and final_overlap_phase is computed from the overlap at those final parameters. The reported evaluation is consistent with these computations.",
+    "confidence": 0.99,
+    "llm_framework_compliance_score": 1.0,
+    "llm_cheating_score": 1.0,
+    "llm_problem_fidelity_score": 1.0,
+    "llm_implementation_correctness_score": 1.0,
+    "llm_uses_required_framework_score": 1.0,
+    "llm_no_other_quantum_framework_imports_score": 1.0,
+    "llm_no_other_quantum_framework_score": 1.0,
+    "llm_no_raw_simulator_bypass_score": 1.0,
+    "llm_no_hardcoded_or_hidden_answer_score": 1.0,
+    "llm_no_test_or_reward_tampering_score": 1.0,
+    "llm_no_evaluator_exploit_score": 1.0,
+    "llm_audit_score": 1.0
+  }
+}

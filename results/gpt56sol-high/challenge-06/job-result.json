@@ -1,0 +1,175 @@
+{
+    "id": "7f58dea3-e7bf-4248-8405-939fc0abb3f3",
+    "started_at": "2026-07-28T15:10:42.628334",
+    "updated_at": "2026-07-28T15:44:22.659805",
+    "finished_at": "2026-07-28T15:44:22.659805",
+    "n_total_trials": 1,
+    "stats": {
+        "n_completed_trials": 1,
+        "n_errored_trials": 1,
+        "n_running_trials": 0,
+        "n_pending_trials": 0,
+        "n_cancelled_trials": 0,
+        "n_retries": 0,
+        "evals": {
+            "codex__gpt-5.6-sol__adhoc": {
+                "n_trials": 1,
+                "n_errors": 1,
+                "metrics": [
+                    {
+                        "framework_score": 1.0,
+                        "functional_score": 1.0,
+                        "line_count_score": 1.0,
+                        "llm_audit_score": 1.0,
+                        "llm_cheating_score": 1.0,
+                        "llm_framework_compliance_score": 1.0,
+                        "llm_implementation_correctness_score": 1.0,
+                        "llm_no_evaluator_exploit_score": 1.0,
+                        "llm_no_hardcoded_or_hidden_answer_score": 1.0,
+                        "llm_no_other_quantum_framework_imports_score": 1.0,
+                        "llm_no_other_quantum_framework_score": 1.0,
+                        "llm_no_raw_simulator_bypass_score": 1.0,
+                        "llm_no_test_or_reward_tampering_score": 1.0,
+                        "llm_problem_fidelity_score": 1.0,
+                        "llm_uses_required_framework_score": 1.0,
+                        "no_forbidden_framework_score": 1.0,
+                        "no_raw_simulator_bypass_score": 1.0,
+                        "no_static_cheating_score": 1.0,
+                        "problem_id": 6.0,
+                        "reward": 1.0,
+                        "runtime_score": 1.0,
+                        "runtime_sec": 23.39,
+                        "static_policy_score": 1.0
+                    }
+                ],
+                "pass_at_k": {},
+                "reward_stats": {
+                    "problem_id": {
+                        "6": [
+                            "challenge-06__oNFC9FQ"
+                        ]
+                    },
+                    "reward": {
+                        "1.0": [
+                            "challenge-06__oNFC9FQ"
+                        ]
+                    },
+                    "functional_score": {
+                        "1.0": [
+                            "challenge-06__oNFC9FQ"
+                        ]
+                    },
+                    "runtime_score": {
+                        "1.0": [
+                            "challenge-06__oNFC9FQ"
+                        ]
+                    },
+                    "runtime_sec": {
+                        "23.39": [
+                            "challenge-06__oNFC9FQ"
+                        ]
+                    },
+                    "static_policy_score": {
+                        "1.0": [
+                            "challenge-06__oNFC9FQ"
+                        ]
+                    },
+                    "llm_audit_score": {
+                        "1.0": [
+                            "challenge-06__oNFC9FQ"
+                        ]
+                    },
+                    "line_count_score": {
+                        "1.0": [
+                            "challenge-06__oNFC9FQ"
+                        ]
+                    },
+                    "framework_score": {
+                        "1.0": [
+                            "challenge-06__oNFC9FQ"
+                        ]
+                    },
+                    "no_forbidden_framework_score": {
+                        "1.0": [
+                            "challenge-06__oNFC9FQ"
+                        ]
+                    },
+                    "no_raw_simulator_bypass_score": {
+                        "1.0": [
+                            "challenge-06__oNFC9FQ"
+                        ]
+                    },
+                    "no_static_cheating_score": {
+                        "1.0": [
+                            "challenge-06__oNFC9FQ"
+                        ]
+                    },
+                    "llm_framework_compliance_score": {
+                        "1.0": [
+                            "challenge-06__oNFC9FQ"
+                        ]
+                    },
+                    "llm_cheating_score": {
+                        "1.0": [
+                            "challenge-06__oNFC9FQ"
+                        ]
+                    },
+                    "llm_problem_fidelity_score": {
+                        "1.0": [
+                            "challenge-06__oNFC9FQ"
+                        ]
+                    },
+                    "llm_implementation_correctness_score": {
+                        "1.0": [
+                            "challenge-06__oNFC9FQ"
+                        ]
+                    },
+                    "llm_uses_required_framework_score": {
+                        "1.0": [
+                            "challenge-06__oNFC9FQ"
+                        ]
+                    },
+                    "llm_no_other_quantum_framework_imports_score": {
+                        "1.0": [
+                            "challenge-06__oNFC9FQ"
+                        ]
+                    },
+                    "llm_no_other_quantum_framework_score": {
+                        "1.0": [
+                            "challenge-06__oNFC9FQ"
+                        ]
+                    },
+                    "llm_no_raw_simulator_bypass_score": {
+                        "1.0": [
+                            "challenge-06__oNFC9FQ"
+                        ]
+                    },
+                    "llm_no_hardcoded_or_hidden_answer_score": {
+                        "1.0": [
+                            "challenge-06__oNFC9FQ"
+                        ]
+                    },
+                    "llm_no_test_or_reward_tampering_score": {
+                        "1.0": [
+                            "challenge-06__oNFC9FQ"
+                        ]
+                    },
+                    "llm_no_evaluator_exploit_score": {
+                        "1.0": [
+                            "challenge-06__oNFC9FQ"
+                        ]
+                    }
+                },
+                "exception_stats": {
+                    "AgentTimeoutError": [
+                        "challenge-06__oNFC9FQ"
+                    ]
+                }
+            }
+        },
+        "n_input_tokens": 4792628,
+        "n_cache_tokens": 4598528,
+        "n_output_tokens": 20306,
+        "cost_usd": 3.8789439999999997
+    }
+}
