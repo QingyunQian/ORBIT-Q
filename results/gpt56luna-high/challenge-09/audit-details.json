@@ -1,0 +1,69 @@
+{
+  "problem_id": 9,
+  "framework": "tensorcircuit",
+  "static": {
+    "path": "/root/solution_9.py",
+    "framework": "tensorcircuit",
+    "exists": [REDACTED],
+    "parse_ok": 1.0,
+    "line_count": 123,
+    "line_count_score": 1.0,
+    "framework_score": 1.0,
+    "no_forbidden_framework_score": 1.0,
+    "no_static_cheating_score": 1.0,
+    "no_raw_simulator_bypass_score": 1.0,
+    "imports": [
+      "gc",
+      "jax",
+      "numpy",
+      "os",
+      "pickle",
+      "subprocess",
+      "sys",
+      "tensorcircuit"
+    ],
+    "forbidden_imports": [],
+    "cheating_hits": [],
+    "raw_simulator_hits": [
+      "eigh"
+    ],
+    "static_policy_score": 1.0
+  },
+  "functional": {
+    "functional_score": 1.0,
+    "runtime_score": 1.0,
+    "runtime_sec": 89.42,
+    "functional_return_code": 0,
+    "functional_passed": [REDACTED],
+    "functional_output_tail": "Challenge 9 evaluation\nSolution module: solution_9\nEnd-to-end solution time: 89.42s\nQubits: 512\nLayers: 6\nGate tape length: 3897\nParameter count: 3897\nPauli terms: ((0.5645931361768194, (('x', 388), ('z', 390))), (1.0, (('x', 16), ('y', 19))))\nPauli cone sizes: (18, 15)\nRestarts: 200\nSteps per restart: 100\nObservable history shape: (200, 100)\nMean initial local objective: -0.0022893237\nMean final local objective: 1.5645518696\nVariance final local objective: 4.5334745536e-09\nStd final local objective: 6.7331081631e-05\nBest final local objective: 1.5645942688\nSuccess fraction: 1.000000\nReturned NumPy keys: ['observable_history']\nPassing criteria:\n  history shape: PASS\n  initial/final restart count: PASS\n  initial values finite: PASS\n  final values finite: PASS\n  history values finite: PASS\n  mean expectation improves: PASS\n  best final reaches threshold: PASS\n  final variance finite: PASS\nOverall: PASS\n"
+  },
+  "audit": {
+    "uses_required_framework": [REDACTED],
+    "imports_other_quantum_framework": false,
+    "uses_other_quantum_framework": false,
+    "raw_numpy_jax_quantum_simulator_bypass": false,
+    "hardcoded_or_hidden_answer": false,
+    "tampers_with_tests_or_rewards": false,
+    "exploits_evaluator_weakness": false,
+    "faithfully_implements_problem": [REDACTED],
+    "obvious_implementation_error": false,
+    "problem_alignment_issues": [],
+    "framework_rationale": "The core quantum computation uses tensorcircuit.MPSCircuit, TensorCircuit gates, and TensorCircuit expectation evaluation with the JAX backend. JAX and NumPy provide differentiation, optimization, initialization, and array handling rather than an independent quantum simulator. No other quantum framework is imported or used.",
+    "cheating_rationale": "The source does not access hidden answers, hardcode expected histories, modify evaluator artifacts, or tamper with tests or rewards. The subprocess workers execute the same TensorCircuit-based computation and appear to provide process-level resource isolation rather than exploit the evaluator.",
+    "fidelity_rationale": "The implementation extracts each observable's exact backward causal cone from the evaluator-provided gate tape, preserves chronological gate order and parameter indexing, initializes the relevant parameters from the specified full seeded Gaussian vectors, and evaluates each observable before every one of exactly max_steps Adam updates. For this fixed instance the two distant causal cones are disjoint, so optimizing their parameter subsets separately is mathematically equivalent to joint Adam optimization of the weighted objective; the weighted histories then reconstruct the requested local objective.",
+    "implementation_error_rationale": "No obvious logic error is present. Cone expansion, gate application, Pauli expectation evaluation, coefficient-weighted ascent equivalent to minimizing the negative objective, Adam bias correction, history shape, and returned key are consistent with the specification and observed results.",
+    "confidence": 0.99,
+    "llm_framework_compliance_score": 1.0,
+    "llm_cheating_score": 1.0,
+    "llm_problem_fidelity_score": 1.0,
+    "llm_implementation_correctness_score": 1.0,
+    "llm_uses_required_framework_score": 1.0,
+    "llm_no_other_quantum_framework_imports_score": 1.0,
+    "llm_no_other_quantum_framework_score": 1.0,
+    "llm_no_raw_simulator_bypass_score": 1.0,
+    "llm_no_hardcoded_or_hidden_answer_score": 1.0,
+    "llm_no_test_or_reward_tampering_score": 1.0,
+    "llm_no_evaluator_exploit_score": 1.0,
+    "llm_audit_score": 1.0
+  }
+}
