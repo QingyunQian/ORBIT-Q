@@ -33,7 +33,10 @@ TEXT = "#222222"
 
 plt.rcParams.update(
     {
-        "font.family": "DejaVu Sans",
+        "font.family": "sans-serif",
+        "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans", "sans-serif"],
+        "svg.fonttype": "none",
+        "pdf.fonttype": 42,
         "font.size": 10,
         "axes.titlesize": 11,
         "axes.labelsize": 10,
@@ -46,7 +49,15 @@ plt.rcParams.update(
 
 
 def save(fig: plt.Figure, stem: str) -> None:
-    fig.savefig(FIGS / f"{stem}.png", bbox_inches="tight", facecolor="white")
+    fig.savefig(
+        FIGS / f"{stem}.png",
+        dpi=300,
+        bbox_inches="tight",
+        pad_inches=0.08,
+        facecolor="white",
+    )
+    fig.savefig(FIGS / f"{stem}.svg", bbox_inches="tight", pad_inches=0.08)
+    fig.savefig(FIGS / f"{stem}.pdf", bbox_inches="tight", pad_inches=0.08)
     plt.close(fig)
 
 
@@ -190,10 +201,14 @@ def resource_figure() -> None:
     ax1.grid(axis="y", alpha=0.35)
 
     names = ["Sol high", "Sol ultra", "Terra high", "Luna high", "DeepSeek V4 Flash"]
-    valid = np.array([10, 11, 9, 10, 5])
-    solve_per_valid = np.array([19.77, 16.62, 12385.907 / 60 / 9, 14362.147 / 60 / 10, wall_min.sum() / 5])
-    cost_per_valid = np.array([2.55, 2.73, 12.036862 / 9, 2.236872 / 10, costs.sum() / 5])
-    total_cost = np.array([25.527418, 30.02, 12.036862, 2.236872, costs.sum()])
+    valid = np.array([10, 10, 9, 9, 5])
+    solve_per_valid = np.array(
+        [19.77, 18.279595, 12385.907 / 60 / 9, 14362.147 / 60 / 9, wall_min.sum() / 5]
+    )
+    cost_per_valid = np.array(
+        [2.55, 30.019293 / 10, 12.036862 / 9, 2.236872 / 9, costs.sum() / 5]
+    )
+    total_cost = np.array([25.527418, 30.019293, 12.036862, 2.236872, costs.sum()])
     bubble_colors = [BLUE, ORANGE, GREEN, PURPLE, RED]
     ax2.scatter(
         solve_per_valid,
@@ -204,21 +219,30 @@ def resource_figure() -> None:
         linewidth=0.9,
         zorder=3,
     )
-    offsets = [(28, -26), (28, 10), (-92, 10), (-72, 12), (-105, 12)]
-    for name, count, xval, yval, color, offset in zip(
-        names, valid, solve_per_valid, cost_per_valid, bubble_colors, offsets
+    label_positions = [(23.0, 2.48), (24.0, 3.17), (15.8, 1.68), (18.2, 0.58), (39.0, 0.56)]
+    for name, count, xval, yval, color, label_xy in zip(
+        names, valid, solve_per_valid, cost_per_valid, bubble_colors, label_positions
     ):
         ax2.annotate(
             f"{name}\n({count}/12)",
             (xval, yval),
-            xytext=offset,
-            textcoords="offset points",
+            xytext=label_xy,
+            textcoords="data",
             color=color,
             weight="bold",
             fontsize=9,
+            ha="left",
+            va="top",
+            arrowprops={
+                "arrowstyle": "-",
+                "color": color,
+                "linewidth": 0.7,
+                "shrinkA": 2,
+                "shrinkB": 5,
+            },
         )
-    ax2.set_xlim(15.5, max(65.0, solve_per_valid.max() * 1.08))
-    ax2.set_ylim(0.0, 3.05)
+    ax2.set_xlim(14.5, max(65.0, solve_per_valid.max() * 1.08))
+    ax2.set_ylim(-0.05, 3.25)
     ax2.set_xlabel("Solve time per valid solution (min)")
     ax2.set_ylabel("Recorded cost per valid solution (USD)")
     ax2.set_title("Configuration-level resource efficiency", loc="left")
