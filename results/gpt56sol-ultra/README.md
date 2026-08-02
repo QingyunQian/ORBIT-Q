@@ -6,15 +6,16 @@ previous GPT-5.6 Sol `high` run.
 
 ## Headline
 
-- Final adjudicated validity: **11 / 12**
+- Final adjudicated validity: **10 / 12**
 - Raw verifier rewards: **10 / 12**
 - Functional checks: **12 / 12**
 - Static policy checks: **12 / 12**
 - Raw audit checks: **10 / 12**
 
-Challenge 01 is the only final failure. Challenge 07's original audit failure
-is retained as a raw artifact but was overturned by a later exact
-source-level adjudication.
+Challenges 01 and 08 are the final failures. Challenge 07's original audit
+failure is retained as a raw artifact but was overturned by a later exact
+source-level adjudication. Challenge 08's original reward and audit pass are
+also retained, but the final expert adjudication marks the solution invalid.
 
 ## Protocol
 
@@ -67,15 +68,18 @@ c404ed272d55d85b23820182781ae8f43299c3409bf5c254624f49a33884d66a
 | 05 | 1.0 | 1.0 | 1.0 | 1.0 | Pass | 75.51 |
 | 06 | 1.0 | 1.0 | 1.0 | 1.0 | Pass | 152.16 |
 | 07 | 0.0 | 1.0 | 1.0 | 0.0 | **Pass†** | 84.99 |
-| 08 | 1.0 | 1.0 | 1.0 | 1.0 | Pass | 60.94 |
+| 08 | 1.0 | 1.0 | 1.0 | 1.0 | **Fail‡** | 60.94 |
 | 09 | 1.0 | 1.0 | 1.0 | 1.0 | Pass | 7.18 |
 | 10 | 1.0 | 1.0 | 1.0 | 1.0 | Pass | 71.27 |
 | 11 | 1.0 | 1.0 | 1.0 | 1.0 | Pass | 120.07 |
 | 12 | 1.0 | 1.0 | 1.0 | 1.0 | Pass | 8.61 |
-| **Total / mean** | **10 / 12** | **12 / 12** | **12 / 12** | **10 / 12** | **11 / 12** | **62.19 mean** |
+| **Total / mean** | **10 / 12** | **12 / 12** | **12 / 12** | **10 / 12** | **10 / 12** | **62.19 mean** |
 
 † Post-hoc source adjudication; the original reward and audit files remain
 unchanged.
+
+‡ Post-hoc expert adjudication; the raw Task 08 reward and audit files remain
+unchanged for provenance.
 
 The 12 solution runtimes total 746.33 seconds.
 
@@ -93,9 +97,13 @@ The 12 solution runtimes total 746.33 seconds.
   the realized branches remain unchanged. Reusing those branches therefore
   preserves the benchmark trajectory. The proof and evidence are summarized
   in [`challenge-07/adjudication.md`](challenge-07/adjudication.md).
+- Challenge 08: the raw verifier accepted the candidate, but the final human
+  expert review judged the workaround noncompliant with the intended Task 08
+  sampling contract. It is therefore counted as a final failure.
 
-Challenge 01 remains failed. Challenge 07 is adjudicated to pass without
-altering the original `reward.json` or `audit-details.json`.
+Challenges 01 and 08 are failed. Challenge 07 is adjudicated to pass. These
+final adjudications do not alter the original `reward.json` or
+`audit-details.json` files.
 
 ## High versus ultra solver effort
 
@@ -105,8 +113,8 @@ In the pinned package, `exp1` defaults to `half=False`; only named rotations
 such as `rxx` and `rzz` opt into `half=True`. Source inspection and direct
 matrix checks therefore established that high challenge 05 is valid.
 
-The comparable final result is **10/12 for high and 11/12 for ultra**. Ultra
-passes every challenge high passes and additionally passes challenge 08:
+The comparable final result is **10/12 for high and 10/12 for ultra**. Their
+final pass sets are identical:
 
 | Challenge | High final | Ultra final | High runtime (s) | Ultra runtime (s) | Ultra − high (s) |
 |---|---:|---:|---:|---:|---:|
@@ -117,20 +125,20 @@ passes every challenge high passes and additionally passes challenge 08:
 | 05 | Pass | Pass | 124.92 | 75.51 | -49.41 |
 | 06 | Pass | Pass | 23.39 | 152.16 | +128.77 |
 | 07 | Pass | Pass† | 155.52 | 84.99 | -70.53 |
-| 08 | Fail | Pass | 55.48 | 60.94 | +5.46 |
+| 08 | Fail | Fail‡ | 55.48 | 60.94 | +5.46 |
 | 09 | Pass | Pass | 87.31 | 7.18 | -80.13 |
 | 10 | Pass | Pass | 68.68 | 71.27 | +2.59 |
 | 11 | Pass | Pass | 100.41 | 120.07 | +19.66 |
 | 12 | Pass | Pass | 12.85 | 8.61 | -4.24 |
 
-† Post-hoc source adjudication.
+† Post-hoc source adjudication. ‡ Post-hoc expert adjudication.
 
 The overlap is:
 
 - both passed: challenges 02, 03, 04, 05, 06, 07, 09, 10, 11, and 12;
 - high only: none;
-- ultra only: challenge 08;
-- neither: challenge 01.
+- ultra only: none;
+- neither: challenges 01 and 08.
 
 ### Solution-strategy findings
 
@@ -146,20 +154,17 @@ angles is zero, so those angles and the realized branches do not change during
 optimization. Its analytic branch reuse is therefore an exact workload
 reduction, not a fixed-branch surrogate with different dynamics.
 
-Challenge 08 is ultra-only. High drives conditional `perfect_sampling` with a
-fixed scrambled Sobol low-discrepancy design. That produces correlated
-quasi-samples tailored to low-error sample averages rather than ordinary
-circuit sampling. Ultra instead builds the doubled TensorCircuit probability
-tensor network, constructs row-triple proposals, and applies
-Metropolis-Hastings correction toward the circuit distribution. Ultra's more
-substantial sampling design solves the task that high did not.
+Challenge 08 is failed by both efforts under final expert adjudication. High
+uses correlated Sobol quasi-samples rather than ordinary circuit samples.
+Ultra builds row-triple proposals and applies Metropolis-Hastings correction,
+but the final expert review likewise rejects that workaround under the intended
+Task 08 sampling contract.
 
 Challenge 05 is not a solver difference. Both candidates use direct
 `exp1(theta=1j*...)`, which is the correct full-angle convention in the pinned
 TensorCircuit package.
 
-Overall, ultra preserves all ten high passes and adds challenge 08, raising the
-final validity count from 10/12 to 11/12.
+Overall, high and ultra each finish at 10/12 with the same final pass set.
 
 ## Figures
 
@@ -171,9 +176,9 @@ time-versus-cost per valid solution.
 
 ![GPT-5.6 Sol high versus ultra outcomes](figs/gpt56sol-high-vs-ultra-outcomes.png)
 
-The outcome figure shows that ultra contains all high passes and adds challenge
-08. It compares both raw artifact runtime and same-reference runtime ratios on
-the ten tasks passed by both efforts.
+The outcome figure shows identical final pass sets. It compares both raw
+artifact runtime and same-reference runtime ratios on the ten tasks passed by
+both efforts.
 
 ![GPT-5.6 Sol high versus ultra resources](figs/gpt56sol-high-vs-ultra-resources.png)
 
@@ -184,20 +189,19 @@ tokens, and recorded solver cost.
 
 | Metric | High | Ultra | Ultra − high |
 |---|---:|---:|---:|
-| Final valid solutions | 10 | 11 | +1 |
+| Final valid solutions | 10 | 10 | 0 |
 | Agent solve wall time | 197.70 min | 182.80 min | -7.5% |
 | Non-cache input tokens | 1.709 M | 1.312 M | -23.2% |
 | Cache-read input tokens | 24.199 M | 31.478 M | +30.1% |
 | Output tokens | 0.163 M | 0.257 M | +58.1% |
 | Total solving-side tokens | 26.071 M | 33.048 M | +26.8% |
 | Recorded cost | USD 25.53 | USD 30.02 | +17.6% |
-| Cost per valid solution | USD 2.55 | USD 2.73 | +6.9% |
-| Solve time per valid solution | 19.77 min | 16.62 min | -15.9% |
+| Cost per valid solution | USD 2.55 | USD 3.00 | +17.6% |
+| Solve time per valid solution | 19.77 min | 18.28 min | -7.5% |
 | All-artifact runtime total | 770.70 s | 746.33 s | -3.2% |
 
 Ultra consumed substantially more total and output tokens and cost more, while
-its recorded agent wall time was shorter and it produced one additional valid
-solution.
+its recorded agent wall time was shorter and final validity was unchanged.
 
 For the ten tasks passed by both runs (02–07 and 09–12), the geometric mean of
 `ultra_runtime / high_runtime` is 0.815. Against the shared expert references,

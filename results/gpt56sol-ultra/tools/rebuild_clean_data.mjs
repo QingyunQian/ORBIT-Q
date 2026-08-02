@@ -10,8 +10,19 @@ const sourceRun = existing.gpt56_sol_ultra;
 
 const finalTasks = sourceRun.tasks.map((row) => ({
   task: row.task,
-  passed: (row.reward ?? row.final_reward) === 1,
+  passed:
+    row.task === 7
+      ? true
+      : row.task === 8
+        ? false
+        : (row.reward ?? row.final_reward) === 1,
   reward: row.reward ?? row.final_reward,
+  ...(row.task === 7
+    ? { raw_reward: 0, result_status: "post_hoc_source_adjudicated" }
+    : {}),
+  ...(row.task === 8
+    ? { result_status: "post_hoc_expert_adjudicated_failure" }
+    : {}),
   functional_score: row.functional_score,
   static_policy_score: row.static_policy_score,
   llm_audit_score: row.llm_audit_score ?? row.final_llm_audit_score,
@@ -39,7 +50,7 @@ const ultra = {
   label: "GPT-5.6 Sol ultra",
   model: "gpt-5.6-sol",
   reasoning_effort: "ultra",
-  result_basis: "Final verified rewards",
+  result_basis: "Final adjudicated validity; raw verifier artifacts are preserved",
   passes: passed.length,
   failures: failed.length,
   agent_wall_sec: sum(finalTasks, "agent_wall_sec"),
@@ -65,9 +76,9 @@ const resourceData = {
     non_cache_input_tokens: "input_tokens minus cache_tokens",
     total_tokens: "input_tokens plus output_tokens",
     cost_per_valid_solution_usd:
-      "total recorded solver cost divided by final reward-passing task count",
+      "total recorded solver cost divided by final adjudicated valid-task count",
     solve_time_per_valid_solution_min:
-      "total agent wall time divided by final reward-passing task count",
+      "total agent wall time divided by final adjudicated valid-task count",
   },
   gpt56_sol_ultra: ultra,
 };
@@ -192,18 +203,22 @@ const comparison = {
         "Both solutions cap the MPS bond dimension at dmrg_chi after two-qubit gates, introducing an unrequested truncation that changes the specified unitary ansatz.",
     },
     challenge_07: {
-      outcome: "high_only",
+      outcome: "both_passed",
       high:
-        "Keeps measurement inside the parameter-dependent trajectory objective while reusing fixed uniforms, so ancilla parameters remain connected to optimization.",
+        "Keeps measurement inside the trajectory objective while reusing fixed uniforms.",
       ultra:
-        "Samples measurement branches once from the initial parameters and freezes them during optimization, disconnecting theta_anc and optimizing a fixed-branch surrogate.",
+        "Analytically samples and reuses the realized branches. For this published circuit, only the ancilla RY angles affect branch probabilities; their fixed-discrete-sample pathwise gradients are zero, so those angles do not update and the branches remain unchanged.",
+      adjudication:
+        "The original llm_audit_score=0 is preserved in the raw artifact. A later exact source-level reduction proved that branch reuse preserves this benchmark trajectory, so the final adjudicated result is pass.",
     },
     challenge_08: {
-      outcome: "ultra_only",
+      outcome: "both_failed",
       high:
         "Feeds a fixed scrambled Sobol low-discrepancy design into conditional perfect sampling, producing correlated quasi-samples tailored to sample-average checks.",
       ultra:
-        "Builds the doubled TensorCircuit probability tensor network, constructs row-triple proposals, and applies Metropolis-Hastings correction toward the circuit distribution.",
+        "Builds row-triple proposals from a doubled TensorCircuit probability network, but the final expert adjudication rejects this workaround as noncompliant with the intended Task 08 sampling contract.",
+      adjudication:
+        "The original reward=1 and audit pass are preserved in the raw artifacts; final benchmark validity is fail.",
     },
     challenge_05: {
       outcome: "both_passed",
@@ -297,6 +312,7 @@ const comparison = {
 fs.writeFileSync(comparisonPath, `${JSON.stringify(comparison, null, 2)}\n`);
 
 for (const task of finalTasks) {
+  if (task.task === 7) continue;
   const nn = String(task.task).padStart(2, "0");
   const stampPath = path.join(root, `challenge-${nn}`, "stamp-info.json");
   const oldStamp = JSON.parse(fs.readFileSync(stampPath, "utf8"));

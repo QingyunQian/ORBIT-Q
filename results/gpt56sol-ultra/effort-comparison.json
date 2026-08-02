@@ -40,8 +40,8 @@
       ]
     },
     "ultra": {
-      "passes": 11,
-      "failures": 1,
+      "passes": 10,
+      "failures": 2,
       "passed_tasks": [
         2,
         3,
@@ -49,14 +49,14 @@
         5,
         6,
         7,
-        8,
         9,
         10,
         11,
         12
       ],
       "failed_tasks": [
-        1
+        1,
+        8
       ]
     },
     "overlap": {
@@ -73,11 +73,10 @@
         12
       ],
       "high_only": [],
-      "ultra_only": [
-        8
-      ],
+      "ultra_only": [],
       "both_failed": [
-        1
+        1,
+        8
       ]
     }
   },
@@ -93,9 +92,10 @@
       "adjudication": "The original llm_audit_score=0 is preserved in the raw artifact. A later exact source-level reduction proved that branch reuse preserves this benchmark trajectory, so the final adjudicated result is pass."
     },
     "challenge_08": {
-      "outcome": "ultra_only",
+      "outcome": "both_failed",
       "high": "Feeds a fixed scrambled Sobol low-discrepancy design into conditional perfect sampling, producing correlated quasi-samples tailored to sample-average checks.",
-      "ultra": "Builds the doubled TensorCircuit probability tensor network, constructs row-triple proposals, and applies Metropolis-Hastings correction toward the circuit distribution."
+      "ultra": "Builds row-triple proposals from a doubled TensorCircuit probability network, but the final expert adjudication rejects this workaround as noncompliant with the intended Task 08 sampling contract.",
+      "adjudication": "The original reward=1 and audit pass are preserved in the raw artifacts; final benchmark validity is fail."
     },
     "challenge_05": {
       "outcome": "both_passed",
@@ -329,19 +329,19 @@
       "model": "gpt-5.6-sol",
       "reasoning_effort": "ultra",
       "result_basis": "Final adjudicated validity; raw verifier artifacts are preserved",
-      "passes": 11,
-      "failures": 1,
+      "passes": 10,
+      "failures": 2,
       "agent_wall_sec": 10967.757,
-      "passed_task_agent_wall_sec": 9167.37,
-      "failed_task_agent_wall_sec": 1800.387,
+      "passed_task_agent_wall_sec": 7892.985000000001,
+      "failed_task_agent_wall_sec": 3074.772,
       "input_tokens": 32790315,
       "cache_tokens": 31478016,
       "non_cache_input_tokens": 1312299,
       "output_tokens": 257293,
       "total_tokens": 33047608,
       "cost_usd": 30.019292999999998,
-      "cost_per_valid_solution_usd": 2.729026636363636,
-      "solve_time_per_valid_solution_min": 16.617813636363636,
+      "cost_per_valid_solution_usd": 3.0019292999999996,
+      "solve_time_per_valid_solution_min": 18.279595,
       "tasks": [
         {
           "task": 1,
@@ -501,8 +501,9 @@
         },
         {
           "task": 8,
-          "passed": true,
+          "passed": false,
           "reward": 1,
+          "result_status": "post_hoc_expert_adjudicated_failure",
           "functional_score": 1,
           "static_policy_score": 1,
           "llm_audit_score": 1,
@@ -619,8 +620,8 @@
       "output_tokens": 58.1463246728501,
       "total_tokens": 26.76096088924591,
       "cost_usd": 17.59627628614848,
-      "cost_per_valid_solution_usd": 6.90501961878069,
-      "solve_time_per_valid_solution_min": -15.944291166563597
+      "cost_per_valid_solution_usd": 17.59627628614846,
+      "solve_time_per_valid_solution_min": -7.536506233908369
     }
   },
   "artifact_runtime": {
@@ -644,9 +645,9 @@
       ],
       "high_total_sec": 607.71,
       "ultra_total_sec": 557.52,
-      "total_ultra_minus_high_percent": -8.258873804607457,
-      "geometric_mean_ultra_over_high": 0.8154072713137435,
-      "high_geometric_mean_over_expert": 1.4283074947707195,
+      "total_ultra_minus_high_percent": -8.258873475835527,
+      "geometric_mean_ultra_over_high": 0.8154072713137434,
+      "high_geometric_mean_over_expert": 1.4283074947798844,
       "ultra_geometric_mean_over_expert": 1.1646523169079612
     },
     "tasks": [
@@ -737,7 +738,7 @@
       {
         "task": 8,
         "high_passed": false,
-        "ultra_passed": true,
+        "ultra_passed": false,
         "high_runtime_sec": 55.48,
         "ultra_runtime_sec": 60.94,
         "ultra_minus_high_sec": 5.460000000000001,

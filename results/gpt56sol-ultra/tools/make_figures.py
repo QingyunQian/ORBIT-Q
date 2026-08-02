@@ -51,7 +51,10 @@ def finish_axes(ax: plt.Axes) -> None:
 
 def save(fig: plt.Figure, name: str) -> None:
     FIGS.mkdir(exist_ok=True)
-    fig.savefig(FIGS / name, dpi=220, bbox_inches="tight", facecolor="white")
+    target = FIGS / name
+    fig.savefig(target, dpi=300, bbox_inches="tight", facecolor="white")
+    fig.savefig(target.with_suffix(".svg"), bbox_inches="tight")
+    fig.savefig(target.with_suffix(".pdf"), bbox_inches="tight")
     plt.close(fig)
     print(FIGS / name)
 
@@ -164,7 +167,7 @@ def ultra_resource_figure() -> None:
         fontweight="bold",
     )
     axes[2].annotate(
-        "Ultra\n(11/12)",
+        "Ultra\n(10/12)",
         (
             ultra["solve_time_per_valid_solution_min"],
             ultra["cost_per_valid_solution_usd"],
@@ -181,7 +184,7 @@ def ultra_resource_figure() -> None:
     axes[2].text(
         0.98,
         0.03,
-        "Marker area ∝ total cost",
+        "Marker area proportional to total cost",
         transform=axes[2].transAxes,
         ha="right",
         va="bottom",
@@ -247,7 +250,7 @@ def outcomes_figure() -> None:
     axes[0].text(
         0.0,
         -0.22,
-        "Both: 02–07, 09–12\nUltra only: 08  |  Neither: 01",
+        "Both: 02–07, 09–12\nUltra only: none  |  Neither: 01, 08",
         transform=axes[0].transAxes,
         fontsize=9,
         va="top",
@@ -440,7 +443,10 @@ def resource_comparison_figure() -> None:
 def main() -> None:
     plt.rcParams.update(
         {
-            "font.family": "DejaVu Sans",
+            "font.family": "sans-serif",
+            "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans", "sans-serif"],
+            "svg.fonttype": "none",
+            "pdf.fonttype": 42,
             "font.size": 10.5,
             "axes.labelsize": 11,
             "axes.titlesize": 11.5,
