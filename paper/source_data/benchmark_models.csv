@@ -4,5 +4,3 @@ gpt56_sol_ultra,GPT-5.6 Sol,ultra,10,2,182.80,33.048,32.790,31.478,0.257,30.019,
 gpt56_terra_high,GPT-5.6 Terra,high,9,3,206.43,36.804,36.597,35.455,0.207,12.037,1.337,22.937,,yes,passes corrected to 9 after Task 08 failure; no committed same-machine expert ratio
 gpt56_luna_high,GPT-5.6 Luna,high,9,3,239.37,74.853,74.496,72.727,0.357,2.237,0.249,26.597,,yes,Task 08 changed from raw pass to final expert failure; no committed same-machine expert ratio
 deepseek_v4_flash_high,DeepSeek V4 Flash,high,5,7,290.41,81.585,80.672,80.008,0.913,0.573,0.115,58.082,,yes,official DeepSeek integration; five final passes; no committed same-machine expert ratio
-deepseek_v4_flash_max,DeepSeek V4 Flash,max,5,7,244.88,81.049,80.371,79.595,0.678,0.521,0.104,48.975,,yes,official DeepSeek integration; five final passes; no committed same-machine expert ratio
-fable5,Fable 5,reported,12,0,,,,,,,,,2.594,no,Cursor/Fable workflow; artifact outcomes only; agent resources not comparable

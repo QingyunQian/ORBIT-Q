@@ -3,7 +3,7 @@ task,baseline_sec,optimized_sec,speedup,dominant_factor,dominant_factor_speedup,
 02,4.495463,4.031039,1.115649,batched exact purity,1.074,end-to-end factor screen,codex/task-02-final-expert-optimization,six matched local pairs
 03,4.259896,0.870991,4.893978,TensorCircuit K.vmap local conditional maps,2.063,incremental factor screen,codex/task-03-final-expert-optimization,original workload; exact reduction
 04,14.742286,5.672258,2.602133,probe-network K.vmap,2.165,incremental factor screen,codex/task-04-final-expert-optimization,six matched local pairs
-05,97.083712,6.898409,14.075570,exact no-QR bounded-rank MPS,14.076,end-to-end factor screen,codex/task-05-final-expert-optimization,six matched local pairs
+05,115.708000,60.114000,1.939000,OMECo 4x4 path-search budget,1.420,direct fused-circuit ablation,codex/task-05-tc-native-fused,five cold fresh-process triples; mean paired speedup; median 1.668x
 06,41.425900,27.536600,1.504460,TensorCircuit native jaxode,1.529,single-screen dominant factor,codex/task-06-final-expert-optimization,five matched local pairs
 07,140.076441,3.070839,45.757921,classical-ancilla and duplicate-trajectory reduction,45.758,end-to-end factor screen,codex/task-07-classical-ancilla-design-report,six matched local pairs; exact design loophole
 08,126.675000,123.188000,1.045000,bounded mapped sampling batch,1.045,confidence interval crosses 1,codex/task-08-final-expert-optimization,five pairs; no confirmed speedup

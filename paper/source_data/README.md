@@ -1,54 +1,25 @@
-# Source-data provenance
+# Source-data notes
 
-These CSV files are the compact paper-facing extraction of the benchmark and
-expert-optimization artifacts. They are intentionally human-readable and
-contain no hidden baseline values.
+This directory contains the compact source tables for the paper update.
 
-## Files
+- `benchmark_models.csv`: Sol high/ultra, Terra high, Luna high, and DeepSeek
+  V4 Flash high only.
+- `task_outcomes.csv`: 5 configurations × 12 tasks. `raw_reward` preserves the
+  verifier result; `final_pass` records the final human-expert adjudication.
+- `expert_optimization.csv`: public expert and optimized runtimes plus the
+  dominant factor reported by each upstream Task PR.
+- `insights.csv`: short take-home messages for the expert optimizations.
 
-- `benchmark_models.csv`: one row per solver configuration. `passes` and
-  `failures` are final paper counts. Wall time, tokens, and cost come from the
-  solving-side summaries. `gm_slowdown` is populated only when a committed,
-  same-machine expert-reference comparison exists.
-- `task_outcomes.csv`: one row per model/task. `raw_reward` is the verifier
-  reward; `final_pass` is the final paper adjudication. Functional/static/audit
-  fields are retained so a raw reward can be explained rather than silently
-  overwritten.
-- `expert_optimization.csv`: public human-expert baseline versus optimized
-  TensorCircuit-NG runtime, with the full end-to-end ratio and the dominant
-  factor from the corresponding ablation.
-- `insights.csv`: short mechanistic take-home messages used in Figure 5.
+Task 08 is final `F` for all five solver configurations. Luna and Sol ultra
+retain raw reward `1` in `task_outcomes.csv`, while `final_pass=0` records the
+paper-facing review decision.
 
-## Final-review overrides
+Task 05 uses the legal TensorCircuit-native result from
+[ORBIT-Q PR #19](https://github.com/sxzgroup/ORBIT-Q/pull/19): mean paired
+end-to-end speedup `1.939×` (median `1.668×`), with OMECo `4×4` path search as
+the dominant resolved factor (`1.420×`). The earlier custom no-QR MPS result is
+excluded from this paper summary.
 
-The benchmark's raw verifier artifacts are preserved. The final paper matrix
-applies the later human-expert review requested for the comparison:
-
-- Task 08 is final `F` for GPT-5.6 Sol high, Sol ultra, Terra high, Luna high,
-  DeepSeek V4 Flash high, and DeepSeek V4 Flash max.
-- Luna Task 08 retains raw reward `1`, functional/static/audit `1`, and its
-  measured runtime in `task_outcomes.csv`; only `final_pass` is changed to `0`.
-- Sol ultra Task 08 is treated analogously; its source reward/audit artifact is
-  retained while the final reviewed result is `F`.
-- Sol ultra Task 07 uses the source-adjudicated pass despite a raw audit
-  discrepancy, as recorded by the upstream PR history.
-- Fable 5 remains the reported 12/12 artifact result and is not placed on the
-  comparable Docker-agent resource axis.
-
-These are review labels, not regenerated verifier runs. Any manuscript claim
-that needs the original verifier-only view should use `raw_reward` and the
-functional/static/audit columns explicitly.
-
-## Units and comparison boundaries
-
-- Runtime columns are seconds in `expert_optimization.csv` and minutes in
-  `benchmark_models.csv` where the header says `_min`.
-- Token columns are millions of solving-side tokens; cost is recorded USD from
-  the corresponding run summaries.
-- Missing same-machine ratios are blank by design. They must not be replaced
-  by ratios inferred from different hosts, models, or harnesses.
-- Fable's Cursor/Fable resources are not comparable to Harbor Docker-agent
-  resources.
-
-The public design context is the [ORBIT-Q repository](https://github.com/sxzgroup/ORBIT-Q)
-and [arXiv:2607.03105](https://arxiv.org/abs/2607.03105).
+Runtime fields are seconds in `expert_optimization.csv` and minutes where
+`benchmark_models.csv` uses a `_min` suffix. Missing same-machine artifact
+ratios remain blank rather than being inferred from different campaigns.
