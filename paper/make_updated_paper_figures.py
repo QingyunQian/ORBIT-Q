@@ -178,8 +178,8 @@ def make_fig2b(agent_rows: list[dict[str, str]]) -> None:
     clean_axes(ax)
     ax.axhline(1.0, color="#888888", ls=(0, (3, 3)), lw=0.9, zorder=1)
     ax.axvline(0.0, color="#888888", ls=(0, (3, 3)), lw=0.9, zorder=1)
-    ax.scatter([0], [1], marker="D", s=68, facecolor="#D0D0D0", edgecolor="#888888", zorder=4)
-    ax.text(1.1, 1.48, "Expert TC\nreference", fontsize=7.5, color="#777777", ha="left", va="center")
+    ax.scatter([0], [1], marker="D", s=42, facecolor="#D0D0D0", edgecolor="#888888", zorder=4)
+    ax.text(1.3, 1.25, "Expert TC\nreference", fontsize=7.5, color="#777777", ha="left", va="center")
 
     # Preserve the original paper's four agent colors and label positions.
     # New campaigns use distinct colors and occupy previously empty regions.
@@ -195,21 +195,21 @@ def make_fig2b(agent_rows: list[dict[str, str]]) -> None:
         "deepseek_v4_flash_high": "#4D4D4D",
     }
     label_positions = {
-        "gpt55": (19.7, 1.55, "left"),
-        "opus48": (28.0, 3.25, "left"),
+        "gpt55": (20.0, 1.30, "left"),
+        "opus48": (26.8, 3.36, "left"),
         "sonnet46": (47.2, 8.15, "left"),
         "glm52": (57.0, 7.10, "left"),
-        "sol56_high": (15.0, 2.78, "right"),
-        "sol56_ultra": (14.8, 1.95, "right"),
-        "terra56_high": (28.2, 2.30, "left"),
+        "sol56_high": (15.0, 3.02, "right"),
+        "sol56_ultra": (14.2, 2.00, "right"),
+        "terra56_high": (28.8, 2.48, "left"),
         "luna56_high": (28.2, 4.70, "left"),
-        "deepseek_v4_flash_high": (58.3, 3.95, "center"),
+        "deepseek_v4_flash_high": (58.3, 4.08, "center"),
     }
     for row in rows:
         x = 100.0 * int(row["failures"]) / 12.0
         y = num(row, "gm_slowdown")
         color = fig2_colors[row["key"]]
-        ax.scatter(x, y, marker="o", s=68, facecolor=color, edgecolor="#222222", linewidth=0.8, zorder=3)
+        ax.scatter(x, y, marker="o", s=34, facecolor=color, edgecolor="#222222", linewidth=0.8, alpha=0.9, zorder=3)
         label_x, label_y, align = label_positions[row["key"]]
         ax.text(
             label_x,
