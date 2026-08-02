@@ -1,54 +1,73 @@
-# ORBIT-Q: updated results for the paper
+# ORBIT-Q paper-update figures
 
-This note contains only the five new solver configurations requested for the
-paper: Sol high, Sol ultra, Terra high, Luna high, and DeepSeek V4 Flash high.
-Fable 5 and DeepSeek max are not included.
+This directory provides paper-ready updates to Fig. 1c, Fig. 2b, and Fig. 4
+of [arXiv:2607.03105](https://arxiv.org/abs/2607.03105), plus one new summary
+figure for AI-assisted optimization of the 12 human-expert implementations.
+The deliverables are editable SVG and vector PDF; PNG files are previews only.
+Fable 5 and DeepSeek max are intentionally excluded.
 
-## Latest result figures
+## Updated Fig. 1c — agent–framework benchmark matrix
 
-### Task-level outcomes
+[SVG](updated_figures/fig1c_updated_agent_framework_matrix.svg) ·
+[PDF](updated_figures/fig1c_updated_agent_framework_matrix.pdf) ·
+[PNG](updated_figures/fig1c_updated_agent_framework_matrix.png)
 
-[SVG](../results/deepseek-v4-flash-high/figs/deepseek-v4-flash-high-outcomes.svg) ·
-[PDF](../results/deepseek-v4-flash-high/figs/deepseek-v4-flash-high-outcomes.pdf) ·
-[PNG](../results/deepseek-v4-flash-high/figs/deepseek-v4-flash-high-outcomes.png)
+![Updated agent-framework benchmark matrix](updated_figures/fig1c_updated_agent_framework_matrix.png)
 
-![Final outcomes for the five solver configurations](../results/deepseek-v4-flash-high/figs/deepseek-v4-flash-high-outcomes.png)
+The original paper matrix is retained on the left. The five new
+TensorCircuit-NG campaigns extend it on the right: Sol high **10/12**, Sol
+ultra **10/12**, Terra high **9/12**, Luna high **9/12**, and DeepSeek V4
+Flash high **5/12**. Task 08 is counted as failed for every new campaign after
+final human-expert review.
 
-### Agent-side resource use
+## Updated Fig. 2b — failure rate versus artifact runtime
 
-[SVG](../results/deepseek-v4-flash-high/figs/deepseek-v4-flash-high-agent-resource-use.svg) ·
-[PDF](../results/deepseek-v4-flash-high/figs/deepseek-v4-flash-high-agent-resource-use.pdf) ·
-[PNG](../results/deepseek-v4-flash-high/figs/deepseek-v4-flash-high-agent-resource-use.png)
+[SVG](updated_figures/fig2b_updated_agent_axis.svg) ·
+[PDF](updated_figures/fig2b_updated_agent_axis.pdf) ·
+[PNG](updated_figures/fig2b_updated_agent_axis.png)
 
-![Agent wall time, token use, and cost per valid solution](../results/deepseek-v4-flash-high/figs/deepseek-v4-flash-high-agent-resource-use.png)
+![Updated TensorCircuit-NG agent axis](updated_figures/fig2b_updated_agent_axis.png)
 
-These are the canonical figures from
-[ORBIT-Q PR #23](https://github.com/sxzgroup/ORBIT-Q/pull/23). The resource
-figure keeps the paper's wall-time / token / efficiency panel structure. The
-original paper figures remain unchanged in [`docs/assets`](../docs/assets/).
+This is the paper's original metric: the geometric mean artifact-runtime
+ratio is computed only over passed tasks and uses the original paper's public
+expert TensorCircuit references. The resulting ratios are **2.54×**, **2.07×**,
+**2.70×**, **4.69×**, and **3.48×** for Sol high, Sol ultra, Terra high, Luna
+high, and DeepSeek high, respectively. These values should not be replaced by
+same-machine ratios from a different campaign.
 
-## Final results
+## Updated Fig. 4 — benchmark resource use
 
-| Solver | Effort | Valid tasks |
-|---|---:|---:|
-| GPT-5.6 Sol | high | **10/12** |
-| GPT-5.6 Sol | ultra | **10/12** |
-| GPT-5.6 Terra | high | **9/12** |
-| GPT-5.6 Luna | high | **9/12** |
-| DeepSeek V4 Flash | high | **5/12** |
+[SVG](updated_figures/fig4_updated_agent_framework_resources.svg) ·
+[PDF](updated_figures/fig4_updated_agent_framework_resources.pdf) ·
+[PNG](updated_figures/fig4_updated_agent_framework_resources.png)
 
-Task 08 is `F` for all five configurations after final human-expert review.
-The raw Luna and Sol-ultra verifier rewards are retained in
-[`task_outcomes.csv`](source_data/task_outcomes.csv), but are not counted as
-paper-valid results.
+![Updated ORBIT-Q resource-use figure](updated_figures/fig4_updated_agent_framework_resources.png)
 
-## Human-expert optimization figures
+The original 2 × 3 layout is preserved. Panels (a–c) combine the five original
+agent configurations with the five new campaigns; panels (d–f) retain the
+paper's original framework comparison. Gray bars in panel (b) show the legacy
+total-token values because the paper tables do not publish their token
+components; the new campaigns retain the measured non-cache, cache-read, and
+output split. Bubble area represents total recorded cost.
 
-The figures below are copied unchanged from the corresponding upstream PRs.
-Each is a direct factor-removal/ablation plot; factors from different panels
-are not additive.
+## New figure — human expert + AI co-optimization
 
-| Task | End-to-end result | Upstream PR | Factor-ablation figure |
+[SVG](updated_figures/expert_optimization_updated_overview.svg) ·
+[PDF](updated_figures/expert_optimization_updated_overview.pdf) ·
+[PNG](updated_figures/expert_optimization_updated_overview.png)
+
+![Human-expert implementations after AI-assisted optimization](updated_figures/expert_optimization_updated_overview.png)
+
+Panel (a) compares end-to-end runtime before and after optimization on a log
+scale. Panel (b) reports the paired end-to-end speedup and the dominant insight
+retained after ablation. The largest result is the exact Task 07 reduction
+(**45.76×**); Task 01 reaches **9.64×**, while Tasks 03, 09, 10, and 12 reach
+**3.82–4.90×**. Task 08's **1.04×** estimate is explicitly marked unconfirmed.
+The legal TensorCircuit-native Task 05 result is used (**1.94× mean paired**).
+
+Individual factor-removal plots remain available as supplementary evidence:
+
+| Task | End-to-end result | Upstream PR | Ablation SVG |
 |---:|---:|---:|---|
 | 01 | **9.636×** | [#8](https://github.com/sxzgroup/ORBIT-Q/pull/8) | [SVG](../optimized_solutions/challenge-01/factor-ablation.svg) |
 | 02 | **1.116×** | [#9](https://github.com/sxzgroup/ORBIT-Q/pull/9) | [SVG](../optimized_solutions/challenge-02/factor-ablation.svg) |
@@ -63,13 +82,6 @@ are not additive.
 | 11 | **1.464×** | [#16](https://github.com/sxzgroup/ORBIT-Q/pull/16) | [SVG](../optimized_solutions/challenge-11/factor-ablation.svg) |
 | 12 | **3.914×** | [#17](https://github.com/sxzgroup/ORBIT-Q/pull/17) | [SVG](../optimized_solutions/challenge-12/factor-ablation.svg) |
 
-The strongest findings are the exact Task 07 classical-ancilla reduction,
-the Task 03 product-state reduction, and Task 10 cold contraction-program
-specialization. For Task 05, the paper-facing result is the legal
-TensorCircuit-native PR #19 result: OMECo path-search budget is the dominant
-measured factor; the earlier 14.08× custom-MPS result is not used.
-
-Detailed source values and review overrides are in
-[`source_data/`](source_data/). The original paper and layout reference are
-[arXiv:2607.03105](https://arxiv.org/abs/2607.03105) and the
-[ORBIT-Q repository](https://github.com/sxzgroup/ORBIT-Q).
+Source tables, adjudication notes, and the reproducible plotting script are in
+[`source_data/`](source_data/) and
+[`make_updated_paper_figures.py`](make_updated_paper_figures.py).

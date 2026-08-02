@@ -2,18 +2,17 @@
 
 Date: 2026-08-03
 
-- The two latest benchmark figures are byte-identical to the PDF/PNG/SVG
-  assets in `origin/codex/deepseek-v4-flash-high-benchmark` (upstream PR #23).
-- All 12 expert `factor-ablation.svg` files are byte-identical to their source
-  Task branches; Task 05 is sourced from `codex/task-05-tc-native-fused`.
-- The benchmark source table contains 5 configurations and the task table
-  contains exactly 60 rows (5 × 12).
-- Final pass counts cross-check against the task table: 10, 10, 9, 9, and 5.
-- Task 08 is final `F` for all five configurations.
-- The outcome and resource PNGs were inspected at full resolution; labels are
-  inside the canvas and the selected-model set contains neither Fable 5 nor
-  DeepSeek max.
-
-Because the delivered figures are reused upstream assets rather than newly
-drawn panels, no additional plotting backend or regenerated visual output is
-introduced in this branch.
+- Four figures were regenerated from tracked CSV sources with matplotlib.
+- Each figure was exported as editable SVG, vector PDF, and 320 dpi PNG.
+- SVG output retains text as text and contains no embedded raster image.
+- PDF output uses embedded TrueType fonts and contains no raster image object.
+- PNG previews were inspected at full resolution for clipped labels, overlap,
+  stretched elements, and panel consistency.
+- Final pass counts cross-check to **10, 10, 9, 9, 5**; Task 08 is failed for
+  all five new configurations.
+- Fig. 2b runtime ratios were recomputed against the original paper's public
+  expert TensorCircuit runtimes and include passed tasks only.
+- The expert overview cross-checks all 12 end-to-end values against the
+  corresponding upstream Task PR; Task 05 uses legal PR #19 and Task 08 is
+  marked unconfirmed.
+- Neither Fable 5 nor DeepSeek max appears in the updated figures.

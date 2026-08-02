@@ -1,0 +1,447 @@
+#!/usr/bin/env python3
+"""Generate vector-ready ORBIT-Q paper-update figures.
+
+The layouts deliberately follow arXiv:2607.03105: Fig. 1c is an
+agent-by-framework matrix, Fig. 2b is the TC agent-axis failure/runtime
+scatter, and Fig. 4 keeps the original 2 x 3 resource-use structure.
+"""
+
+from __future__ import annotations
+
+import csv
+import math
+from pathlib import Path
+
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.colors import LinearSegmentedColormap, Normalize
+from matplotlib.lines import Line2D
+from matplotlib.patches import Patch, Rectangle
+
+
+ROOT = Path(__file__).resolve().parent
+DATA = ROOT / "source_data"
+OUT = ROOT / "updated_figures"
+
+mpl.rcParams.update(
+    {
+        "font.family": "sans-serif",
+        "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans"],
+        "font.size": 8.5,
+        "axes.labelsize": 9,
+        "axes.titlesize": 10,
+        "xtick.labelsize": 8,
+        "ytick.labelsize": 8,
+        "legend.fontsize": 7.5,
+        "axes.linewidth": 0.8,
+        "grid.color": "#D6D6D6",
+        "grid.linewidth": 0.6,
+        "grid.alpha": 0.70,
+        "svg.fonttype": "none",
+        "pdf.fonttype": 42,
+        "ps.fonttype": 42,
+        "savefig.facecolor": "white",
+    }
+)
+
+COLORS = {
+    "gpt55": "#0072B2",
+    "gpt55_checklist": "#56B4E9",
+    "opus48": "#D55E00",
+    "glm52": "#A05195",
+    "sonnet46": "#E69F00",
+    "sol56_high": "#2563EB",
+    "sol56_ultra": "#F97316",
+    "terra56_high": "#009E73",
+    "luna56_high": "#CC79A7",
+    "deepseek_v4_flash_high": "#4D4D4D",
+    "tensorcircuit": "#0072B2",
+    "pennylane": "#CC79A7",
+    "torchquantum": "#E69F00",
+    "mindquantum": "#009E73",
+}
+
+PASS = "#009E73"
+FAIL = "#FFFFFF"
+NONCACHE = "#5B5B5B"
+CACHE = "#56B4E9"
+OUTPUT = "#D55E00"
+LEGACY = "#B7B7B7"
+
+
+def read_csv(name: str) -> list[dict[str, str]]:
+    with (DATA / name).open(newline="", encoding="utf-8") as f:
+        return list(csv.DictReader(f))
+
+
+def num(row: dict[str, str], key: str) -> float:
+    value = row.get(key, "")
+    return float(value) if value not in (None, "") else np.nan
+
+
+def clean_axes(ax: mpl.axes.Axes, *, grid_axis: str = "both") -> None:
+    ax.grid(True, axis=grid_axis, zorder=0)
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.tick_params(direction="out", length=3, width=0.8)
+
+
+def panel_label(ax: mpl.axes.Axes, label: str) -> None:
+    ax.text(
+        -0.11,
+        1.04,
+        label,
+        transform=ax.transAxes,
+        fontsize=12,
+        fontweight="bold",
+        va="bottom",
+        ha="left",
+    )
+
+
+def save_all(fig: mpl.figure.Figure, stem: str) -> None:
+    OUT.mkdir(parents=True, exist_ok=True)
+    fig.savefig(OUT / f"{stem}.svg", bbox_inches="tight")
+    fig.savefig(OUT / f"{stem}.pdf", bbox_inches="tight")
+    fig.savefig(OUT / f"{stem}.png", dpi=320, bbox_inches="tight")
+    plt.close(fig)
+
+
+def validate_new_slowdowns(agent_rows: list[dict[str, str]]) -> None:
+    """Recompute the Fig. 2b values from final task outcomes and paper refs."""
+    refs = {int(r["task"]): num(r, "expert_tc_runtime_sec") for r in read_csv("paper_expert_runtimes.csv")}
+    outcomes = read_csv("task_outcomes.csv")
+    model_to_agent = {
+        "gpt56_sol_high": "sol56_high",
+        "gpt56_sol_ultra": "sol56_ultra",
+        "gpt56_terra_high": "terra56_high",
+        "gpt56_luna_high": "luna56_high",
+        "deepseek_v4_flash_high": "deepseek_v4_flash_high",
+    }
+    expected = {r["key"]: num(r, "gm_slowdown") for r in agent_rows if r["series"] == "new"}
+    for model, agent_key in model_to_agent.items():
+        ratios = [
+            num(r, "runtime_sec") / refs[int(r["task"])]
+            for r in outcomes
+            if r["model"] == model and r["final_pass"] == "1"
+        ]
+        recomputed = math.exp(sum(math.log(v) for v in ratios) / len(ratios))
+        if not math.isclose(recomputed, expected[agent_key], rel_tol=0.0, abs_tol=5e-7):
+            raise ValueError(f"{model}: stored GM {expected[agent_key]} != recomputed {recomputed}")
+
+
+def make_fig1c(agent_rows: list[dict[str, str]], framework_rows: list[dict[str, str]]) -> None:
+    agents = [r for r in agent_rows if r["include_fig1c"] == "yes"]
+    order = ["gpt55", "opus48", "glm52", "sonnet46", "sol56_high", "sol56_ultra", "terra56_high", "luna56_high", "deepseek_v4_flash_high"]
+    agents = sorted(agents, key=lambda r: order.index(r["key"]))
+    frameworks = {r["key"]: r for r in framework_rows}
+
+    values = np.full((4, len(agents)), np.nan)
+    values[0, :] = [int(r["passes"]) for r in agents]
+    values[1, 0] = int(frameworks["pennylane"]["passes"])
+    values[2, 0] = int(frameworks["torchquantum"]["passes"])
+    values[3, 0] = int(frameworks["mindquantum"]["passes"])
+
+    cmap = LinearSegmentedColormap.from_list(
+        "orbit_passes", ["#E9B5AB", "#F3D7A2", "#CFE1C9", "#B8D8D8"]
+    )
+    norm = Normalize(3, 12)
+    fig, ax = plt.subplots(figsize=(7.15, 2.75))
+    ax.set_xlim(-0.85, len(agents))
+    ax.set_ylim(4.25, -1.1)
+    ax.axis("off")
+
+    for i in range(4):
+        for j in range(len(agents)):
+            value = values[i, j]
+            color = "#F7F7F7" if np.isnan(value) else cmap(norm(value))
+            edge = "#D8D8D8" if np.isnan(value) else mpl.colors.to_hex(np.array(mpl.colors.to_rgb(color)) * 0.82)
+            ax.add_patch(Rectangle((j + 0.06, i + 0.06), 0.88, 0.88, facecolor=color, edgecolor=edge, linewidth=1.0))
+            text = "–" if np.isnan(value) else f"{int(value)}/12"
+            ax.text(j + 0.50, i + 0.50, text, ha="center", va="center", fontweight="bold" if not np.isnan(value) else "normal", color="#333333")
+
+    row_labels = ["TC", "PL", "TQ", "MQ"]
+    for i, label in enumerate(row_labels):
+        ax.text(-0.08, i + 0.50, label, ha="right", va="center", fontsize=9.5)
+
+    labels = ["GPT-5.5", "Opus-4.8", "GLM-5.2", "Sonnet-4.6", "Sol\nhigh", "Sol\nultra", "Terra\nhigh", "Luna\nhigh", "DeepSeek\nhigh"]
+    for j, label in enumerate(labels):
+        ax.text(j + 0.50, -0.02, label, ha="center", va="bottom", fontsize=7.7)
+
+    ax.plot([4, 4], [-0.22, 4.00], color="#8C8C8C", lw=1.0)
+    ax.text(2.0, -0.72, "Original paper", ha="center", va="center", color="#555555", fontweight="bold")
+    ax.text(6.5, -0.72, "New TC campaigns", ha="center", va="center", color="#555555", fontweight="bold")
+    ax.text(-0.68, 2.0, "Framework", rotation=90, ha="center", va="center", fontsize=9.5, fontweight="bold", color="#666666")
+    ax.set_title("Updated agent–framework benchmarking matrix", loc="left", fontweight="bold", pad=18)
+    save_all(fig, "fig1c_updated_agent_framework_matrix")
+
+
+def make_fig2b(agent_rows: list[dict[str, str]]) -> None:
+    rows = [r for r in agent_rows if r["include_fig2b"] == "yes"]
+    fig, ax = plt.subplots(figsize=(5.55, 4.0))
+    clean_axes(ax)
+    ax.axhline(1.0, color="#888888", ls=(0, (3, 3)), lw=0.9, zorder=1)
+    ax.axvline(0.0, color="#888888", ls=(0, (3, 3)), lw=0.9, zorder=1)
+    ax.scatter([0], [1], marker="D", s=58, facecolor="#BDBDBD", edgecolor="#333333", zorder=4)
+    ax.annotate(
+        "Expert TC\nreference",
+        (0, 1),
+        xytext=(11, 23),
+        textcoords="offset points",
+        fontsize=7.5,
+        color="#555555",
+        bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.78, "pad": 0.6},
+    )
+
+    offsets = {
+        "gpt55": (-73, -36),
+        "opus48": (-66, 34),
+        "glm52": (8, -12),
+        "sonnet46": (-56, 9),
+        "sol56_high": (-66, 38),
+        "sol56_ultra": (18, -22),
+        "terra56_high": (20, -34),
+        "luna56_high": (8, 8),
+        "deepseek_v4_flash_high": (-68, 11),
+    }
+    for row in rows:
+        x = 100.0 * int(row["failures"]) / 12.0
+        y = num(row, "gm_slowdown")
+        marker = "o" if row["series"] == "paper" else "s"
+        color = COLORS[row["key"]]
+        ax.scatter(x, y, marker=marker, s=68, facecolor=color, edgecolor="#222222", linewidth=0.8, zorder=3)
+        dx, dy = offsets[row["key"]]
+        ax.annotate(
+            f"{row['short_label']}\n({row['passes']}/12)",
+            (x, y),
+            xytext=(dx, dy),
+            textcoords="offset points",
+            fontsize=7.2,
+            fontweight="bold",
+            color=color,
+            ha="left",
+            va="center",
+            bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.78, "pad": 0.5},
+            arrowprops={"arrowstyle": "-", "color": color, "lw": 0.6, "shrinkA": 2, "shrinkB": 3},
+        )
+
+    ax.set_xlim(-2, 66)
+    ax.set_ylim(0.55, 8.15)
+    ax.set_xticks(np.arange(0, 61, 10))
+    ax.set_yticks([1, 3, 5, 7])
+    ax.set_xlabel("Failure rate (%)")
+    ax.set_ylabel("Runtime / expert TC reference")
+    ax.set_title("Updated agent axis on TensorCircuit-NG", fontweight="bold", loc="left")
+    ax.legend(
+        handles=[
+            Line2D([], [], marker="o", ls="none", markerfacecolor="#777777", markeredgecolor="#222222", label="Original paper"),
+            Line2D([], [], marker="s", ls="none", markerfacecolor="#777777", markeredgecolor="#222222", label="New campaign"),
+        ],
+        loc="upper right",
+        frameon=False,
+    )
+    panel_label(ax, "(b)")
+    save_all(fig, "fig2b_updated_agent_axis")
+
+
+def make_fig4(agent_rows: list[dict[str, str]], framework_rows: list[dict[str, str]]) -> None:
+    fig = plt.figure(figsize=(14.0, 8.3))
+    gs = fig.add_gridspec(2, 3, width_ratios=[1.15, 1.15, 1.15], wspace=0.48, hspace=0.42)
+    axes = [fig.add_subplot(gs[i, j]) for i in range(2) for j in range(3)]
+    axa, axb, axc, axd, axe, axf = axes
+
+    # Agent axis: resource totals for original-paper and new configurations.
+    y = np.arange(len(agent_rows))
+    passed_h = np.array([num(r, "wall_passed_sec") / 3600 for r in agent_rows])
+    failed_h = np.array([num(r, "wall_failed_sec") / 3600 for r in agent_rows])
+    axa.barh(y, passed_h, color=PASS, edgecolor="#222222", linewidth=0.7, label="Passed tasks", zorder=2)
+    axa.barh(y, failed_h, left=passed_h, color=FAIL, edgecolor="#222222", linewidth=0.7, label="Failed tasks", zorder=2)
+    axa.set_yticks(y, [r["short_label"] for r in agent_rows])
+    axa.invert_yaxis()
+    axa.set_xlabel("Agent solve wall time (h)")
+    axa.set_title("Agent axis", fontweight="bold")
+    axa.legend(loc="lower right", frameon=False)
+    clean_axes(axa, grid_axis="x")
+    panel_label(axa, "(a)")
+
+    for i, row in enumerate(agent_rows):
+        if row["series"] == "paper":
+            axb.barh(i, num(row, "total_tokens_m"), color=LEGACY, edgecolor="#222222", linewidth=0.7, zorder=2)
+        else:
+            left = 0.0
+            for key, color in [("noncache_prompt_m", NONCACHE), ("cache_prompt_m", CACHE), ("output_tokens_m", OUTPUT)]:
+                value = num(row, key)
+                axb.barh(i, value, left=left, color=color, edgecolor="#222222", linewidth=0.45, zorder=2)
+                left += value
+    axb.set_yticks(y, [r["short_label"] for r in agent_rows])
+    axb.invert_yaxis()
+    axb.set_xlabel("Solving-side tokens (million)")
+    axb.legend(
+        handles=[
+            Patch(facecolor=LEGACY, edgecolor="#222222", label="Legacy total"),
+            Patch(facecolor=NONCACHE, edgecolor="#222222", label="Non-cache prompt"),
+            Patch(facecolor=CACHE, edgecolor="#222222", label="Cache-read prompt"),
+            Patch(facecolor=OUTPUT, edgecolor="#222222", label="Output"),
+        ],
+        loc="lower right",
+        frameon=False,
+        ncol=2,
+    )
+    clean_axes(axb, grid_axis="x")
+    panel_label(axb, "(b)")
+
+    agent_label_positions = {
+        "gpt55": (6.2, 1.98),
+        "gpt55_checklist": (11.0, 1.12),
+        "opus48": (22.7, 1.82),
+        "glm52": (34.0, 2.50),
+        "sonnet46": (29.5, 1.72),
+        "sol56_high": (13.5, 2.74),
+        "sol56_ultra": (6.0, 3.10),
+        "terra56_high": (26.5, 1.47),
+        "luna56_high": (30.0, 0.38),
+        "deepseek_v4_flash_high": (46.0, 0.31),
+    }
+    for row in agent_rows:
+        x = num(row, "wall_total_sec") / 60 / int(row["passes"])
+        yy = num(row, "cost_usd") / int(row["passes"])
+        size = 30 + 11 * num(row, "cost_usd")
+        marker = "o" if row["series"] == "paper" else "s"
+        color = COLORS[row["key"]]
+        axc.scatter(x, yy, s=size, marker=marker, facecolor=color, edgecolor="#222222", linewidth=0.8, alpha=0.95, zorder=3)
+        label_x, label_y = agent_label_positions[row["key"]]
+        axc.annotate(
+            f"{row['short_label']}\n({row['passes']}/12)",
+            (x, yy),
+            xytext=(label_x, label_y),
+            textcoords="data",
+            fontsize=6.4,
+            fontweight="bold",
+            color=color,
+            va="center",
+            bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.76, "pad": 0.4},
+            arrowprops={"arrowstyle": "-", "color": color, "lw": 0.55, "shrinkA": 2, "shrinkB": 3},
+        )
+    axc.set_xlim(5, 64)
+    axc.set_ylim(0, 3.35)
+    axc.set_xlabel("Solve time per valid solution (min)")
+    axc.set_ylabel("Recorded cost per valid solution (USD)")
+    axc.text(0.98, 0.97, "Marker area scales with total recorded cost", transform=axc.transAxes, ha="right", va="top", fontsize=7.2, color="#444444")
+    clean_axes(axc)
+    panel_label(axc, "(c)")
+
+    # Framework axis: unchanged original-paper comparison.
+    fy = np.arange(len(framework_rows))
+    fpass = np.array([num(r, "wall_passed_sec") / 3600 for r in framework_rows])
+    ffail = np.array([num(r, "wall_failed_sec") / 3600 for r in framework_rows])
+    axd.barh(fy, fpass, color=PASS, edgecolor="#222222", linewidth=0.7, zorder=2)
+    axd.barh(fy, ffail, left=fpass, color=FAIL, edgecolor="#222222", linewidth=0.7, zorder=2)
+    axd.set_yticks(fy, [r["short_label"] for r in framework_rows])
+    axd.invert_yaxis()
+    axd.set_xlabel("Agent solve wall time (h)")
+    axd.set_title("Framework axis", fontweight="bold")
+    clean_axes(axd, grid_axis="x")
+    panel_label(axd, "(d)")
+
+    axe.barh(fy, [num(r, "total_tokens_m") for r in framework_rows], color=LEGACY, edgecolor="#222222", linewidth=0.7, zorder=2)
+    axe.set_yticks(fy, [r["short_label"] for r in framework_rows])
+    axe.invert_yaxis()
+    axe.set_xlabel("Solving-side tokens (million)")
+    clean_axes(axe, grid_axis="x")
+    panel_label(axe, "(e)")
+
+    foffsets = {"tensorcircuit": (8, 6), "pennylane": (8, 5), "torchquantum": (-48, 8), "mindquantum": (-48, -13)}
+    for row in framework_rows:
+        x = num(row, "wall_total_sec") / 60 / int(row["passes"])
+        yy = num(row, "cost_usd") / int(row["passes"])
+        size = 30 + 11 * num(row, "cost_usd")
+        color = COLORS[row["key"]]
+        axf.scatter(x, yy, s=size, facecolor=color, edgecolor="#222222", linewidth=0.8, zorder=3)
+        dx, dy = foffsets[row["key"]]
+        axf.annotate(f"{row['short_label']}\n({row['passes']}/12)", (x, yy), xytext=(dx, dy), textcoords="offset points", fontsize=7.2, fontweight="bold", color=color, va="center")
+    axf.set_xlim(7, 45)
+    axf.set_ylim(0.8, 8.1)
+    axf.set_xlabel("Solve time per valid solution (min)")
+    axf.set_ylabel("Recorded cost per valid solution (USD)")
+    clean_axes(axf)
+    panel_label(axf, "(f)")
+
+    fig.suptitle("Updated ORBIT-Q benchmark resource use", fontsize=13, fontweight="bold", y=0.995)
+    save_all(fig, "fig4_updated_agent_framework_resources")
+
+
+def make_expert_optimization() -> None:
+    rows = read_csv("expert_optimization.csv")
+    tasks = [r["task"] for r in rows]
+    baseline = np.array([num(r, "baseline_sec") for r in rows])
+    optimized = np.array([num(r, "optimized_sec") for r in rows])
+    speedup = np.array([num(r, "speedup") for r in rows])
+    short = {
+        "01": "batched gate construction",
+        "02": "batched exact purity",
+        "03": "exact product-state reduction",
+        "04": "batched probe networks",
+        "05": "tuned OMECo path search",
+        "06": "TC-native jaxode",
+        "07": "exact ancilla/branch reduction",
+        "08": "mapped sampling (not significant)",
+        "09": "causal-cone pruning",
+        "10": "fixed contraction program",
+        "11": "layer and onsite fusion",
+        "12": "batched Padé SU4",
+    }
+
+    fig, (axa, axb) = plt.subplots(1, 2, figsize=(12.2, 5.25), gridspec_kw={"width_ratios": [1.08, 1.35], "wspace": 0.35})
+    x = np.arange(len(tasks))
+    width = 0.38
+    axa.bar(x - width / 2, baseline, width, color="#7A7A7A", edgecolor="#222222", linewidth=0.6, label="Original expert", zorder=2)
+    axa.bar(x + width / 2, optimized, width, color=PASS, edgecolor="#222222", linewidth=0.6, label="Human + AI", zorder=2)
+    axa.set_yscale("log")
+    axa.set_xticks(x, tasks)
+    axa.set_xlabel("Challenge")
+    axa.set_ylabel("End-to-end runtime (s, log scale)")
+    axa.legend(frameon=False, loc="upper right")
+    clean_axes(axa, grid_axis="y")
+    panel_label(axa, "(a)")
+
+    y = np.arange(len(tasks))
+    bar_colors = ["#D55E00" if t in {"03", "07"} else ("#FFFFFF" if t == "08" else PASS) for t in tasks]
+    bars = axb.barh(y, speedup, color=bar_colors, edgecolor="#222222", linewidth=0.75, zorder=2)
+    bars[tasks.index("08")].set_hatch("///")
+    axb.axvline(1.0, color="#777777", ls=(0, (3, 3)), lw=0.9)
+    axb.set_xscale("log")
+    axb.set_xlim(0.9, 78)
+    axb.set_yticks(y, [f"Task {t}" for t in tasks])
+    axb.invert_yaxis()
+    axb.set_xlabel("End-to-end speedup (×, log scale)")
+    clean_axes(axb, grid_axis="x")
+    panel_label(axb, "(b)")
+    for i, (t, value) in enumerate(zip(tasks, speedup)):
+        axb.text(value * 1.06, i, f"{value:.2f}×  {short[t]}", va="center", ha="left", fontsize=7.2, color="#333333")
+
+    axb.legend(
+        handles=[
+            Patch(facecolor=PASS, edgecolor="#222222", label="Framework-native optimization"),
+            Patch(facecolor="#D55E00", edgecolor="#222222", label="Exact task reduction"),
+            Patch(facecolor="#FFFFFF", edgecolor="#222222", hatch="///", label="Not confirmed (Task 08)"),
+        ],
+        loc="lower right",
+        frameon=False,
+    )
+    fig.suptitle("Human-expert implementations after AI-assisted optimization", fontsize=12.5, fontweight="bold", y=0.995)
+    save_all(fig, "expert_optimization_updated_overview")
+
+
+def main() -> None:
+    agents = read_csv("paper_agent_axis.csv")
+    frameworks = read_csv("paper_framework_axis.csv")
+    validate_new_slowdowns(agents)
+    make_fig1c(agents, frameworks)
+    make_fig2b(agents)
+    make_fig4(agents, frameworks)
+    make_expert_optimization()
+
+
+if __name__ == "__main__":
+    main()
