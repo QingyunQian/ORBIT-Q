@@ -31,7 +31,10 @@ TEXT = "#222222"
 
 plt.rcParams.update(
     {
-        "font.family": "DejaVu Sans",
+        "font.family": "sans-serif",
+        "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans", "sans-serif"],
+        "svg.fonttype": "none",
+        "pdf.fonttype": 42,
         "font.size": 10,
         "axes.titlesize": 11,
         "axes.labelsize": 10,
@@ -44,7 +47,9 @@ plt.rcParams.update(
 
 
 def save(fig: plt.Figure, stem: str) -> None:
-    fig.savefig(FIGS / f"{stem}.png", bbox_inches="tight", facecolor="white")
+    fig.savefig(FIGS / f"{stem}.png", dpi=300, bbox_inches="tight", facecolor="white")
+    fig.savefig(FIGS / f"{stem}.svg", bbox_inches="tight")
+    fig.savefig(FIGS / f"{stem}.pdf", bbox_inches="tight")
     plt.close(fig)
 
 
@@ -75,7 +80,7 @@ def outcome_figure() -> None:
     ax.text(
         0,
         -0.24,
-        "All three: 02–07, 09, 11, 12   |   Sol only: 10   |   Ultra only: 08   |   Neither: 01",
+        "All three: 02–07, 09, 11, 12   |   Sol runs only: 10   |   Neither: 01, 08",
         transform=ax.transAxes,
         fontsize=9,
         va="top",
@@ -121,9 +126,9 @@ def resource_figure() -> None:
     ax1.grid(axis="y", alpha=0.35)
 
     names = ["Sol high", "Sol ultra", "Terra high"]
-    valid = np.array([10, 11, 9])
-    solve_per_valid = np.array([19.77, 16.62, wall_min.sum() / 9])
-    cost_per_valid = np.array([2.55, 2.73, costs.sum() / 9])
+    valid = np.array([10, 10, 9])
+    solve_per_valid = np.array([19.77, 18.28, wall_min.sum() / 9])
+    cost_per_valid = np.array([2.55, 3.00, costs.sum() / 9])
     total_cost = np.array([25.527418, 30.02, costs.sum()])
     bubble_colors = [BLUE, ORANGE, PASS]
     ax2.scatter(solve_per_valid, cost_per_valid, s=75 * total_cost, color=bubble_colors, edgecolor="black", linewidth=0.9, zorder=3)
@@ -136,7 +141,7 @@ def resource_figure() -> None:
     ax2.set_ylabel("Cost per valid solution (USD)")
     ax2.set_title("Configuration-level resource efficiency", loc="left")
     ax2.text(-0.14, 1.08, "(c)", transform=ax2.transAxes, fontsize=15, weight="bold")
-    ax2.text(0.98, 0.04, "Marker area ∝ total cost", transform=ax2.transAxes, ha="right", fontsize=8)
+    ax2.text(0.98, 0.04, "Marker area proportional to total cost", transform=ax2.transAxes, ha="right", fontsize=8)
     ax2.grid(alpha=0.35)
 
     fig.suptitle("GPT-5.6 Terra high agent-side resource use", fontsize=14, weight="bold")

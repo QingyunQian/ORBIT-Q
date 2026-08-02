@@ -13,10 +13,10 @@
       "label": "Sol ultra",
       "solver_model": "gpt-5.6-sol",
       "solver_effort": "ultra",
-      "passes": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-      "source_commit": "d5b29107b4fd92671e4fbb0a3825b2907098ae30",
+      "passes": [2, 3, 4, 5, 6, 7, 9, 10, 11, 12],
+      "source_commit": "552481c",
       "source_file": "results/gpt56sol-ultra/README.md",
-      "note": "Task 07 includes the exact-reduction adjudication recorded in that run."
+      "note": "Tasks 07 and 08 include the final adjudications recorded in that run."
     },
     {
       "label": "Terra high",

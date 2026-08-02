@@ -89,7 +89,7 @@ These are model outcomes, not TLS, DNS, mount, Docker, or verifier failures.
 | Solver setting | Final valid solutions | Failed challenges |
 |---|---:|---|
 | GPT-5.6 Sol high | 10 / 12 | 01, 08 |
-| GPT-5.6 Sol ultra | 11 / 12 | 01 |
+| GPT-5.6 Sol ultra | 10 / 12 | 01, 08 |
 | **GPT-5.6 Terra high** | **9 / 12** | **01, 08, 10** |
 
 Terra/high passed a strict subset of the Sol/high and adjudicated Sol/ultra
