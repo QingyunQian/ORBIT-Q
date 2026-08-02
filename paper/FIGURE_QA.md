@@ -15,10 +15,10 @@ Date: 2026-08-03
   all five new configurations.
 - Fig. 2b runtime ratios were recomputed against the original paper's public
   expert TensorCircuit runtimes and include passed tasks only.
-- Fig. 2b preserves the original paper's axes, reference marker, and legacy
-  model palette/label anchors; only the added-campaign labels were separated
-  to prevent overlap, with Sol high assigned a non-blue color distinct from
-  GPT-5.5.
+- Fig. 2b preserves the original paper's reference marker and legacy model
+  palette/label anchors; its displayed ranges are compacted to the occupied
+  data region, added-campaign labels are separated, and Sol high uses a
+  non-blue color distinct from GPT-5.5.
 - The expert overview cross-checks all 12 end-to-end values against the
   corresponding upstream Task PR; Task 05 uses legal PR #19 and Task 08 is
   included as a valid optimized implementation.

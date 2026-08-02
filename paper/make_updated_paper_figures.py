@@ -173,7 +173,7 @@ def make_fig1c(agent_rows: list[dict[str, str]], framework_rows: list[dict[str, 
 
 def make_fig2b(agent_rows: list[dict[str, str]]) -> None:
     rows = [r for r in agent_rows if r["include_fig2b"] == "yes"]
-    fig, ax = plt.subplots(figsize=(5.3, 4.7))
+    fig, ax = plt.subplots(figsize=(3.65, 3.15))
     clean_axes(ax)
     ax.axhline(1.0, color="#888888", ls=(0, (3, 3)), lw=0.9, zorder=1)
     ax.axvline(0.0, color="#888888", ls=(0, (3, 3)), lw=0.9, zorder=1)
@@ -202,7 +202,7 @@ def make_fig2b(agent_rows: list[dict[str, str]]) -> None:
         "sol56_ultra": (14.8, 1.95, "right"),
         "terra56_high": (28.2, 2.30, "left"),
         "luna56_high": (28.2, 4.70, "left"),
-        "deepseek_v4_flash_high": (64.0, 3.45, "left"),
+        "deepseek_v4_flash_high": (58.3, 3.95, "center"),
     }
     for row in rows:
         x = 100.0 * int(row["failures"]) / 12.0
@@ -221,10 +221,10 @@ def make_fig2b(agent_rows: list[dict[str, str]]) -> None:
             va="center",
         )
 
-    ax.set_xlim(-2, 86)
-    ax.set_ylim(0.35, 11.4)
-    ax.set_xticks(np.arange(0, 81, 10))
-    ax.set_yticks([1, 3, 5, 7, 9, 11])
+    ax.set_xlim(-2, 72)
+    ax.set_ylim(0.35, 9.2)
+    ax.set_xticks(np.arange(0, 71, 10))
+    ax.set_yticks([1, 3, 5, 7, 9])
     ax.set_xlabel("Failure rate (%)")
     ax.set_ylabel("Runtime / expert TC reference")
     panel_label(ax, "(b)")
