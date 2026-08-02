@@ -173,58 +173,60 @@ def make_fig1c(agent_rows: list[dict[str, str]], framework_rows: list[dict[str, 
 
 def make_fig2b(agent_rows: list[dict[str, str]]) -> None:
     rows = [r for r in agent_rows if r["include_fig2b"] == "yes"]
-    fig, ax = plt.subplots(figsize=(5.55, 4.0))
+    fig, ax = plt.subplots(figsize=(5.3, 4.7))
     clean_axes(ax)
     ax.axhline(1.0, color="#888888", ls=(0, (3, 3)), lw=0.9, zorder=1)
     ax.axvline(0.0, color="#888888", ls=(0, (3, 3)), lw=0.9, zorder=1)
-    ax.scatter([0], [1], marker="o", s=58, facecolor="#BDBDBD", edgecolor="#333333", zorder=4)
-    ax.annotate(
-        "Expert TC\nreference",
-        (0, 1),
-        xytext=(11, 23),
-        textcoords="offset points",
-        fontsize=7.5,
-        color="#555555",
-        bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.78, "pad": 0.6},
-    )
+    ax.scatter([0], [1], marker="D", s=68, facecolor="#D0D0D0", edgecolor="#888888", zorder=4)
+    ax.text(1.1, 1.48, "Expert TC\nreference", fontsize=7.5, color="#777777", ha="left", va="center")
 
-    offsets = {
-        "gpt55": (-73, -36),
-        "opus48": (-66, 34),
-        "glm52": (8, -12),
-        "sonnet46": (-56, 9),
-        "sol56_high": (-66, 38),
-        "sol56_ultra": (18, -22),
-        "terra56_high": (20, -34),
-        "luna56_high": (8, 8),
-        "deepseek_v4_flash_high": (-68, 11),
+    # Preserve the original paper's four agent colors and label positions.
+    # New campaigns use distinct colors and occupy previously empty regions.
+    fig2_colors = {
+        "gpt55": "#0072B2",
+        "opus48": "#E69F00",
+        "sonnet46": "#CC79A7",
+        "glm52": "#D55E00",
+        "sol56_high": "#6A3D9A",
+        "sol56_ultra": "#009E73",
+        "terra56_high": "#56B4E9",
+        "luna56_high": "#8C6D31",
+        "deepseek_v4_flash_high": "#4D4D4D",
+    }
+    label_positions = {
+        "gpt55": (19.7, 1.55, "left"),
+        "opus48": (28.0, 3.25, "left"),
+        "sonnet46": (47.2, 8.15, "left"),
+        "glm52": (57.0, 7.10, "left"),
+        "sol56_high": (15.0, 2.78, "right"),
+        "sol56_ultra": (14.8, 1.95, "right"),
+        "terra56_high": (28.2, 2.30, "left"),
+        "luna56_high": (28.2, 4.70, "left"),
+        "deepseek_v4_flash_high": (64.0, 3.45, "left"),
     }
     for row in rows:
         x = 100.0 * int(row["failures"]) / 12.0
         y = num(row, "gm_slowdown")
-        color = COLORS[row["key"]]
+        color = fig2_colors[row["key"]]
         ax.scatter(x, y, marker="o", s=68, facecolor=color, edgecolor="#222222", linewidth=0.8, zorder=3)
-        dx, dy = offsets[row["key"]]
-        ax.annotate(
+        label_x, label_y, align = label_positions[row["key"]]
+        ax.text(
+            label_x,
+            label_y,
             f"{row['short_label']}\n({row['passes']}/12)",
-            (x, y),
-            xytext=(dx, dy),
-            textcoords="offset points",
             fontsize=7.2,
             fontweight="bold",
             color=color,
-            ha="left",
+            ha=align,
             va="center",
-            bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.78, "pad": 0.5},
         )
 
-    ax.set_xlim(-2, 66)
-    ax.set_ylim(0.55, 8.15)
-    ax.set_xticks(np.arange(0, 61, 10))
-    ax.set_yticks([1, 3, 5, 7])
+    ax.set_xlim(-2, 86)
+    ax.set_ylim(0.35, 11.4)
+    ax.set_xticks(np.arange(0, 81, 10))
+    ax.set_yticks([1, 3, 5, 7, 9, 11])
     ax.set_xlabel("Failure rate (%)")
     ax.set_ylabel("Runtime / expert TC reference")
-    ax.set_title("Updated agent axis on TensorCircuit-NG", fontweight="bold", loc="left")
     panel_label(ax, "(b)")
     save_all(fig, "fig2b_updated_agent_axis")
 
