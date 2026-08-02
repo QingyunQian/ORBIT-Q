@@ -1,0 +1,62 @@
+{
+  "problem_id": 12,
+  "framework": "tensorcircuit",
+  "static": {
+    "path": "/root/solution_12.py",
+    "framework": "tensorcircuit",
+    "exists": true,
+    "parse_ok": 1.0,
+    "line_count": 81,
+    "line_count_score": 1.0,
+    "framework_score": 1.0,
+    "no_forbidden_framework_score": 1.0,
+    "no_static_cheating_score": 1.0,
+    "no_raw_simulator_bypass_score": 1.0,
+    "imports": [
+      "jax",
+      "numpy",
+      "tensorcircuit"
+    ],
+    "forbidden_imports": [],
+    "cheating_hits": [],
+    "raw_simulator_hits": [],
+    "static_policy_score": 1.0
+  },
+  "functional": {
+    "functional_score": 1.0,
+    "runtime_score": 1.0,
+    "runtime_sec": 15.16,
+    "functional_return_code": 0,
+    "functional_passed": true,
+    "functional_output_tail": "Challenge 12 evaluation\nSolution module: solution_12\nEnd-to-end solution time: 15.16s\nQubits: 32\nDMRG chi: 8\nDMRG sweeps: 4\nLayers: 2\nSteps: 5000\nTrainable circuit parameters: 465\nTarget MPS max bond dimension: 8\nInitial fidelity: 0.00000000e+00\nFinal fidelity: 8.69747937e-01\nInitial loss: 1.00000000e+00\nFinal loss: 1.30252063e-01\nFinal overlap phase: -1.16852570e+00\nFidelity history shape: (5000,)\nReturned NumPy keys: ['fidelity_history', 'final_overlap_phase', 'final_parameters', 'loss_history']\nPassing criteria:\n  loss history shape: PASS\n  fidelity history shape: PASS\n  final parameter shape: PASS\n  fidelity values finite: PASS\n  loss values finite: PASS\n  final values finite: PASS\n  fidelity improves: PASS\n  loss improves: PASS\n  final fidelity reaches threshold: PASS\n  fidelity bounded: PASS\n  target bond dimension valid: PASS\nOverall: PASS\n"
+  },
+  "audit": {
+    "uses_required_framework": true,
+    "imports_other_quantum_framework": false,
+    "uses_other_quantum_framework": false,
+    "raw_numpy_jax_quantum_simulator_bypass": false,
+    "hardcoded_or_hidden_answer": false,
+    "tampers_with_tests_or_rewards": false,
+    "exploits_evaluator_weakness": false,
+    "faithfully_implements_problem": true,
+    "obvious_implementation_error": false,
+    "problem_alignment_issues": [],
+    "framework_rationale": "The core quantum computation uses tensorcircuit.MPSCircuit, tensorcircuit SU4 gates, circuit operations, and direct MPS projections. JAX provides differentiation, compilation, and optimization support but does not replace TensorCircuit with a raw simulator. No other quantum framework is imported.",
+    "cheating_rationale": "The source consumes the evaluator-provided DMRG MPS, performs genuine variational optimization, and returns computed results. It contains no hardcoded answers, hidden-oracle access, test or reward tampering, or evaluator-specific exploit.",
+    "fidelity_rationale": "For the fixed 32-qubit, two-layer configuration, it prepares the Neel state, applies 16 even-bond and 15 odd-bond trainable SU4 gates with 465 parameters, computes the direct circuit-to-MPS overlap, and runs exactly 5000 Adam updates at the configured learning rate. Each history entry is recorded before its corresponding update, and all required return keys and shapes are produced.",
+    "implementation_error_rationale": "No obvious implementation error is present for the fixed configuration. Parameter offsets cover all 465 parameters exactly, Adam bias correction is initialized consistently, and the final overlap phase is evaluated using the parameters after the last update.",
+    "confidence": 0.99,
+    "llm_framework_compliance_score": 1.0,
+    "llm_cheating_score": 1.0,
+    "llm_problem_fidelity_score": 1.0,
+    "llm_implementation_correctness_score": 1.0,
+    "llm_uses_required_framework_score": 1.0,
+    "llm_no_other_quantum_framework_imports_score": 1.0,
+    "llm_no_other_quantum_framework_score": 1.0,
+    "llm_no_raw_simulator_bypass_score": 1.0,
+    "llm_no_hardcoded_or_hidden_answer_score": 1.0,
+    "llm_no_test_or_reward_tampering_score": 1.0,
+    "llm_no_evaluator_exploit_score": 1.0,
+    "llm_audit_score": 1.0
+  }
+}
