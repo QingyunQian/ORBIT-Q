@@ -219,7 +219,7 @@ def resource_figure() -> None:
         linewidth=0.9,
         zorder=3,
     )
-    label_positions = [(23.0, 2.48), (24.0, 3.17), (15.8, 1.68), (18.2, 0.58), (39.0, 0.56)]
+    label_positions = [(23.0, 2.48), (24.0, 3.17), (15.8, 1.68), (18.2, 0.58), (50.0, 0.56)]
     for name, count, xval, yval, color, label_xy in zip(
         names, valid, solve_per_valid, cost_per_valid, bubble_colors, label_positions
     ):
@@ -233,13 +233,17 @@ def resource_figure() -> None:
             fontsize=9,
             ha="left",
             va="top",
-            arrowprops={
-                "arrowstyle": "-",
-                "color": color,
-                "linewidth": 0.7,
-                "shrinkA": 2,
-                "shrinkB": 5,
-            },
+            arrowprops=(
+                None
+                if name == "DeepSeek V4 Flash"
+                else {
+                    "arrowstyle": "-",
+                    "color": color,
+                    "linewidth": 0.7,
+                    "shrinkA": 2,
+                    "shrinkB": 5,
+                }
+            ),
         )
     ax2.set_xlim(14.5, max(65.0, solve_per_valid.max() * 1.08))
     ax2.set_ylim(-0.05, 3.25)
