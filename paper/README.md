@@ -47,8 +47,8 @@ The original 2 × 3 layout is preserved. Panels (a–c) combine the five origina
 agent configurations with the five new campaigns; panels (d–f) retain the
 paper's original framework comparison. Gray bars in panel (b) show the legacy
 total-token values because the paper tables do not publish their token
-components; the new campaigns retain the measured non-cache, cache-read, and
-output split. Bubble area represents total recorded cost.
+components. Panels (b) and (e) therefore use one consistent total-token
+encoding for every configuration. Bubble area represents total recorded cost.
 
 ## New figure — human expert + AI co-optimization
 
@@ -62,7 +62,10 @@ Panel (a) compares end-to-end runtime before and after optimization on a log
 scale. Panel (b) reports the paired end-to-end speedup and the dominant insight
 retained after ablation. The largest result is the exact Task 07 reduction
 (**45.76×**); Task 01 reaches **9.64×**, while Tasks 03, 09, 10, and 12 reach
-**3.82–4.90×**. Task 08's **1.04×** estimate is explicitly marked unconfirmed.
+**3.82–4.90×**. Task 08 is included as a valid optimized implementation with a
+small **1.04×** paired point estimate.
+This concerns the optimized human-expert implementation and is separate from
+the Task 08 benchmark adjudication for the five solver campaigns above.
 The legal TensorCircuit-native Task 05 result is used (**1.94× mean paired**).
 
 Individual factor-removal plots remain available as supplementary evidence:
@@ -76,7 +79,7 @@ Individual factor-removal plots remain available as supplementary evidence:
 | 05 | **1.939× mean paired** | [#19](https://github.com/sxzgroup/ORBIT-Q/pull/19) | [SVG](../optimized_solutions/challenge-05/factor-ablation.svg) |
 | 06 | **1.504×** | [#13](https://github.com/sxzgroup/ORBIT-Q/pull/13) | [SVG](../optimized_solutions/challenge-06/factor-ablation.svg) |
 | 07 | **45.758×** | [#7](https://github.com/sxzgroup/ORBIT-Q/pull/7) | [SVG](../optimized_solutions/challenge-07/factor-ablation.svg) |
-| 08 | **1.045×; not confirmed** | [#18](https://github.com/sxzgroup/ORBIT-Q/pull/18) | [SVG](../optimized_solutions/challenge-08/factor-ablation.svg) |
+| 08 | **1.045×** | [#18](https://github.com/sxzgroup/ORBIT-Q/pull/18) | [SVG](../optimized_solutions/challenge-08/factor-ablation.svg) |
 | 09 | **3.822×** | [#14](https://github.com/sxzgroup/ORBIT-Q/pull/14) | [SVG](../optimized_solutions/challenge-09/factor-ablation.svg) |
 | 10 | **4.898×** | [#15](https://github.com/sxzgroup/ORBIT-Q/pull/15) | [SVG](../optimized_solutions/challenge-10/factor-ablation.svg) |
 | 11 | **1.464×** | [#16](https://github.com/sxzgroup/ORBIT-Q/pull/16) | [SVG](../optimized_solutions/challenge-11/factor-ablation.svg) |

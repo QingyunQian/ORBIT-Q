@@ -8,11 +8,11 @@ The paper update follows the visual and metric contracts of
 2. Updated Fig. 2b preserves failure rate and geometric-mean artifact runtime
    relative to the original public expert references, evaluated on passed tasks.
 3. Updated Fig. 4 preserves the paper's 2 × 3 wall-time, token, and efficiency
-   layout. Legacy token totals are not decomposed when the source tables do not
-   publish the components.
+   layout. All token bars use the same total-token encoding because the source
+   tables do not publish components for every configuration.
 4. The expert-optimization overview reports paired end-to-end measurements;
-   exact task reductions and the unconfirmed Task 08 result are distinguished
-   visually.
+   exact task reductions are distinguished visually; Task 08 remains a valid
+   optimized implementation with a small measured point estimate.
 5. Fable 5 and DeepSeek max are excluded. Task 08 is failed for all five new
    solver configurations after final human review.
 

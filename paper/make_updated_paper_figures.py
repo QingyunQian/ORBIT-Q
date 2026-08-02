@@ -16,7 +16,6 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import LinearSegmentedColormap, Normalize
-from matplotlib.lines import Line2D
 from matplotlib.patches import Patch, Rectangle
 
 
@@ -64,10 +63,7 @@ COLORS = {
 
 PASS = "#009E73"
 FAIL = "#FFFFFF"
-NONCACHE = "#5B5B5B"
 CACHE = "#56B4E9"
-OUTPUT = "#D55E00"
-LEGACY = "#B7B7B7"
 
 
 def read_csv(name: str) -> list[dict[str, str]]:
@@ -183,7 +179,7 @@ def make_fig2b(agent_rows: list[dict[str, str]]) -> None:
     clean_axes(ax)
     ax.axhline(1.0, color="#888888", ls=(0, (3, 3)), lw=0.9, zorder=1)
     ax.axvline(0.0, color="#888888", ls=(0, (3, 3)), lw=0.9, zorder=1)
-    ax.scatter([0], [1], marker="D", s=58, facecolor="#BDBDBD", edgecolor="#333333", zorder=4)
+    ax.scatter([0], [1], marker="o", s=58, facecolor="#BDBDBD", edgecolor="#333333", zorder=4)
     ax.annotate(
         "Expert TC\nreference",
         (0, 1),
@@ -208,9 +204,8 @@ def make_fig2b(agent_rows: list[dict[str, str]]) -> None:
     for row in rows:
         x = 100.0 * int(row["failures"]) / 12.0
         y = num(row, "gm_slowdown")
-        marker = "o" if row["series"] == "paper" else "s"
         color = COLORS[row["key"]]
-        ax.scatter(x, y, marker=marker, s=68, facecolor=color, edgecolor="#222222", linewidth=0.8, zorder=3)
+        ax.scatter(x, y, marker="o", s=68, facecolor=color, edgecolor="#222222", linewidth=0.8, zorder=3)
         dx, dy = offsets[row["key"]]
         ax.annotate(
             f"{row['short_label']}\n({row['passes']}/12)",
@@ -223,7 +218,6 @@ def make_fig2b(agent_rows: list[dict[str, str]]) -> None:
             ha="left",
             va="center",
             bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.78, "pad": 0.5},
-            arrowprops={"arrowstyle": "-", "color": color, "lw": 0.6, "shrinkA": 2, "shrinkB": 3},
         )
 
     ax.set_xlim(-2, 66)
@@ -233,14 +227,6 @@ def make_fig2b(agent_rows: list[dict[str, str]]) -> None:
     ax.set_xlabel("Failure rate (%)")
     ax.set_ylabel("Runtime / expert TC reference")
     ax.set_title("Updated agent axis on TensorCircuit-NG", fontweight="bold", loc="left")
-    ax.legend(
-        handles=[
-            Line2D([], [], marker="o", ls="none", markerfacecolor="#777777", markeredgecolor="#222222", label="Original paper"),
-            Line2D([], [], marker="s", ls="none", markerfacecolor="#777777", markeredgecolor="#222222", label="New campaign"),
-        ],
-        loc="upper right",
-        frameon=False,
-    )
     panel_label(ax, "(b)")
     save_all(fig, "fig2b_updated_agent_axis")
 
@@ -265,29 +251,17 @@ def make_fig4(agent_rows: list[dict[str, str]], framework_rows: list[dict[str, s
     clean_axes(axa, grid_axis="x")
     panel_label(axa, "(a)")
 
-    for i, row in enumerate(agent_rows):
-        if row["series"] == "paper":
-            axb.barh(i, num(row, "total_tokens_m"), color=LEGACY, edgecolor="#222222", linewidth=0.7, zorder=2)
-        else:
-            left = 0.0
-            for key, color in [("noncache_prompt_m", NONCACHE), ("cache_prompt_m", CACHE), ("output_tokens_m", OUTPUT)]:
-                value = num(row, key)
-                axb.barh(i, value, left=left, color=color, edgecolor="#222222", linewidth=0.45, zorder=2)
-                left += value
+    axb.barh(
+        y,
+        [num(row, "total_tokens_m") for row in agent_rows],
+        color=CACHE,
+        edgecolor="#222222",
+        linewidth=0.7,
+        zorder=2,
+    )
     axb.set_yticks(y, [r["short_label"] for r in agent_rows])
     axb.invert_yaxis()
-    axb.set_xlabel("Solving-side tokens (million)")
-    axb.legend(
-        handles=[
-            Patch(facecolor=LEGACY, edgecolor="#222222", label="Legacy total"),
-            Patch(facecolor=NONCACHE, edgecolor="#222222", label="Non-cache prompt"),
-            Patch(facecolor=CACHE, edgecolor="#222222", label="Cache-read prompt"),
-            Patch(facecolor=OUTPUT, edgecolor="#222222", label="Output"),
-        ],
-        loc="lower right",
-        frameon=False,
-        ncol=2,
-    )
+    axb.set_xlabel("Total solving-side tokens (million)")
     clean_axes(axb, grid_axis="x")
     panel_label(axb, "(b)")
 
@@ -307,9 +281,8 @@ def make_fig4(agent_rows: list[dict[str, str]], framework_rows: list[dict[str, s
         x = num(row, "wall_total_sec") / 60 / int(row["passes"])
         yy = num(row, "cost_usd") / int(row["passes"])
         size = 30 + 11 * num(row, "cost_usd")
-        marker = "o" if row["series"] == "paper" else "s"
         color = COLORS[row["key"]]
-        axc.scatter(x, yy, s=size, marker=marker, facecolor=color, edgecolor="#222222", linewidth=0.8, alpha=0.95, zorder=3)
+        axc.scatter(x, yy, s=size, marker="o", facecolor=color, edgecolor="#222222", linewidth=0.8, alpha=0.95, zorder=3)
         label_x, label_y = agent_label_positions[row["key"]]
         axc.annotate(
             f"{row['short_label']}\n({row['passes']}/12)",
@@ -321,7 +294,6 @@ def make_fig4(agent_rows: list[dict[str, str]], framework_rows: list[dict[str, s
             color=color,
             va="center",
             bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.76, "pad": 0.4},
-            arrowprops={"arrowstyle": "-", "color": color, "lw": 0.55, "shrinkA": 2, "shrinkB": 3},
         )
     axc.set_xlim(5, 64)
     axc.set_ylim(0, 3.35)
@@ -344,10 +316,10 @@ def make_fig4(agent_rows: list[dict[str, str]], framework_rows: list[dict[str, s
     clean_axes(axd, grid_axis="x")
     panel_label(axd, "(d)")
 
-    axe.barh(fy, [num(r, "total_tokens_m") for r in framework_rows], color=LEGACY, edgecolor="#222222", linewidth=0.7, zorder=2)
+    axe.barh(fy, [num(r, "total_tokens_m") for r in framework_rows], color=CACHE, edgecolor="#222222", linewidth=0.7, zorder=2)
     axe.set_yticks(fy, [r["short_label"] for r in framework_rows])
     axe.invert_yaxis()
-    axe.set_xlabel("Solving-side tokens (million)")
+    axe.set_xlabel("Total solving-side tokens (million)")
     clean_axes(axe, grid_axis="x")
     panel_label(axe, "(e)")
 
@@ -385,7 +357,7 @@ def make_expert_optimization() -> None:
         "05": "tuned OMECo path search",
         "06": "TC-native jaxode",
         "07": "exact ancilla/branch reduction",
-        "08": "mapped sampling (not significant)",
+        "08": "bounded mapped sampling",
         "09": "causal-cone pruning",
         "10": "fixed contraction program",
         "11": "layer and onsite fusion",
@@ -406,9 +378,8 @@ def make_expert_optimization() -> None:
     panel_label(axa, "(a)")
 
     y = np.arange(len(tasks))
-    bar_colors = ["#D55E00" if t in {"03", "07"} else ("#FFFFFF" if t == "08" else PASS) for t in tasks]
+    bar_colors = ["#D55E00" if t in {"03", "07"} else PASS for t in tasks]
     bars = axb.barh(y, speedup, color=bar_colors, edgecolor="#222222", linewidth=0.75, zorder=2)
-    bars[tasks.index("08")].set_hatch("///")
     axb.axvline(1.0, color="#777777", ls=(0, (3, 3)), lw=0.9)
     axb.set_xscale("log")
     axb.set_xlim(0.9, 78)
@@ -424,7 +395,6 @@ def make_expert_optimization() -> None:
         handles=[
             Patch(facecolor=PASS, edgecolor="#222222", label="Framework-native optimization"),
             Patch(facecolor="#D55E00", edgecolor="#222222", label="Exact task reduction"),
-            Patch(facecolor="#FFFFFF", edgecolor="#222222", hatch="///", label="Not confirmed (Task 08)"),
         ],
         loc="lower right",
         frameon=False,

@@ -20,9 +20,15 @@ come from ORBIT-Q PRs #5, #6, #20, #21, and #23. Fig. 2b's new runtime ratios
 are recomputed against the original paper's public per-task expert
 TensorCircuit runtimes, over final passed tasks only.
 
+The original paper tables expose total token use for the legacy configurations
+but not the full cache/non-cache/output decomposition. Updated Fig. 4b/e
+therefore compare total tokens with one consistent color for every bar.
+
 Task 08 is final `F` for all five new solver configurations. Luna and Sol ultra
 retain raw reward `1` in `task_outcomes.csv`; `final_pass=0` records the
-paper-facing decision. Task 05 uses the legal TensorCircuit-native result from
+paper-facing decision. This solver-campaign adjudication is separate from the
+valid Task 08 human-expert optimization recorded in `expert_optimization.csv`.
+Task 05 uses the legal TensorCircuit-native result from
 [PR #19](https://github.com/sxzgroup/ORBIT-Q/pull/19): **1.939×** mean paired
 end-to-end speedup (median **1.668×**). The earlier custom no-QR MPS result is
 excluded.
