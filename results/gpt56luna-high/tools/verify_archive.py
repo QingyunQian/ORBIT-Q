@@ -35,6 +35,14 @@ def main() -> None:
         "static_policy_passes": 12,
         "audit_passes": 10,
     }
+    assert summary["final_adjudication"] == {
+        "passes": 9,
+        "passed_tasks": [2, 3, 5, 6, 7, 9, 10, 11, 12],
+        "failed_tasks": [1, 4, 8],
+        "overrides": {
+            "challenge-08": "The raw reward and audit pass are preserved, but final human expert adjudication marks the workaround noncompliant with the intended Task 08 contract."
+        },
+    }
     assert [row["challenge"] for row in rows if row["reward"] != 1] == [1, 4]
 
     for row in rows:

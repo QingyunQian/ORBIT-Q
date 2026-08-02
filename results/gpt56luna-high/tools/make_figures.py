@@ -32,7 +32,10 @@ TEXT = "#222222"
 
 plt.rcParams.update(
     {
-        "font.family": "DejaVu Sans",
+        "font.family": "sans-serif",
+        "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans", "sans-serif"],
+        "svg.fonttype": "none",
+        "pdf.fonttype": 42,
         "font.size": 10,
         "axes.titlesize": 11,
         "axes.labelsize": 10,
@@ -45,7 +48,9 @@ plt.rcParams.update(
 
 
 def save(fig: plt.Figure, stem: str) -> None:
-    fig.savefig(FIGS / f"{stem}.png", bbox_inches="tight", facecolor="white")
+    fig.savefig(FIGS / f"{stem}.png", dpi=300, bbox_inches="tight", facecolor="white")
+    fig.savefig(FIGS / f"{stem}.svg", bbox_inches="tight")
+    fig.savefig(FIGS / f"{stem}.pdf", bbox_inches="tight")
     plt.close(fig)
 
 
@@ -105,7 +110,8 @@ def resource_figure() -> None:
     noncache_tokens = np.maximum(input_tokens - cache_tokens, 0)
     output_tokens = np.array([row["n_output_tokens"] or 0 for row in rows])
     costs = np.array([row["cost_usd"] or 0 for row in rows])
-    passed = np.array([row["reward"] == 1 for row in rows])
+    final_passes = set(SUMMARY["final_adjudication"]["passed_tasks"])
+    passed = np.array([row["challenge"] in final_passes for row in rows])
 
     fig, axes = plt.subplots(1, 3, figsize=(13.2, 4.4), constrained_layout=True)
     ax0, ax1, ax2 = axes
@@ -189,9 +195,9 @@ def resource_figure() -> None:
     ax1.grid(axis="y", alpha=0.35)
 
     names = ["Sol high", "Sol ultra", "Terra high", "Luna high"]
-    valid = np.array([10, 11, 9, 10])
-    solve_per_valid = np.array([19.77, 16.62, 12385.907 / 60 / 9, wall_min.sum() / 10])
-    cost_per_valid = np.array([2.55, 2.73, 12.036862 / 9, costs.sum() / 10])
+    valid = np.array([10, 10, 9, 9])
+    solve_per_valid = np.array([19.77, 18.28, 12385.907 / 60 / 9, wall_min.sum() / 9])
+    cost_per_valid = np.array([2.55, 3.00, 12.036862 / 9, costs.sum() / 9])
     total_cost = np.array([25.527418, 30.02, 12.036862, costs.sum()])
     bubble_colors = [BLUE, ORANGE, GREEN, PURPLE]
     ax2.scatter(
@@ -203,26 +209,43 @@ def resource_figure() -> None:
         linewidth=0.9,
         zorder=3,
     )
-    offsets = [(28, -26), (28, 10), (-92, 10), (-72, 12)]
-    for name, count, xval, yval, color, offset in zip(
-        names, valid, solve_per_valid, cost_per_valid, bubble_colors, offsets
+    label_positions = [(20.8, 2.42), (20.1, 3.17), (20.0, 1.72), (24.4, 0.66)]
+    label_alignments = ["left", "left", "left", "left"]
+    for name, count, xval, yval, color, label_xy, alignment in zip(
+        names,
+        valid,
+        solve_per_valid,
+        cost_per_valid,
+        bubble_colors,
+        label_positions,
+        label_alignments,
     ):
         ax2.annotate(
             f"{name}\n({count}/12)",
             (xval, yval),
-            xytext=offset,
-            textcoords="offset points",
+            xytext=label_xy,
+            textcoords="data",
             color=color,
             weight="bold",
             fontsize=9,
+            ha=alignment,
+            va="top",
+            zorder=4,
+            arrowprops={
+                "arrowstyle": "-",
+                "color": color,
+                "linewidth": 0.7,
+                "shrinkA": 2,
+                "shrinkB": 5,
+            },
         )
-    ax2.set_xlim(15.5, 25.8)
-    ax2.set_ylim(0.0, 3.05)
+    ax2.set_xlim(15.5, 28.5)
+    ax2.set_ylim(0.0, 3.25)
     ax2.set_xlabel("Solve time per valid solution (min)")
     ax2.set_ylabel("Recorded cost per valid solution (USD)")
     ax2.set_title("Configuration-level resource efficiency", loc="left")
     ax2.text(-0.14, 1.08, "(c)", transform=ax2.transAxes, fontsize=15, weight="bold")
-    ax2.text(0.98, 0.04, "Marker area proportional to total recorded cost", transform=ax2.transAxes, ha="right", fontsize=8)
+    ax2.text(0.98, 0.03, "Marker area proportional to total recorded cost", transform=ax2.transAxes, ha="right", fontsize=8)
     ax2.grid(alpha=0.35)
 
     fig.suptitle("GPT-5.6 Luna high agent-side resource use", fontsize=14, weight="bold")

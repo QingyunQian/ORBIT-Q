@@ -147,6 +147,14 @@ def main() -> None:
             "static_policy_passes": sum(row["static_policy_score"] == 1 for row in task_rows),
             "audit_passes": sum(row["llm_audit_score"] == 1 for row in task_rows),
         },
+        "final_adjudication": {
+            "passes": 9,
+            "passed_tasks": [2, 3, 5, 6, 7, 9, 10, 11, 12],
+            "failed_tasks": [1, 4, 8],
+            "overrides": {
+                "challenge-08": "The raw reward and audit pass are preserved, but final human expert adjudication marks the workaround noncompliant with the intended Task 08 contract."
+            },
+        },
         "runtime": {
             "measured_tasks": len(measured),
             "total_sec": round(sum(measured), 2),
@@ -164,6 +172,7 @@ def main() -> None:
             "challenge-01-r1": "terminal solver transport failure; no valid model outcome",
         },
         "notes": {
+            "challenge-08": "Raw verifier reward=1 is preserved; final expert-adjudicated validity is fail.",
             "challenge-11": "The agent reached its 1,800-second limit after writing the candidate; Harbor still verified that candidate and awarded reward 1.",
             "runtime": "runtime_score is retained for reporting and does not multiply the pass reward.",
         },

@@ -6,11 +6,12 @@ Sol/high performed the independent source audit.
 
 ## Headline
 
-- Final raw validity: **10 / 12**
+- Final adjudicated validity: **9 / 12**
+- Raw verifier rewards: **10 / 12**
 - Functional checks: **12 / 12**
 - Static policy checks: **12 / 12**
 - Sol/high audit checks: **10 / 12**
-- Valid failures: challenges **01 and 04**
+- Final failures: challenges **01, 04, and 08**
 
 ![Luna/high outcomes](figs/gpt56luna-high-outcomes.png)
 
@@ -50,17 +51,20 @@ No task was rerun after receiving a valid pass or valid model failure.
 | 05 | 1.0 | 1.0 | 1.0 | 1.0 | 0.0 | 313.09 | Pass |
 | 06 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 20.47 | Pass |
 | 07 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 170.18 | Pass |
-| 08 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 53.18 | Pass |
+| 08 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 53.18 | **Fail‡** |
 | 09 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 89.42 | Pass |
 | 10 | 1.0 | 1.0 | 1.0 | 1.0 | 0.0 | 436.64 | Pass |
 | 11 | 1.0 | 1.0 | 1.0 | 1.0 | 0.0 | 319.79 | Pass† |
 | 12 | 1.0 | 1.0 | 1.0 | 1.0 | 1.0 | 19.34 | Pass |
-| **Total** | **10 / 12** | **12 / 12** | **12 / 12** | **10 / 12** | **9 / 12** | **1,470.39** | **10 / 12** |
+| **Total** | **10 / 12** | **12 / 12** | **12 / 12** | **10 / 12** | **9 / 12** | **1,470.39** | **9 / 12** |
 
 † Luna reached the 1,800-second Agent limit after writing the Task 11
 candidate. Harbor subsequently ran the normal verifier on that artifact and
 awarded reward 1. Runtime score is retained for compatibility and reporting;
 under the current ORBIT-Q formula it does not multiply the pass reward.
+
+‡ The raw Task 08 reward and audit pass are preserved for provenance, but final
+human expert adjudication marks the workaround invalid.
 
 ## What failed
 
@@ -72,31 +76,23 @@ under the current ORBIT-Q formula it does not multiply the pass reward.
   evolution and differentiation were implemented as a custom JAX
   Pauli-transfer simulator. TensorCircuit was used only for peripheral gate and
   tensor construction, so the audit rejected it as a framework bypass.
+- **Challenge 08:** the raw verifier accepted the correlated antithetic-sample
+  workaround, but final human expert review judged it noncompliant with the
+  intended Task 08 sampling contract.
 
 ## Comparison and Task 08 finding
 
 | Solver setting | Valid solutions | Failed challenges |
 |---|---:|---|
 | GPT-5.6 Sol high | 10 / 12 | 01, 08 |
-| GPT-5.6 Sol ultra | 11 / 12 | 01 |
+| GPT-5.6 Sol ultra | 10 / 12 | 01, 08 |
 | GPT-5.6 Terra high | 9 / 12 | 01, 08, 10 |
-| **GPT-5.6 Luna high** | **10 / 12** | **01, 04** |
+| **GPT-5.6 Luna high** | **9 / 12** | **01, 04, 08** |
 
-Luna passes challenges 08 and 10, which Terra did not, but loses challenge 04.
-Task 08 should not be read as a wholly new computational breakthrough over Sol
-high: both Sol/high and Luna used OMECo with JIT-vectorized TensorCircuit
-`perfect_sampling` and finished in approximately 55 seconds. Sol/high's Sobol
-quasi-samples passed every functional check but were rejected as correlated
-evaluator-oriented variance reduction. Luna's antithetic uniform pairs are also
-correlated, yet the independent audit accepted them as legitimate because each
-row remains marginally uniform. The published task does not explicitly require
-IID rows, and Sol/ultra's accepted MCMC sampler is correlated as well. This is a
-concrete audit-consistency issue to preserve for any final adjudication.
-
-Terra's Task 08 outcome differs for another reason: it benchmarked a small,
-largely unvectorized direct sampling path and extrapolated first-call overhead
-per shot. It did not reach the batched `jit(vmap(perfect_sampling))` path used by
-Sol/high and Luna.
+Luna passes challenge 10, which Terra did not, but loses challenge 04. Under the
+final expert adjudication, all four displayed solver settings fail Task 08.
+Their raw failure mechanisms differ, but none is counted as a compliant final
+solution.
 
 ## Resource record
 
@@ -107,7 +103,7 @@ Sol/high and Luna.
 - Output tokens: 0.357 million
 - Total solving-side tokens: 74.853 million
 - Recorded solver cost: USD 2.24
-- Recorded cost per valid solution: USD 0.22
+- Recorded cost per valid solution: USD 0.25
 
 These are Harbor's recorded service fields. They describe this single run and
 do not establish hardware-independent or provider-independent efficiency.

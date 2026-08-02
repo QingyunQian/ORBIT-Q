@@ -24,6 +24,14 @@
     "static_policy_passes": 12,
     "audit_passes": 10
   },
+  "final_adjudication": {
+    "passes": 9,
+    "passed_tasks": [2, 3, 5, 6, 7, 9, 10, 11, 12],
+    "failed_tasks": [1, 4, 8],
+    "overrides": {
+      "challenge-08": "The raw reward and audit pass are preserved, but final human expert adjudication marks the workaround noncompliant with the intended Task 08 contract."
+    }
+  },
   "runtime": {
     "measured_tasks": 12,
     "total_sec": 1470.39,
@@ -366,6 +374,7 @@
     "challenge-01-r1": "terminal solver transport failure; no valid model outcome"
   },
   "notes": {
+    "challenge-08": "Raw verifier reward=1 is preserved; final expert-adjudicated validity is fail.",
     "challenge-11": "The agent reached its 1,800-second limit after writing the candidate; Harbor still verified that candidate and awarded reward 1.",
     "runtime": "runtime_score is retained for reporting and does not multiply the pass reward."
   }
