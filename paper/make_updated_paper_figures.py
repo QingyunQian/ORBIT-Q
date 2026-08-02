@@ -98,9 +98,7 @@ def panel_label(ax: mpl.axes.Axes, label: str) -> None:
 
 def save_all(fig: mpl.figure.Figure, stem: str) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
-    fig.savefig(OUT / f"{stem}.svg", bbox_inches="tight")
     fig.savefig(OUT / f"{stem}.pdf", bbox_inches="tight")
-    fig.savefig(OUT / f"{stem}.png", dpi=320, bbox_inches="tight")
     plt.close(fig)
 
 
@@ -293,7 +291,6 @@ def make_fig4(agent_rows: list[dict[str, str]], framework_rows: list[dict[str, s
             fontweight="bold",
             color=color,
             va="center",
-            bbox={"facecolor": "white", "edgecolor": "none", "alpha": 0.76, "pad": 0.4},
         )
     axc.set_xlim(5, 64)
     axc.set_ylim(0, 3.35)

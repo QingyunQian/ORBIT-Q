@@ -16,6 +16,6 @@ The paper update follows the visual and metric contracts of
 5. Fable 5 and DeepSeek max are excluded. Task 08 is failed for all five new
    solver configurations after final human review.
 
-SVG and PDF are the publication deliverables. PNG is a visual-QA preview.
+Vector PDF is the sole publication deliverable.
 Agent wall time, token use, artifact-runtime ratio, and expert-implementation
 speedup remain separate quantities.
