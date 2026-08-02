@@ -201,10 +201,28 @@ def resource_figure() -> None:
     ax1.grid(axis="y", alpha=0.35)
 
     names = ["Sol high", "Sol ultra", "Terra high", "Luna high", "DeepSeek high", "DeepSeek max"]
-    valid = np.array([10, 11, 9, 10, 5, 5])
-    solve_per_valid = np.array([19.77, 16.62, 12385.907 / 60 / 9, 14362.147 / 60 / 10, 17424.726 / 60 / 5, wall_min.sum() / 5])
-    cost_per_valid = np.array([2.55, 2.73, 12.036862 / 9, 2.236872 / 10, 0.572672 / 5, costs.sum() / 5])
-    total_cost = np.array([25.527418, 30.02, 12.036862, 2.236872, 0.572672, costs.sum()])
+    valid = np.array([10, 10, 9, 9, 5, 5])
+    solve_per_valid = np.array(
+        [
+            19.77,
+            18.279595,
+            12385.907 / 60 / 9,
+            14362.147 / 60 / 9,
+            17424.726 / 60 / 5,
+            wall_min.sum() / 5,
+        ]
+    )
+    cost_per_valid = np.array(
+        [
+            2.55,
+            30.019293 / 10,
+            12.036862 / 9,
+            2.236872 / 9,
+            0.572672 / 5,
+            costs.sum() / 5,
+        ]
+    )
+    total_cost = np.array([25.527418, 30.019293, 12.036862, 2.236872, 0.572672, costs.sum()])
     bubble_colors = [BLUE, ORANGE, GREEN, PURPLE, GRAY, RED]
     ax2.scatter(
         solve_per_valid,
@@ -216,10 +234,10 @@ def resource_figure() -> None:
         zorder=3,
     )
     label_positions = [
-        (25.0, 2.42),
-        (22.2, 3.12),
-        (14.2, 1.64),
-        (14.2, 0.48),
+        (23.0, 2.48),
+        (24.0, 3.17),
+        (15.8, 1.68),
+        (18.2, 0.58),
         (52.0, 0.42),
         (36.0, 0.42),
     ]
@@ -244,7 +262,7 @@ def resource_figure() -> None:
                 "shrinkB": 5,
             },
         )
-    ax2.set_xlim(12.5, max(65.0, solve_per_valid.max() * 1.08))
+    ax2.set_xlim(14.5, max(65.0, solve_per_valid.max() * 1.08))
     ax2.set_ylim(-0.05, 3.25)
     ax2.set_xlabel("Solve time per valid solution (min)")
     ax2.set_ylabel("Recorded cost per valid solution (USD)")

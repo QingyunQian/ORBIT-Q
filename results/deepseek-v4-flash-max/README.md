@@ -74,9 +74,9 @@ All first attempts were valid non-infrastructure outcomes; no task was rerun.
 | Solver setting | Valid solutions | Failed challenges |
 |---|---:|---|
 | GPT-5.6 Sol high | 10 / 12 | 01, 08 |
-| GPT-5.6 Sol ultra | 11 / 12 | 01 |
+| GPT-5.6 Sol ultra | 10 / 12 | 01, 08 |
 | GPT-5.6 Terra high | 9 / 12 | 01, 08, 10 |
-| GPT-5.6 Luna high | 10 / 12 | 01, 04 |
+| GPT-5.6 Luna high | 9 / 12 | 01, 04, 08 |
 | DeepSeek V4 Flash high | 5 / 12 | 01, 02, 06, 07, 08, 09, 11 |
 | **DeepSeek V4 Flash max** | **5 / 12** | **01, 03, 04, 06, 07, 08, 11** |
 
