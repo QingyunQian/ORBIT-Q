@@ -160,7 +160,17 @@ def make_fig1c(agent_rows: list[dict[str, str]], framework_rows: list[dict[str, 
     for i, label in enumerate(row_labels):
         ax.text(-0.08, i + 0.50, label, ha="right", va="center", fontsize=9.5)
 
-    labels = ["GPT-5.5", "Opus-4.8", "GLM-5.2", "Sonnet-4.6", "Sol\nhigh", "Sol\nultra", "Terra\nhigh", "Luna\nhigh", "DeepSeek\nhigh"]
+    labels = [
+        "GPT-5.5",
+        "Opus-4.8",
+        "GLM-5.2",
+        "Sonnet-4.6",
+        "5.6 Sol\n(high)",
+        "5.6 Sol\n(ultra)",
+        "5.6 Terra\n(high)",
+        "5.6 Luna\n(high)",
+        "DeepSeek\nV4 Flash\n(high)",
+    ]
     for j, label in enumerate(labels):
         ax.text(j + 0.50, -0.02, label, ha="center", va="bottom", fontsize=7.7)
 
