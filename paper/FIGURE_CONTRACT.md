@@ -16,6 +16,7 @@ The paper update follows the visual and metric contracts of
 5. Fable 5 and DeepSeek max are excluded. Task 08 is failed for all five new
    solver configurations after final human review.
 
-Vector PDF is the sole publication deliverable.
+Vector PDF is the publication deliverable; PNG copies are non-publication
+previews for inline GitHub/PR display only.
 Agent wall time, token use, artifact-runtime ratio, and expert-implementation
 speedup remain separate quantities.

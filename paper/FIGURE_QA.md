@@ -3,10 +3,11 @@
 Date: 2026-08-03
 
 - Four figures were regenerated from tracked CSV sources with matplotlib.
-- Each figure was exported as vector PDF only.
-- SVG, PNG, and TIFF are intentionally omitted because the requested master
-  files are PDF and every panel is line art.
-- The generic figure preflight therefore reports missing SVG/raster exports;
+- Each figure was exported as a vector PDF manuscript master and a matched
+  300-dpi PNG used only for inline GitHub/PR preview.
+- SVG and TIFF are intentionally omitted because every panel is line art and
+  PDF remains the publication master.
+- The generic figure preflight therefore reports missing SVG/TIFF exports;
   these are accepted format-contract exceptions, not missing deliverables.
 - PDF output uses embedded TrueType fonts and contains no raster image object.
 - Temporary Python-rendered QA previews were inspected at full resolution for

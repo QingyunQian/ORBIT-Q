@@ -30,5 +30,7 @@ paper-facing decision. This solver-campaign adjudication is separate from the
 valid Task 08 human-expert optimization recorded in `expert_optimization.csv`.
 Task 05 uses the legal TensorCircuit-native result from
 [PR #19](https://github.com/sxzgroup/ORBIT-Q/pull/19): **1.939×** mean paired
-end-to-end speedup (median **1.668×**). The earlier custom no-QR MPS result is
-excluded.
+end-to-end speedup (median **1.668×**). This is the mean of the five paired
+expert/candidate ratios; one `180.22 s` expert-reference long tail raises it,
+and the four-pair sensitivity mean is **1.639×**. The candidate won 5/5 pairs.
+The earlier custom no-QR MPS result is excluded.

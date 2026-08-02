@@ -3,7 +3,8 @@
 This directory provides paper-ready updates to Fig. 1c, Fig. 2b, and Fig. 4
 of [arXiv:2607.03105](https://arxiv.org/abs/2607.03105), plus one new summary
 figure for AI-assisted optimization of the 12 human-expert implementations.
-All figure deliverables are vector PDF.
+The manuscript masters are vector PDF; matched PNG files are included only for
+inline GitHub/PR previews.
 Fable 5 and DeepSeek max are intentionally excluded.
 
 ## Updated Fig. 1c — agent–framework benchmark matrix
@@ -50,7 +51,13 @@ retained after ablation. The largest result is the exact Task 07 reduction
 small **1.04×** paired point estimate.
 This concerns the optimized human-expert implementation and is separate from
 the Task 08 benchmark adjudication for the five solver campaigns above.
-The legal TensorCircuit-native Task 05 result is used (**1.94× mean paired**).
+The legal TensorCircuit-native Task 05 result is used (**1.939× mean paired**).
+This is the arithmetic mean of five paired public-expert/final-candidate runtime
+ratios, not the ratio of the two reported mean runtimes. The candidate won all
+five pairs; the median is **1.668×**. One `180.22 s` expert-reference long tail
+raises the mean, while the four-pair sensitivity mean is **1.639×**. The direct
+ablation attributes **1.420×** to the retained OMECo `4×4` path-search budget;
+gate fusion alone remains unresolved.
 
 Individual factor-removal plots remain available as supplementary evidence:
 

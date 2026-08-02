@@ -99,6 +99,7 @@ def panel_label(ax: mpl.axes.Axes, label: str) -> None:
 def save_all(fig: mpl.figure.Figure, stem: str) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     fig.savefig(OUT / f"{stem}.pdf", bbox_inches="tight")
+    fig.savefig(OUT / f"{stem}.png", dpi=300, bbox_inches="tight")
     plt.close(fig)
 
 
