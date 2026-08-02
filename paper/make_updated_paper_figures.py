@@ -323,7 +323,7 @@ def make_fig4(agent_rows: list[dict[str, str]], framework_rows: list[dict[str, s
     clean_axes(axe, grid_axis="x")
     panel_label(axe, "(e)")
 
-    foffsets = {"tensorcircuit": (8, 6), "pennylane": (8, 5), "torchquantum": (-48, 8), "mindquantum": (-48, -13)}
+    foffsets = {"tensorcircuit": (8, 6), "pennylane": (8, 5), "torchquantum": (-48, -13), "mindquantum": (-48, 8)}
     for row in framework_rows:
         x = num(row, "wall_total_sec") / 60 / int(row["passes"])
         yy = num(row, "cost_usd") / int(row["passes"])
