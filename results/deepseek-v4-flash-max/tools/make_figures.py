@@ -33,7 +33,10 @@ TEXT = "#222222"
 
 plt.rcParams.update(
     {
-        "font.family": "DejaVu Sans",
+        "font.family": "sans-serif",
+        "font.sans-serif": ["Arial", "Helvetica", "DejaVu Sans", "sans-serif"],
+        "svg.fonttype": "none",
+        "pdf.fonttype": 42,
         "font.size": 10,
         "axes.titlesize": 11,
         "axes.labelsize": 10,
@@ -46,7 +49,15 @@ plt.rcParams.update(
 
 
 def save(fig: plt.Figure, stem: str) -> None:
-    fig.savefig(FIGS / f"{stem}.png", bbox_inches="tight", facecolor="white")
+    fig.savefig(
+        FIGS / f"{stem}.png",
+        dpi=300,
+        bbox_inches="tight",
+        pad_inches=0.08,
+        facecolor="white",
+    )
+    fig.savefig(FIGS / f"{stem}.svg", bbox_inches="tight", pad_inches=0.08)
+    fig.savefig(FIGS / f"{stem}.pdf", bbox_inches="tight", pad_inches=0.08)
     plt.close(fig)
 
 
@@ -204,26 +215,49 @@ def resource_figure() -> None:
         linewidth=0.9,
         zorder=3,
     )
-    offsets = [(28, -26), (28, 10), (-92, 10), (-72, 12), (-20, 18), (-110, 18)]
-    for name, count, xval, yval, color, offset in zip(
-        names, valid, solve_per_valid, cost_per_valid, bubble_colors, offsets
+    label_positions = [
+        (25.0, 2.42),
+        (22.2, 3.12),
+        (14.2, 1.64),
+        (14.2, 0.48),
+        (52.0, 0.42),
+        (36.0, 0.42),
+    ]
+    for name, count, xval, yval, color, label_xy in zip(
+        names, valid, solve_per_valid, cost_per_valid, bubble_colors, label_positions
     ):
         ax2.annotate(
             f"{name}\n({count}/12)",
             (xval, yval),
-            xytext=offset,
-            textcoords="offset points",
+            xytext=label_xy,
+            textcoords="data",
             color=color,
             weight="bold",
             fontsize=9,
+            ha="left",
+            va="top",
+            arrowprops={
+                "arrowstyle": "-",
+                "color": color,
+                "linewidth": 0.7,
+                "shrinkA": 2,
+                "shrinkB": 5,
+            },
         )
-    ax2.set_xlim(15.5, max(65.0, solve_per_valid.max() * 1.08))
-    ax2.set_ylim(0.0, 3.05)
+    ax2.set_xlim(12.5, max(65.0, solve_per_valid.max() * 1.08))
+    ax2.set_ylim(-0.05, 3.25)
     ax2.set_xlabel("Solve time per valid solution (min)")
     ax2.set_ylabel("Recorded cost per valid solution (USD)")
     ax2.set_title("Configuration-level resource efficiency", loc="left")
     ax2.text(-0.14, 1.08, "(c)", transform=ax2.transAxes, fontsize=15, weight="bold")
-    ax2.text(0.98, 0.90, "Marker area proportional to total recorded cost", transform=ax2.transAxes, ha="right", fontsize=8)
+    ax2.text(
+        0.98,
+        0.91,
+        "Marker area proportional to total recorded cost",
+        transform=ax2.transAxes,
+        ha="right",
+        fontsize=8,
+    )
     ax2.grid(alpha=0.35)
 
     fig.suptitle("DeepSeek V4 Flash max agent-side resource use", fontsize=14, weight="bold")
