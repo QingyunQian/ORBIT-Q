@@ -1,0 +1,5 @@
+{
+  "classification": "valid_model_tool_use_failure",
+  "signal": "SIGTERM / exit 143",
+  "evidence": "Grok issued pkill -f \"train\\(params0\\)\" followed by pkill -f \"jax\"; the broad JAX match killed its own agent chain."
+}

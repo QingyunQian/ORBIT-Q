@@ -1,0 +1,5 @@
+{
+  "classification": "valid_model_tool_use_failure",
+  "signal": "SIGTERM / exit 143",
+  "evidence": "Grok issued pkill -f 'python', matching its own agent wrapper/proxy chain."
+}

@@ -1,0 +1,49 @@
+{
+    "task": {
+        "path": "/Users/qqy/Desktop/2026Project/ORBIT-Q/jobs/grok-4.5-high-solaudit-20260806-valid/challenge-12"
+    },
+    "trial_name": "challenge-12__LXJ9a5n",
+    "trials_dir": "/Users/qqy/Desktop/2026Project/ORBIT-Q/jobs/grok-4.5-high-solaudit-20260806-valid/jobs/challenge-12-tensorcircuit-grok-4.5-high-20260806-r1",
+    "agent": {
+        "import_path": "adapters.xai_codex_para:XAICodexPara",
+        "model_name": "grok-4.5",
+        "kwargs": {
+            "reasoning_effort": "high",
+            "profile": "grok45",
+            "profile_config_path": "/Users/qqy/Desktop/2026Project/ORBIT-Q-grok45-high/results/grok-4.5-high/grok-4.5.config.toml",
+            "model_catalog_path": "/Users/qqy/Desktop/2026Project/ORBIT-Q-grok45-high/results/grok-4.5-high/grok-4.5-models.json",
+            "responses_proxy_path": "/Users/qqy/Desktop/2026Project/ORBIT-Q-grok45-high/tools/xai_responses_proxy.py",
+            "force_auth_json": false
+        },
+        "env": {
+            "HTTP_PROXY": "http://172.17.0.1:7892",
+            "HTTPS_PROXY": "http://172.17.0.1:7892",
+            "NO_PROXY": "localhost,127.0.0.1"
+        }
+    },
+    "environment": {
+        "import_path": "adapters.framework_docker:FrameworkDockerEnvironment",
+        "kwargs": {
+            "framework": "tensorcircuit",
+            "docker_image": "challenge-benchmark-quantum-tensorcircuit:py311"
+        }
+    },
+    "verifier": {
+        "env": {
+            "REQUIRED_QUANTUM_FRAMEWORK": "tensorcircuit",
+            "HTTP_PROXY": "http://172.17.0.1:7892",
+            "HTTPS_PROXY": "http://172.17.0.1:7892",
+            "NO_PROXY": "localhost,127.0.0.1"
+        },
+        "import_path": "adapters.codex_para_verifier:CodexParaVerifier",
+        "kwargs": {
+            "audit_model": "gpt-5.6-sol",
+            "force_auth_json": true,
+            "profile_config_path": "/Users/qqy/Desktop/2026Project/ORBIT-Q-grok45-high/results/grok-4.5-high/audit-high.config.toml"
+        }
+    },
+    "extra_instruction_paths": [
+        "/Users/qqy/Desktop/2026Project/ORBIT-Q-grok45-high/prompts/frameworks/tensorcircuit.md"
+    ],
+    "job_id": "5f782c34-f487-4e26-843c-4b9009a786aa"
+}
