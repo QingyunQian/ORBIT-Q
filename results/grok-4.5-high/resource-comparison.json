@@ -11,6 +11,6 @@
     {"label": "Terra high", "passes": 9, "agent_wall_sec": 12385.907, "total_tokens": 36803664, "source": "results/gpt56terra-high/summary.json"},
     {"label": "Luna high", "passes": 9, "agent_wall_sec": 14362.147, "total_tokens": 74852649, "source": "results/gpt56luna-high/summary.json; Task 08 removed by final human review"},
     {"label": "DeepSeek high", "passes": 5, "agent_wall_sec": 17424.726, "total_tokens": 81584990, "source": "results/deepseek-v4-flash-high/summary.json"},
-    {"label": "Grok 4.5 high", "passes": 9, "agent_wall_sec": null, "total_tokens": null, "source": "this archive; populated from summary.json by the figure script"}
+    {"label": "Grok 4.5 high", "passes": 8, "agent_wall_sec": null, "total_tokens": null, "source": "this archive; populated from summary.json by the figure script"}
   ]
 }

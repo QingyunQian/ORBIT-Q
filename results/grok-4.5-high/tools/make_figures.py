@@ -168,12 +168,12 @@ def resource_figure() -> None:
         linewidth=0.9, zorder=3,
     )
     label_positions = [
-        (24.0, 2.05),
-        (15.2, 1.25),
-        (26.0, 3.35),
+        (23.0, 2.75),
+        (15.0, 2.35),
+        (26.2, 4.20),
         (30.7, 7.10),
         (51.0, 17.25),
-        (14.5, 5.55),
+        (21.8, 1.45),
     ]
     for run, color, position in zip(resource_runs, COLORS, label_positions):
         ax2.text(
@@ -181,7 +181,7 @@ def resource_figure() -> None:
             color=color, weight="bold", fontsize=8, ha="left", va="center",
         )
     ax2.set_xlim(14.0, 65.0)
-    ax2.set_ylim(1.0, 18.0)
+    ax2.set_ylim(0.3, 18.0)
     ax2.set_xlabel("Agent time per valid solution (min)")
     ax2.set_ylabel("Solver tokens per valid solution (million)")
     ax2.set_title("Configuration-level resource use", loc="left")

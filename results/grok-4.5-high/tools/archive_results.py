@@ -16,10 +16,20 @@ CAMPAIGN = Path(
     "grok-4.5-high-solaudit-20260806-valid"
 )
 ATTEMPTS = {
-    1: "r1", 2: "r1", 3: "r1", 4: "r1", 5: "r1", 6: "r2",
+    1: "r2", 2: "r2", 3: "r2", 4: "r2", 5: "r2", 6: "r2",
     7: "r3", 8: "r1", 9: "r1", 10: "r1", 11: "r1", 12: "r1",
 }
-SELF_TERMINATIONS = {
+MODEL_FAILURES = {
+    1: {
+        "classification": "valid_model_timeout_failure",
+        "signal": "AgentTimeoutError / 1,800-second limit",
+        "evidence": "Grok reached the 1,800-second Agent limit before creating solution_1.py.",
+    },
+    4: {
+        "classification": "valid_model_timeout_failure",
+        "signal": "AgentTimeoutError / 1,800-second limit",
+        "evidence": "Grok reached the 1,800-second Agent limit before creating solution_4.py.",
+    },
     8: {
         "classification": "valid_model_tool_use_failure",
         "signal": "SIGTERM / exit 143",
@@ -92,6 +102,8 @@ def main() -> None:
     for task in range(1, 13):
         job, trial = selected_trial(task)
         challenge_out = OUT / f"challenge-{task:02d}"
+        if challenge_out.exists():
+            shutil.rmtree(challenge_out)
         challenge_out.mkdir(parents=True, exist_ok=True)
         solution = trial / "artifacts" / "root" / f"solution_{task}.py"
 
@@ -122,7 +134,7 @@ def main() -> None:
         agent_result = result.get("agent_result") or {}
         agent_interval = result.get("agent_execution") or {}
         exception = result.get("exception_info") or {}
-        failure = SELF_TERMINATIONS.get(task)
+        failure = MODEL_FAILURES.get(task)
         stamp = {
             "challenge": task,
             "selected_attempt": ATTEMPTS[task],
@@ -202,19 +214,20 @@ def main() -> None:
         },
         "tasks": task_rows,
         "excluded_attempts": {
+            "challenge-01-r1": "pre-repair compatibility-protocol outcome; excluded from normalized final selection",
+            "challenge-02-r1": "pre-repair compatibility-protocol outcome; excluded from normalized final selection",
+            "challenge-03-r1": "pre-repair compatibility-protocol outcome; excluded from normalized final selection",
+            "challenge-04-r1": "pre-repair compatibility-protocol outcome; excluded from normalized final selection",
+            "challenge-05-r1": "pre-repair compatibility-protocol outcome; excluded from normalized final selection",
             "challenge-06-r1": "xAI/Codex integer tool-argument compatibility failure",
             "challenge-07-r1": "interrupted during compatibility diagnosis",
             "challenge-07-r2": "interrupted during compatibility diagnosis",
         },
         "notes": {
-            "challenge_04": (
-                "The candidate passed functional checks but used a 281-line custom NumPy "
-                "Pauli-transfer-matrix simulator for the core computation. Static policy and "
-                "semantic audit rejected the framework bypass after the solver reached its "
-                "1,800-second Agent limit."
-            ),
-            "challenge_08": SELF_TERMINATIONS[8]["evidence"],
-            "challenge_11": SELF_TERMINATIONS[11]["evidence"],
+            "challenge_01": MODEL_FAILURES[1]["evidence"],
+            "challenge_04": MODEL_FAILURES[4]["evidence"],
+            "challenge_08": MODEL_FAILURES[8]["evidence"],
+            "challenge_11": MODEL_FAILURES[11]["evidence"],
             "runtime": "runtime_score is retained for reporting and does not multiply the pass reward.",
         },
     }

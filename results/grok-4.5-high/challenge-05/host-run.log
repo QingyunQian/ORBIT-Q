@@ -1,7 +1,7 @@
 --agent-import-path is deprecated; use --agent instead.
 --environment-import-path is deprecated; use --env instead.
 --verifier-import-path is deprecated; use --verifier instead.
-  1/1 Framework_Score: 1.000 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:24:49 0:00:00
+  1/1 Framework_Score: 1.000 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:09:45 0:00:00
 adhoc • codex • grok-4.5
 ┏━━┳━━┳━━┳━━┳━━┳━━┳━━┳━━┳━━┳━━┳━━┳━━┳━━┳━━┳━━┳━━┳━━┳━━┳━━━┳━━┳━━━┳━━┳━━━┳━━┳━━━┓
 ┃  ┃  ┃  ┃  ┃  ┃  ┃  ┃  ┃  ┃  ┃  ┃  ┃  ┃  ┃  ┃  ┃  ┃  ┃ … ┃  ┃ … ┃  ┃ … ┃  ┃ … ┃
@@ -9,43 +9,43 @@ adhoc • codex • grok-4.5
 │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │  │ … │  │ … │  │ … │  │ … │
 └──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴───┴──┴───┴──┴───┴──┴───┘
 
-┏━━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
-┃ Reward             ┃ Count ┃
-┡━━━━━━━━━━━━━━━━━━━━╇━━━━━━━┩
-│ 5                  │     1 │
-│ 1.0                │     1 │
-│ 1.0                │     1 │
-│ 0.9971666666666666 │     1 │
-│ 180.34             │     1 │
-│ 1.0                │     1 │
-│ 1.0                │     1 │
-│ 1.0                │     1 │
-│ 1.0                │     1 │
-│ 1.0                │     1 │
-│ 1.0                │     1 │
-│ 1.0                │     1 │
-│ 1.0                │     1 │
-│ 1.0                │     1 │
-│ 1.0                │     1 │
-│ 1.0                │     1 │
-│ 1.0                │     1 │
-│ 1.0                │     1 │
-│ 1.0                │     1 │
-│ 1.0                │     1 │
-│ 1.0                │     1 │
-│ 1.0                │     1 │
-│ 1.0                │     1 │
-└────────────────────┴───────┘
+┏━━━━━━━━┳━━━━━━━┓
+┃ Reward ┃ Count ┃
+┡━━━━━━━━╇━━━━━━━┩
+│ 5      │     1 │
+│ 1.0    │     1 │
+│ 1.0    │     1 │
+│ 1.0    │     1 │
+│ 94.38  │     1 │
+│ 1.0    │     1 │
+│ 1.0    │     1 │
+│ 1.0    │     1 │
+│ 1.0    │     1 │
+│ 1.0    │     1 │
+│ 1.0    │     1 │
+│ 1.0    │     1 │
+│ 1.0    │     1 │
+│ 1.0    │     1 │
+│ 1.0    │     1 │
+│ 1.0    │     1 │
+│ 1.0    │     1 │
+│ 1.0    │     1 │
+│ 1.0    │     1 │
+│ 1.0    │     1 │
+│ 1.0    │     1 │
+│ 1.0    │     1 │
+│ 1.0    │     1 │
+└────────┴───────┘
 
 Job Info
-Total runtime: 24m 49s
+Total runtime: 9m 45s
 Results written to 
 /Users/qqy/Desktop/2026Project/ORBIT-Q/jobs/grok-4.5-high-solaudit-20260806-vali
-d/jobs/challenge-05-tensorcircuit-grok-4.5-high-20260806-r1/result.json
+d/jobs/challenge-05-tensorcircuit-grok-4.5-high-20260806-r2/result.json
 Inspect results by running `harbor view 
 /Users/qqy/Desktop/2026Project/ORBIT-Q/jobs/grok-4.5-high-solaudit-20260806-vali
 d/jobs`
 Share results by running `harbor upload 
 /Users/qqy/Desktop/2026Project/ORBIT-Q/jobs/grok-4.5-high-solaudit-20260806-vali
-d/jobs/challenge-05-tensorcircuit-grok-4.5-high-20260806-r1`
+d/jobs/challenge-05-tensorcircuit-grok-4.5-high-20260806-r2`
 

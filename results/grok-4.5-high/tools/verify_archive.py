@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 EXPECTED_BASE = "0201238ec2983907e2891f5319f5fff2d00844d5"
 EXPECTED_TASK_SHA = "19fe27b83eaf668b3df32d1a68902b08cbe28585f189290769018eb16d927895"
 EXPECTED_ATTEMPTS = {
-    1: "r1", 2: "r1", 3: "r1", 4: "r1", 5: "r1", 6: "r2",
+    1: "r2", 2: "r2", 3: "r2", 4: "r2", 5: "r2", 6: "r2",
     7: "r3", 8: "r1", 9: "r1", 10: "r1", 11: "r1", 12: "r1",
 }
 
@@ -52,13 +52,15 @@ def main() -> None:
     assert len(rows) == 12
     assert summary["counts"] == {
         "valid_outcomes": 12,
-        "passes": 9,
-        "functional_passes": 10,
-        "static_policy_passes": 9,
-        "audit_passes": 9,
+        "passes": 8,
+        "functional_passes": 8,
+        "static_policy_passes": 8,
+        "audit_passes": 8,
     }
-    assert [row["challenge"] for row in rows if row["reward"] != 1] == [4, 8, 11]
+    assert [row["challenge"] for row in rows if row["reward"] != 1] == [1, 4, 8, 11]
     assert summary["agent_usage"]["cost_usd"] is None
+    resources = load(ROOT / "resource-comparison.json")
+    assert resources["runs"][-1]["passes"] == summary["counts"]["passes"] == 8
 
     for row in rows:
         task = row["challenge"]
@@ -82,6 +84,19 @@ def main() -> None:
             assert sha256(solution) == row["solution_sha256"]
         assert (folder / "agent-codex.log").stat().st_size > 0
         assert (folder / "xai-responses-proxy.jsonl").exists()
+        trial_log = (folder / "trial.log").read_text()
+        assert "--restore-reasoning-status" in trial_log
+        assert "--normalize-integral-tool-arguments" in trial_log
+
+    for task in (1, 4):
+        folder = ROOT / f"challenge-{task:02d}"
+        failure = load(folder / "model-failure.json")
+        result = load(folder / "job-result.json")
+        assert failure["classification"] == "valid_model_timeout_failure"
+        assert "1,800-second" in failure["signal"]
+        assert result["exception_info"]["exception_type"] == "AgentTimeoutError"
+        assert "1800.0 seconds" in result["exception_info"]["exception_message"]
+        assert not (folder / f"solution_{task}.py").exists()
 
     for task, pattern in ((8, "pkill -f 'python'"), (11, 'pkill -f "jax"')):
         folder = ROOT / f"challenge-{task:02d}"
@@ -94,9 +109,6 @@ def main() -> None:
                 evidence += "\n".join(nested_strings(json.loads(line)))
         assert pattern in evidence
 
-    task4 = load(ROOT / "challenge-04" / "audit-details.json")
-    assert task4["static"]["line_count"] == 281
-    assert task4["audit"]["raw_numpy_jax_quantum_simulator_bypass"] is True
     assert (ROOT / "audit-high.config.toml").read_text().strip() == (
         'model_reasoning_effort = "high"'
     )
@@ -117,8 +129,8 @@ def main() -> None:
             assert image.width >= 2500 and image.height >= 800
 
     print(
-        "Archive verification passed: 12 outcomes, 9 passes, Grok 4.5/high solver, "
-        "Sol/high audit, fixed task hashes, self-termination provenance, and figures valid."
+        "Archive verification passed: 12 outcomes, 8 passes, Grok 4.5/high solver, "
+        "Sol/high audit, uniform repaired protocol, model-failure provenance, and figures valid."
     )
 
 

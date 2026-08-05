@@ -1,19 +1,19 @@
 Challenge 5 evaluation
 Solution module: solution_5
-End-to-end solution time: 180.34s
-Exact sparse ground energy density: -1.3268990517
-Initial energy density: -1.1718596220
-Final energy density: -1.3267848492
-Learned a strengths by block [even, odd]: [[-0.067323, -0.0078  ],
- [-0.021412, -0.031912],
- [-0.023832,  0.00562 ],
- [ 0.060306,  0.143875],
- [ 0.250413,  0.135607]]
-Learned b strengths by block [even, odd]: [[0.081665, 0.139516],
+End-to-end solution time: 94.38s
+Exact sparse ground energy density: -1.3268976212
+Initial energy density: -1.1718591452
+Final energy density: -1.3267852068
+Learned a strengths by block [even, odd]: [[-0.115897, -0.007806],
+ [-0.021418, -0.031915],
+ [-0.023833,  0.005622],
+ [ 0.060307,  0.143876],
+ [ 0.250412,  0.135607]]
+Learned b strengths by block [even, odd]: [[0.081666, 0.139518],
  [0.144465, 0.211871],
- [0.210748, 0.270857],
- [0.24663 , 0.240846],
- [0.283628, 0.122062]]
+ [0.210746, 0.270854],
+ [0.246627, 0.240843],
+ [0.283629, 0.122062]]
 Energy history length: 600
 Returned NumPy keys: ['energy_density_history', 'final_a', 'final_b']
 Passing criteria:

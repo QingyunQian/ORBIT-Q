@@ -1,0 +1,5 @@
+{
+  "classification": "valid_model_timeout_failure",
+  "signal": "AgentTimeoutError / 1,800-second limit",
+  "evidence": "Grok reached the 1,800-second Agent limit before creating solution_1.py."
+}

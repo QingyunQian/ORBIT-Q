@@ -10,7 +10,7 @@
     "source": "/root/solution_4.py",
     "destination": "artifacts/root/solution_4.py",
     "type": "file",
-    "status": "ok",
+    "status": "failed",
     "service": null
   },
   {

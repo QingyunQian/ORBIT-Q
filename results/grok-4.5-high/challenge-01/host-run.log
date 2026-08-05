@@ -1,7 +1,7 @@
 --agent-import-path is deprecated; use --agent instead.
 --environment-import-path is deprecated; use --env instead.
 --verifier-import-path is deprecated; use --verifier instead.
-  1/1 Framework_Score: 1.000 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:33:44 0:00:00
+  1/1 Framework_Score: 0.000 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 0:30:32 0:00:00
 adhoc • codex • grok-4.5
 ┏━━┳━━┳━━┳━━┳━━┳━━┳━━┳━━┳━━┳━━┳━━┳━━┳━━┳━━┳━━┳━━┳━━┳━━┳━━━┳━━┳━━━┳━━┳━━━┳━━┳━━━┓
 ┃  ┃  ┃  ┃  ┃  ┃  ┃  ┃  ┃  ┃  ┃  ┃  ┃  ┃  ┃  ┃  ┃  ┃  ┃ … ┃  ┃ … ┃  ┃ … ┃  ┃ … ┃
@@ -13,28 +13,28 @@ adhoc • codex • grok-4.5
 ┃ Reward ┃ Count ┃
 ┡━━━━━━━━╇━━━━━━━┩
 │ 1      │     1 │
-│ 1.0    │     1 │
-│ 1.0    │     1 │
-│ 1.0    │     1 │
-│ 160.68 │     1 │
-│ 1.0    │     1 │
-│ 1.0    │     1 │
-│ 1.0    │     1 │
-│ 1.0    │     1 │
-│ 1.0    │     1 │
-│ 1.0    │     1 │
-│ 1.0    │     1 │
-│ 1.0    │     1 │
-│ 1.0    │     1 │
-│ 1.0    │     1 │
-│ 1.0    │     1 │
-│ 1.0    │     1 │
-│ 1.0    │     1 │
-│ 1.0    │     1 │
-│ 1.0    │     1 │
-│ 1.0    │     1 │
-│ 1.0    │     1 │
-│ 1.0    │     1 │
+│ 0.0    │     1 │
+│ 0.0    │     1 │
+│ 0.0    │     1 │
+│ -1.0   │     1 │
+│ 0.0    │     1 │
+│ 0.0    │     1 │
+│ 0.0    │     1 │
+│ 0.0    │     1 │
+│ 0.0    │     1 │
+│ 0.0    │     1 │
+│ 0.0    │     1 │
+│ 0.0    │     1 │
+│ 0.0    │     1 │
+│ 0.0    │     1 │
+│ 0.0    │     1 │
+│ 0.0    │     1 │
+│ 0.0    │     1 │
+│ 0.0    │     1 │
+│ 0.0    │     1 │
+│ 0.0    │     1 │
+│ 0.0    │     1 │
+│ 0.0    │     1 │
 └────────┴───────┘
 
 ┏━━━━━━━━━━━━━━━━━━━┳━━━━━━━┓
@@ -44,14 +44,14 @@ adhoc • codex • grok-4.5
 └───────────────────┴───────┘
 
 Job Info
-Total runtime: 33m 44s
+Total runtime: 30m 32s
 Results written to 
 /Users/qqy/Desktop/2026Project/ORBIT-Q/jobs/grok-4.5-high-solaudit-20260806-vali
-d/jobs/challenge-01-tensorcircuit-grok-4.5-high-20260806-r1/result.json
+d/jobs/challenge-01-tensorcircuit-grok-4.5-high-20260806-r2/result.json
 Inspect results by running `harbor view 
 /Users/qqy/Desktop/2026Project/ORBIT-Q/jobs/grok-4.5-high-solaudit-20260806-vali
 d/jobs`
 Share results by running `harbor upload 
 /Users/qqy/Desktop/2026Project/ORBIT-Q/jobs/grok-4.5-high-solaudit-20260806-vali
-d/jobs/challenge-01-tensorcircuit-grok-4.5-high-20260806-r1`
+d/jobs/challenge-01-tensorcircuit-grok-4.5-high-20260806-r2`
 

@@ -6,29 +6,33 @@
     "framework": "tensorcircuit",
     "exists": true,
     "parse_ok": 1.0,
-    "line_count": 96,
+    "line_count": 80,
     "line_count_score": 1.0,
     "framework_score": 1.0,
     "no_forbidden_framework_score": 1.0,
     "no_static_cheating_score": 1.0,
     "no_raw_simulator_bypass_score": 1.0,
     "imports": [
+      "__future__",
       "jax",
       "numpy",
+      "optax",
       "tensorcircuit"
     ],
     "forbidden_imports": [],
     "cheating_hits": [],
-    "raw_simulator_hits": [],
+    "raw_simulator_hits": [
+      "eigh"
+    ],
     "static_policy_score": 1.0
   },
   "functional": {
     "functional_score": 1.0,
-    "runtime_score": 0.9971666666666666,
-    "runtime_sec": 180.34,
+    "runtime_score": 1.0,
+    "runtime_sec": 94.38,
     "functional_return_code": 0,
     "functional_passed": true,
-    "functional_output_tail": "Challenge 5 evaluation\nSolution module: solution_5\nEnd-to-end solution time: 180.34s\nExact sparse ground energy density: -1.3268990517\nInitial energy density: -1.1718596220\nFinal energy density: -1.3267848492\nLearned a strengths by block [even, odd]: [[-0.067323, -0.0078  ],\n [-0.021412, -0.031912],\n [-0.023832,  0.00562 ],\n [ 0.060306,  0.143875],\n [ 0.250413,  0.135607]]\nLearned b strengths by block [even, odd]: [[0.081665, 0.139516],\n [0.144465, 0.211871],\n [0.210748, 0.270857],\n [0.24663 , 0.240846],\n [0.283628, 0.122062]]\nEnergy history length: 600\nReturned NumPy keys: ['energy_density_history', 'final_a', 'final_b']\nPassing criteria:\n  energy history length: PASS\n  final a shape: PASS\n  final b shape: PASS\n  energy density improves: PASS\n  energy respects exact lower bound: PASS\n  loose exact energy-density upper bound: PASS\nOverall: PASS\n"
+    "functional_output_tail": "Challenge 5 evaluation\nSolution module: solution_5\nEnd-to-end solution time: 94.38s\nExact sparse ground energy density: -1.3268976212\nInitial energy density: -1.1718591452\nFinal energy density: -1.3267852068\nLearned a strengths by block [even, odd]: [[-0.115897, -0.007806],\n [-0.021418, -0.031915],\n [-0.023833,  0.005622],\n [ 0.060307,  0.143876],\n [ 0.250412,  0.135607]]\nLearned b strengths by block [even, odd]: [[0.081666, 0.139518],\n [0.144465, 0.211871],\n [0.210746, 0.270854],\n [0.246627, 0.240843],\n [0.283629, 0.122062]]\nEnergy history length: 600\nReturned NumPy keys: ['energy_density_history', 'final_a', 'final_b']\nPassing criteria:\n  energy history length: PASS\n  final a shape: PASS\n  final b shape: PASS\n  energy density improves: PASS\n  energy respects exact lower bound: PASS\n  loose exact energy-density upper bound: PASS\nOverall: PASS\n"
   },
   "audit": {
     "uses_required_framework": true,
@@ -41,10 +45,10 @@
     "faithfully_implements_problem": true,
     "obvious_implementation_error": false,
     "problem_alignment_issues": [],
-    "framework_rationale": "The core quantum computation legitimately uses TensorCircuit: it creates circuits, prepares the initial state, applies the custom one- and two-qubit filters, obtains states, and evaluates Pauli expectations through tensorcircuit. JAX supplies differentiable gate matrices, normalization, JIT compilation, and optimization support but does not implement a separate end-to-end simulator. No other quantum framework is imported or used.",
-    "cheating_rationale": "The source contains no hardcoded result, hidden-oracle access, test or reward tampering, evaluator-specific manipulation, or exploitation of evaluator weaknesses. The reported quantities are produced by the stated variational optimization.",
-    "fidelity_rationale": "The implementation consumes the evaluator configuration, starts from |+>^n, initializes all filter strengths to 0.01, applies exp(a_l X) and exp(b_l Z_i Z_{i+1}) with the specified shared parameters and alternating brickwork bonds, normalizes after every layer inside the differentiable loss, evaluates the open-boundary transverse-field Ising energy density, and performs 600 effective Adam training updates without early stopping. Each history value is the loss evaluated immediately before its corresponding update, and the final parameters are returned in the required (5,2) layout. The discarded warmup update is followed by a complete reset and therefore does not alter the training trajectory or returned history.",
-    "implementation_error_rationale": "No obvious logic error is present. The filter matrices have the correct exponential forms, normalization remains in the autodifferentiated computation, the Hamiltonian terms and signs are correct, and the successful evaluation is numerically consistent with the intended algorithm.",
+    "framework_rationale": "The core quantum computation legitimately uses tensorcircuit: it constructs the state with tc.Circuit, applies TensorCircuit gates and non-unitary exponential filters, obtains states through c.state(), normalizes using the TensorCircuit backend, and applies a TensorCircuit Pauli-sum MVP for the Hamiltonian. JAX and Optax provide differentiation and optimization only; no other quantum framework is imported or used.",
+    "cheating_rationale": "The source contains no hardcoded results, hidden-oracle access, test or reward tampering, evaluator-specific manipulation, or raw NumPy/JAX state-vector simulator bypass. Returned values arise from the declared optimization.",
+    "fidelity_rationale": "The implementation starts from |+> on all qubits, uses shared per-layer exp(a_l X) and exp(b_l ZZ) filters with the specified alternating brickwork bonds, renormalizes the full state after every layer within the differentiable computation, evaluates the open-boundary TFIM energy density, and performs exactly config['max_steps'] Adam updates at the configured learning rate. History values are recorded immediately before each update, and the learned parameters are returned in the required 5-by-2 even/odd layout.",
+    "implementation_error_rationale": "No obvious implementation error is present for the fixed configuration. The even-layer bond range correctly produces (0,1) through (16,17), the odd-layer range produces (1,2) through (15,16), and the parameter/history shapes and update ordering match the specification.",
     "confidence": 0.99,
     "llm_framework_compliance_score": 1.0,
     "llm_cheating_score": 1.0,

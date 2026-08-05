@@ -1,15 +1,15 @@
 Challenge 2 evaluation
 Solution module: solution_2
-End-to-end solution time: 57.09s
-Exact sparse ground energy density: -2.00037003
-Initial energy density: -0.74603575
-Final energy density: -1.99060678
-Final block entropies: [0.284801, 0.603311, 0.25847 ]
+End-to-end solution time: 62.29s
+Exact sparse ground energy density: -2.00036931
+Initial energy density: -0.74287486
+Final energy density: -1.99167383
+Final block entropies: [0.306289, 0.603816, 0.257981]
 Target entropies: [0.3, 0.6, 0.8]
-Entropy-profile MSE: 9.78320941e-02
-Entropy-profile RMSE: 3.12781224e-01
-Initial loss: -0.65598953
-Final loss: -1.96614885
+Entropy-profile MSE: 9.79463309e-02
+Entropy-profile RMSE: 3.12963760e-01
+Initial loss: -0.65282869
+Final loss: -1.96718729
 Energy history length: 500
 Loss history length: 500
 Entropy history shape: (500, 3)

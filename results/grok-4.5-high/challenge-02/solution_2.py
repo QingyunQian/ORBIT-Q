@@ -6,147 +6,123 @@ import scipy.sparse as sp
 import tensorcircuit as tc
 
 
-def run_solution(config):
-    tc.set_backend("jax")
-    tc.set_dtype("complex64")
+def _build_hamiltonian(n, zz_anisotropy, staggered_field):
+    eye = sp.eye(2, format="csr", dtype=np.complex64)
+    x = sp.csr_matrix(np.array([[0, 1], [1, 0]], dtype=np.complex64))
+    y = sp.csr_matrix(np.array([[0, -1j], [1j, 0]], dtype=np.complex64))
+    z = sp.csr_matrix(np.array([[1, 0], [0, -1]], dtype=np.complex64))
 
-    n = int(config["n_qubits"])
-    zz_a = float(config["zz_anisotropy"])
-    hz = float(config["staggered_field"])
-    n_layers = int(config["n_layers"])
-    n_blocks = n_layers // 2
-    ss = int(config["subsystem_size"])
-    target = jnp.asarray(config["target_entropies"], dtype=jnp.float32)
-    w = float(config["entropy_weight"])
-    max_steps = int(config["max_steps"])
-    lr = float(config["learning_rate"])
-
-    # even: 2n + 3*(n/2); odd: 2n + 3*((n/2)-1) if n even
-    n_even_bonds = n // 2
-    n_odd_bonds = n // 2 - 1
-    ppb = 2 * n + 3 * n_even_bonds + 2 * n + 3 * n_odd_bonds
-    n_params = n_blocks * ppb
-
-    # Sparse -> dense Hamiltonian for <psi|H|psi>
-    X = sp.csr_matrix(np.array([[0, 1], [1, 0]], dtype=np.complex64))
-    Y = sp.csr_matrix(np.array([[0, -1j], [1j, 0]], dtype=np.complex64))
-    Z = sp.csr_matrix(np.array([[1, 0], [0, -1]], dtype=np.complex64))
-    I = sp.eye(2, dtype=np.complex64)
-
-    def kron_n(ops):
+    def kron_all(ops):
         out = ops[0]
         for op in ops[1:]:
             out = sp.kron(out, op, format="csr")
         return out
 
-    dim = 2 ** n
-    Hsp = sp.csr_matrix((dim, dim), dtype=np.complex64)
+    ham = sp.csr_matrix((2**n, 2**n), dtype=np.complex64)
     for i in range(n - 1):
-        ops = [I] * n
-        ops[i] = X
-        ops[i + 1] = X
-        Hsp = Hsp + kron_n(ops)
-        ops = [I] * n
-        ops[i] = Y
-        ops[i + 1] = Y
-        Hsp = Hsp + kron_n(ops)
-        ops = [I] * n
-        ops[i] = Z
-        ops[i + 1] = Z
-        Hsp = Hsp + zz_a * kron_n(ops)
+        for left, right, weight in ((x, x, 1.0), (y, y, 1.0), (z, z, zz_anisotropy)):
+            ops = [eye] * n
+            ops[i] = left
+            ops[i + 1] = right
+            ham = ham + weight * kron_all(ops)
     for i in range(n):
-        ops = [I] * n
-        ops[i] = Z
-        Hsp = Hsp + hz * ((-1) ** i) * kron_n(ops)
-    H = jnp.asarray(Hsp.toarray())
+        ops = [eye] * n
+        ops[i] = z
+        ham = ham + staggered_field * ((-1) ** i) * kron_all(ops)
+    return jnp.asarray(ham.toarray())
 
-    # Initial product state |0101...>
-    c0 = tc.Circuit(n)
-    for i in range(1, n, 2):
-        c0.x(i)
-    init = c0.state().astype(jnp.complex64)
 
-    xxm = jnp.asarray(tc.gates._xx_matrix)
-    yym = jnp.asarray(tc.gates._yy_matrix)
-    zzm = jnp.asarray(tc.gates._zz_matrix)
-    even = [(i, i + 1) for i in range(0, n, 2)]
-    odd = [(i, i + 1) for i in range(1, n - 1, 2)]
-    trace_out = list(range(ss, n))
+def run_solution(config):
+    tc.set_backend("jax")
+    tc.set_dtype("complex64")
 
-    def apply_block(state, pb):
-        c = tc.Circuit(n, inputs=state)
+    n = int(config["n_qubits"])
+    zz_anisotropy = float(config["zz_anisotropy"])
+    staggered_field = float(config["staggered_field"])
+    n_layers = int(config["n_layers"])
+    subsystem_size = int(config["subsystem_size"])
+    target_entropies = jnp.asarray(config["target_entropies"], dtype=jnp.float32)
+    entropy_weight = float(config["entropy_weight"])
+    max_steps = int(config["max_steps"])
+    learning_rate = float(config["learning_rate"])
+
+    n_blocks = n_layers // 2
+    even_bonds = [(i, i + 1) for i in range(0, n, 2)]
+    odd_bonds = [(i, i + 1) for i in range(1, n - 1, 2)]
+    even_size = 2 * n + 3 * len(even_bonds)
+    odd_size = 2 * n + 3 * len(odd_bonds)
+    params_per_block = even_size + odd_size
+
+    xx = tc.gates._xx_matrix
+    yy = tc.gates._yy_matrix
+    zz = tc.gates._zz_matrix
+    ham = _build_hamiltonian(n, zz_anisotropy, staggered_field)
+
+    bitstring = "".join("1" if (q % 2 == 1) else "0" for q in range(n))
+    psi0 = jnp.zeros((2**n,), dtype=jnp.complex64).at[int(bitstring, 2)].set(1.0)
+    traced = list(range(subsystem_size, n))
+
+    def _sublayer(state, params, bonds):
+        circuit = tc.Circuit(n, inputs=state)
         idx = 0
-        ery = pb[idx : idx + n]
-        idx += n
-        erz = pb[idx : idx + n]
-        idx += n
-        eint = pb[idx : idx + 3 * n_even_bonds].reshape(n_even_bonds, 3)
-        idx += 3 * n_even_bonds
-        ory = pb[idx : idx + n]
-        idx += n
-        orz = pb[idx : idx + n]
-        idx += n
-        oint = pb[idx : idx + 3 * n_odd_bonds].reshape(n_odd_bonds, 3)
-
         for q in range(n):
-            c.ry(q, theta=ery[q])
-            c.rz(q, theta=erz[q])
-        for bi, (i, j) in enumerate(even):
-            c.exp1(i, j, theta=eint[bi, 0], unitary=xxm)
-            c.exp1(i, j, theta=eint[bi, 1], unitary=yym)
-            c.exp1(i, j, theta=eint[bi, 2], unitary=zzm)
-        for q in range(n):
-            c.ry(q, theta=ory[q])
-            c.rz(q, theta=orz[q])
-        for bi, (i, j) in enumerate(odd):
-            c.exp1(i, j, theta=oint[bi, 0], unitary=xxm)
-            c.exp1(i, j, theta=oint[bi, 1], unitary=yym)
-            c.exp1(i, j, theta=oint[bi, 2], unitary=zzm)
+            circuit.ry(q, theta=params[idx])
+            idx += 1
+            circuit.rz(q, theta=params[idx])
+            idx += 1
+        for i, j in bonds:
+            circuit.exp1(i, j, theta=params[idx], unitary=xx)
+            idx += 1
+            circuit.exp1(i, j, theta=params[idx], unitary=yy)
+            idx += 1
+            circuit.exp1(i, j, theta=params[idx], unitary=zz)
+            idx += 1
+        return circuit.state()
 
-        st = c.state()
-        rho = tc.quantum.reduced_density_matrix(st, trace_out)
-        ent = jnp.real(tc.quantum.renyi_entropy(rho, 2)).astype(jnp.float32)
-        return st, ent
+    def _block(state, block_params):
+        state = _sublayer(state, block_params[:even_size], even_bonds)
+        state = _sublayer(state, block_params[even_size:], odd_bonds)
+        rho = tc.quantum.reduced_density_matrix(state, traced)
+        s2 = jnp.real(tc.quantum.renyi_entropy(rho, 2))
+        return state, s2
 
-    def loss_fn(params):
-        p = params.reshape(n_blocks, ppb)
+    def loss_and_metrics(params):
+        final_state, entropies = jax.lax.scan(_block, psi0, params)
+        energy = jnp.real(jnp.vdot(final_state, ham @ final_state))
+        energy_density = energy / n
+        entropy_mse = jnp.mean((entropies - target_entropies) ** 2)
+        loss = energy_density + entropy_weight * entropy_mse
+        return loss, (energy_density, entropy_mse, entropies)
 
-        def body(state, pb):
-            return apply_block(state, pb)
-
-        final_state, ents = jax.lax.scan(body, init, p)
-        e = jnp.real(jnp.vdot(final_state, H @ final_state))
-        ed = e / n
-        mse = jnp.mean((ents - target) ** 2)
-        loss = ed + w * mse
-        return loss, (ed, mse, ents)
-
-    params = 0.02 * jax.random.normal(
-        jax.random.PRNGKey(0), (n_params,), dtype=jnp.float32
-    )
-    optimizer = optax.adam(lr)
+    key = jax.random.PRNGKey(0)
+    params = 0.02 * jax.random.normal(key, (n_blocks, params_per_block), dtype=jnp.float32)
+    optimizer = optax.adam(learning_rate)
     opt_state = optimizer.init(params)
 
-    def step_fn(carry, _):
-        params, opt_state = carry
-        (loss, (ed, mse, ents)), grads = jax.value_and_grad(loss_fn, has_aux=True)(
-            params
-        )
+    @jax.jit
+    def train_step(params, opt_state):
+        (loss, metrics), grads = jax.value_and_grad(loss_and_metrics, has_aux=True)(params)
         updates, opt_state = optimizer.update(grads, opt_state, params)
         params = optax.apply_updates(params, updates)
-        return (params, opt_state), (ed, loss, mse, ents)
+        return params, opt_state, loss, metrics
 
-    @jax.jit
-    def train(params, opt_state):
-        return jax.lax.scan(step_fn, (params, opt_state), None, length=max_steps)
+    # Warmup compile.
+    params, opt_state, _, _ = train_step(params, opt_state)
+    params = 0.02 * jax.random.normal(key, (n_blocks, params_per_block), dtype=jnp.float32)
+    opt_state = optimizer.init(params)
 
-    (_, _), (ed_h, loss_h, mse_h, ent_h) = train(params, opt_state)
+    energy_density_history = np.empty(max_steps, dtype=np.float64)
+    loss_history = np.empty(max_steps, dtype=np.float64)
+    entropy_mse_history = np.empty(max_steps, dtype=np.float64)
+    entropy_history = np.empty((max_steps, target_entropies.shape[0]), dtype=np.float64)
 
-    energy_density_history = np.asarray(ed_h, dtype=np.float64)
-    loss_history = np.asarray(loss_h, dtype=np.float64)
-    entropy_history = np.asarray(ent_h, dtype=np.float64)
-    target_np = np.asarray(config["target_entropies"], dtype=np.float64)
-    entropy_mse_history = np.mean((entropy_history - target_np) ** 2, axis=1)
+    for step in range(max_steps):
+        params, opt_state, loss, metrics = train_step(params, opt_state)
+        energy_density, entropy_mse, entropies = metrics
+        energy_density_history[step] = float(energy_density)
+        loss_history[step] = float(loss)
+        entropy_mse_history[step] = float(entropy_mse)
+        entropy_history[step] = np.asarray(entropies, dtype=np.float64)
 
     return {
         "energy_density_history": energy_density_history,
