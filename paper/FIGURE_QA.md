@@ -27,6 +27,7 @@ Date: 2026-08-06
   lines. Fig. 4b/e use one total-token encoding across configurations.
 - Fig. 1c has no old/new separator and no repeated `high` qualifier in model
   labels. The effort convention is stated once in prose.
-- Grok 4.5 appears in the outcome, runtime, wall-time, and token views; it is
-  omitted from Fig. 4c only because provider cost was not reported.
+- Grok 4.5 appears in the outcome, runtime, wall-time, token, and cost views.
+  Its Fig. 4c cost is reconstructed from recorded token classes at xAI public
+  list prices and cross-checks to $5.090140 total / $0.636267 per valid result.
 - Neither Fable 5 nor DeepSeek max appears in the updated figures.

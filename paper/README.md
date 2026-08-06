@@ -38,8 +38,11 @@ The original 2 × 3 layout is preserved. Panels (a–c) combine all eleven agent
 configurations; panels (d–f) retain the paper's original framework comparison.
 Panels (b) and (e) use one consistent total-token encoding for every
 configuration because the paper tables do not publish token components for
-every legacy configuration. Bubble area represents total recorded cost. Grok
-4.5 is omitted only from panel (c), because its provider cost was not reported.
+every legacy configuration. Bubble area represents total solver cost. Grok
+4.5 is included in panel (c) at **$5.090140 total** and **$0.636267 per valid
+solution**. Its xAI adapter did not populate Harbor's raw `cost_usd` field, so
+the value is reconstructed from the recorded cached/non-cached/output token
+classes at xAI's public Grok 4.5 list prices.
 
 ## New figure — human expert + AI co-optimization
 

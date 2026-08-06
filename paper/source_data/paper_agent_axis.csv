@@ -9,4 +9,4 @@ sol56_ultra,GPT-5.6 Sol ultra,Sol ultra,new,10,2,2.072336,10967.757000,7892.9850
 terra56_high,GPT-5.6 Terra,Terra,new,9,3,2.701777,12385.907000,9300.564036,3085.342537,36.803664,1.142037,35.454720,0.206907,12.036862,yes,yes,ORBIT-Q PR 20 plus final Task 08 adjudication
 luna56_high,GPT-5.6 Luna,Luna,new,9,3,4.691620,14362.147000,10744.733972,3617.413183,74.852649,1.769004,72.726528,0.357117,2.236872,yes,yes,ORBIT-Q PR 21 plus final Task 08 adjudication
 deepseek_v4_flash_high,DeepSeek V4 Flash,DeepSeek,new,5,7,3.476293,17424.726000,5869.032092,11555.693612,81.584990,0.663753,80.007936,0.913301,0.572672,yes,yes,ORBIT-Q PR 23
-grok45_high,Grok 4.5,Grok 4.5,new,8,4,3.844088,9785.490000,5394.966612,4390.523575,8.462179,0.805236,7.449472,0.207471,,yes,yes,ORBIT-Q PR 26; normalized repaired compatibility protocol
+grok45_high,Grok 4.5,Grok 4.5,new,8,4,3.844088,9785.490000,5394.966612,4390.523575,8.462179,0.805236,7.449472,0.207471,5.090140,yes,yes,ORBIT-Q PR 26; normalized repaired compatibility protocol; cost reconstructed from recorded token classes at xAI public list prices

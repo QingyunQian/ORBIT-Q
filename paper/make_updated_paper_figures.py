@@ -289,7 +289,7 @@ def make_fig4(agent_rows: list[dict[str, str]], framework_rows: list[dict[str, s
         "terra56_high": (26.5, 1.47),
         "luna56_high": (30.0, 0.38),
         "deepseek_v4_flash_high": (46.0, 0.31),
-        "grok45_high": (24.0, 0.20),
+        "grok45_high": (15.0, 0.72),
     }
     for row in agent_rows:
         x = num(row, "wall_total_sec") / 60 / int(row["passes"])
@@ -313,9 +313,8 @@ def make_fig4(agent_rows: list[dict[str, str]], framework_rows: list[dict[str, s
     axc.set_xlim(5, 64)
     axc.set_ylim(0, 3.35)
     axc.set_xlabel("Solve time per valid solution (min)")
-    axc.set_ylabel("Recorded cost per valid solution (USD)")
-    axc.text(0.98, 0.97, "Marker area scales with total recorded cost", transform=axc.transAxes, ha="right", va="top", fontsize=7.2, color="#444444")
-    axc.text(0.02, 0.03, "Grok 4.5: cost not reported", transform=axc.transAxes, ha="left", va="bottom", fontsize=7.2, color=COLORS["grok45_high"])
+    axc.set_ylabel("Solver cost per valid solution (USD)")
+    axc.text(0.98, 0.97, "Marker area scales with total solver cost", transform=axc.transAxes, ha="right", va="top", fontsize=7.2, color="#444444")
     clean_axes(axc)
     panel_label(axc, "(c)")
 
