@@ -284,12 +284,12 @@ def make_fig4(agent_rows: list[dict[str, str]], framework_rows: list[dict[str, s
         "opus48": (22.7, 1.82),
         "glm52": (34.0, 2.50),
         "sonnet46": (29.5, 1.72),
-        "sol56_high": (13.5, 2.74),
+        "sol56_high": (11.5, 2.74),
         "sol56_ultra": (6.0, 3.10),
         "terra56_high": (26.5, 1.47),
         "luna56_high": (30.0, 0.38),
         "deepseek_v4_flash_high": (46.0, 0.31),
-        "grok45_high": (15.0, 0.72),
+        "grok45_high": (13.0, 0.72),
     }
     for row in agent_rows:
         x = num(row, "wall_total_sec") / 60 / int(row["passes"])
