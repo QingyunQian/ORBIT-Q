@@ -55,6 +55,7 @@ COLORS = {
     "terra56_high": "#009E73",
     "luna56_high": "#CC79A7",
     "deepseek_v4_flash_high": "#4D4D4D",
+    "grok45_high": "#111111",
     "tensorcircuit": "#0072B2",
     "pennylane": "#CC79A7",
     "torchquantum": "#E69F00",
@@ -113,6 +114,7 @@ def validate_new_slowdowns(agent_rows: list[dict[str, str]]) -> None:
         "gpt56_terra_high": "terra56_high",
         "gpt56_luna_high": "luna56_high",
         "deepseek_v4_flash_high": "deepseek_v4_flash_high",
+        "grok45_high": "grok45_high",
     }
     expected = {r["key"]: num(r, "gm_slowdown") for r in agent_rows if r["series"] == "new"}
     for model, agent_key in model_to_agent.items():
@@ -128,7 +130,7 @@ def validate_new_slowdowns(agent_rows: list[dict[str, str]]) -> None:
 
 def make_fig1c(agent_rows: list[dict[str, str]], framework_rows: list[dict[str, str]]) -> None:
     agents = [r for r in agent_rows if r["include_fig1c"] == "yes"]
-    order = ["gpt55", "opus48", "glm52", "sonnet46", "sol56_high", "sol56_ultra", "terra56_high", "luna56_high", "deepseek_v4_flash_high"]
+    order = ["gpt55", "opus48", "glm52", "sonnet46", "sol56_high", "sol56_ultra", "terra56_high", "luna56_high", "deepseek_v4_flash_high", "grok45_high"]
     agents = sorted(agents, key=lambda r: order.index(r["key"]))
     frameworks = {r["key"]: r for r in framework_rows}
 
@@ -142,7 +144,7 @@ def make_fig1c(agent_rows: list[dict[str, str]], framework_rows: list[dict[str, 
         "orbit_passes", ["#E9B5AB", "#F3D7A2", "#CFE1C9", "#B8D8D8"]
     )
     norm = Normalize(3, 12)
-    fig, ax = plt.subplots(figsize=(7.15, 2.75))
+    fig, ax = plt.subplots(figsize=(7.75, 2.75))
     ax.set_xlim(-0.85, len(agents))
     ax.set_ylim(4.25, -1.1)
     ax.axis("off")
@@ -165,18 +167,16 @@ def make_fig1c(agent_rows: list[dict[str, str]], framework_rows: list[dict[str, 
         "Opus-4.8",
         "GLM-5.2",
         "Sonnet-4.6",
-        "5.6 Sol\n(high)",
-        "5.6 Sol\n(ultra)",
-        "5.6 Terra\n(high)",
-        "5.6 Luna\n(high)",
-        "DeepSeek\nV4 Flash\n(high)",
+        "5.6 Sol",
+        "5.6 Sol\nultra",
+        "5.6 Terra",
+        "5.6 Luna",
+        "DeepSeek\nV4 Flash",
+        "Grok 4.5",
     ]
     for j, label in enumerate(labels):
         ax.text(j + 0.50, -0.02, label, ha="center", va="bottom", fontsize=7.7)
 
-    ax.plot([4, 4], [-0.22, 4.00], color="#8C8C8C", lw=1.0)
-    ax.text(2.0, -0.72, "Original paper", ha="center", va="center", color="#555555", fontweight="bold")
-    ax.text(6.5, -0.72, "New TC campaigns", ha="center", va="center", color="#555555", fontweight="bold")
     ax.text(-0.68, 2.0, "Framework", rotation=90, ha="center", va="center", fontsize=9.5, fontweight="bold", color="#666666")
     ax.set_title("Updated agent–framework benchmarking matrix", loc="left", fontweight="bold", pad=18)
     save_all(fig, "fig1c_updated_agent_framework_matrix")
@@ -192,7 +192,7 @@ def make_fig2b(agent_rows: list[dict[str, str]]) -> None:
     ax.text(1.3, 1.25, "Expert TC\nreference", fontsize=7.5, color="#777777", ha="left", va="center")
 
     # Preserve the original paper's four agent colors and label positions.
-    # New campaigns use distinct colors and occupy previously empty regions.
+    # Additional configurations use distinct colors in the same axis.
     fig2_colors = {
         "gpt55": "#0072B2",
         "opus48": "#E69F00",
@@ -203,6 +203,7 @@ def make_fig2b(agent_rows: list[dict[str, str]]) -> None:
         "terra56_high": "#56B4E9",
         "luna56_high": "#8C6D31",
         "deepseek_v4_flash_high": "#4D4D4D",
+        "grok45_high": "#111111",
     }
     label_positions = {
         "gpt55": (20.0, 1.30, "left"),
@@ -214,6 +215,7 @@ def make_fig2b(agent_rows: list[dict[str, str]]) -> None:
         "terra56_high": (28.8, 2.48, "left"),
         "luna56_high": (28.2, 4.70, "left"),
         "deepseek_v4_flash_high": (58.3, 4.08, "center"),
+        "grok45_high": (36.0, 4.12, "left"),
     }
     for row in rows:
         x = 100.0 * int(row["failures"]) / 12.0
@@ -248,7 +250,7 @@ def make_fig4(agent_rows: list[dict[str, str]], framework_rows: list[dict[str, s
     axes = [fig.add_subplot(gs[i, j]) for i in range(2) for j in range(3)]
     axa, axb, axc, axd, axe, axf = axes
 
-    # Agent axis: resource totals for original-paper and new configurations.
+    # Agent axis: resource totals for every reported configuration.
     y = np.arange(len(agent_rows))
     passed_h = np.array([num(r, "wall_passed_sec") / 3600 for r in agent_rows])
     failed_h = np.array([num(r, "wall_failed_sec") / 3600 for r in agent_rows])
@@ -287,10 +289,13 @@ def make_fig4(agent_rows: list[dict[str, str]], framework_rows: list[dict[str, s
         "terra56_high": (26.5, 1.47),
         "luna56_high": (30.0, 0.38),
         "deepseek_v4_flash_high": (46.0, 0.31),
+        "grok45_high": (24.0, 0.20),
     }
     for row in agent_rows:
         x = num(row, "wall_total_sec") / 60 / int(row["passes"])
         yy = num(row, "cost_usd") / int(row["passes"])
+        if np.isnan(yy):
+            continue
         size = 30 + 11 * num(row, "cost_usd")
         color = COLORS[row["key"]]
         axc.scatter(x, yy, s=size, marker="o", facecolor=color, edgecolor="#222222", linewidth=0.8, alpha=0.95, zorder=3)
@@ -310,6 +315,7 @@ def make_fig4(agent_rows: list[dict[str, str]], framework_rows: list[dict[str, s
     axc.set_xlabel("Solve time per valid solution (min)")
     axc.set_ylabel("Recorded cost per valid solution (USD)")
     axc.text(0.98, 0.97, "Marker area scales with total recorded cost", transform=axc.transAxes, ha="right", va="top", fontsize=7.2, color="#444444")
+    axc.text(0.02, 0.03, "Grok 4.5: cost not reported", transform=axc.transAxes, ha="left", va="bottom", fontsize=7.2, color=COLORS["grok45_high"])
     clean_axes(axc)
     panel_label(axc, "(c)")
 

@@ -1,6 +1,6 @@
 # Figure QA record
 
-Date: 2026-08-03
+Date: 2026-08-06
 
 - Four figures were regenerated from tracked CSV sources with matplotlib.
 - Each figure was exported as a vector PDF manuscript master and a matched
@@ -12,17 +12,21 @@ Date: 2026-08-03
 - PDF output uses embedded TrueType fonts and contains no raster image object.
 - Temporary Python-rendered QA previews were inspected at full resolution for
   clipped labels, overlap, stretched elements, and panel consistency.
-- Final pass counts cross-check to **10, 10, 9, 9, 5**; Task 08 is failed for
-  all five new configurations.
+- Final pass counts cross-check to **10, 10, 9, 9, 5, 8**; Task 08 is failed
+  for all six added configurations.
 - Fig. 2b runtime ratios were recomputed against the original paper's public
   expert TensorCircuit runtimes and include passed tasks only.
 - Fig. 2b preserves the original paper's reference marker and legacy model
   palette/label anchors; its displayed ranges are compacted to the occupied
-  data region, added-campaign labels are separated, and Sol high uses a
+  data region, added-campaign labels are separated, and Sol uses a
   non-blue color distinct from GPT-5.5.
 - The expert overview cross-checks all 12 end-to-end values against the
   corresponding upstream Task PR; Task 05 uses legal PR #19 and Task 08 is
   included as a valid optimized implementation.
 - All scatter points use circles and direct labels without colored leader
   lines. Fig. 4b/e use one total-token encoding across configurations.
+- Fig. 1c has no old/new separator and no repeated `high` qualifier in model
+  labels. The effort convention is stated once in prose.
+- Grok 4.5 appears in the outcome, runtime, wall-time, and token views; it is
+  omitted from Fig. 4c only because provider cost was not reported.
 - Neither Fable 5 nor DeepSeek max appears in the updated figures.

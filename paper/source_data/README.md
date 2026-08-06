@@ -1,14 +1,15 @@
 # Source-data notes
 
-- `paper_agent_axis.csv`: original paper agent-axis totals plus Sol high/ultra,
-  Terra high, Luna high, and DeepSeek V4 Flash high. It drives updated Fig. 1c,
-  Fig. 2b, and the top row of Fig. 4.
+- `paper_agent_axis.csv`: original paper agent-axis totals plus Sol, Sol ultra,
+  Terra, Luna, DeepSeek V4 Flash, and Grok 4.5. It drives updated Fig. 1c,
+  Fig. 2b, and the top row of Fig. 4. Unqualified added configurations use
+  high thinking effort; Sol ultra uses ultra.
 - `paper_framework_axis.csv`: original paper framework-axis totals for the
   unchanged bottom row of Fig. 4.
 - `paper_expert_runtimes.csv`: original public per-task TensorCircuit expert
   references used to recompute the new Fig. 2b geometric means.
 - `benchmark_models.csv`: compact new-campaign aggregate table.
-- `task_outcomes.csv`: 5 configurations × 12 tasks. `raw_reward` preserves the
+- `task_outcomes.csv`: 6 configurations × 12 tasks. `raw_reward` preserves the
   verifier result; `final_pass` records final human-expert adjudication.
 - `expert_optimization.csv`: original and optimized expert runtimes plus the
   dominant factor retained after ablation.
@@ -16,7 +17,7 @@
 
 The original values come from the main and supplementary tables of
 [arXiv:2607.03105](https://arxiv.org/abs/2607.03105). The new campaign totals
-come from ORBIT-Q PRs #5, #6, #20, #21, and #23. Fig. 2b's new runtime ratios
+come from ORBIT-Q PRs #5, #6, #20, #21, #23, and #26. Fig. 2b's added runtime ratios
 are recomputed against the original paper's public per-task expert
 TensorCircuit runtimes, over final passed tasks only.
 
@@ -24,7 +25,7 @@ The original paper tables expose total token use for the legacy configurations
 but not the full cache/non-cache/output decomposition. Updated Fig. 4b/e
 therefore compare total tokens with one consistent color for every bar.
 
-Task 08 is final `F` for all five new solver configurations. Luna and Sol ultra
+Task 08 is final `F` for all six added solver configurations. Luna and Sol ultra
 retain raw reward `1` in `task_outcomes.csv`; `final_pass=0` records the
 paper-facing decision. This solver-campaign adjudication is separate from the
 valid Task 08 human-expert optimization recorded in `expert_optimization.csv`.
