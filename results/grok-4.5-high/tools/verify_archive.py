@@ -16,6 +16,7 @@ EXPECTED_ATTEMPTS = {
     1: "r2", 2: "r2", 3: "r2", 4: "r2", 5: "r2", 6: "r2",
     7: "r3", 8: "r1", 9: "r1", 10: "r1", 11: "r1", 12: "r1",
 }
+EXPECTED_COST_USD = 5.09014
 
 
 def load(path: Path) -> dict:
@@ -58,7 +59,19 @@ def main() -> None:
         "audit_passes": 8,
     }
     assert [row["challenge"] for row in rows if row["reward"] != 1] == [1, 4, 8, 11]
-    assert summary["agent_usage"]["cost_usd"] is None
+    assert abs(summary["agent_usage"]["cost_usd"] - EXPECTED_COST_USD) < 1e-6
+    assert summary["agent_usage"]["cost_method"] == (
+        "recorded_token_usage_xai_public_list_price"
+    )
+    assert summary["agent_usage"]["provider_reported_cost_usd"] is None
+    assert summary["agent_usage"]["pricing"]["usd_per_million_tokens"] == {
+        "non_cached_input": 2.0,
+        "cached_input": 0.3,
+        "output": 6.0,
+    }
+    assert abs(
+        sum(row["cost_usd"] for row in rows) - EXPECTED_COST_USD
+    ) < 1e-6
     resources = load(ROOT / "resource-comparison.json")
     assert resources["runs"][-1]["passes"] == summary["counts"]["passes"] == 8
 
@@ -76,6 +89,8 @@ def main() -> None:
         assert config["verifier"]["kwargs"]["profile_config_path"].endswith(
             "audit-high.config.toml"
         )
+        assert row["provider_reported_cost_usd"] is None
+        assert row["cost_method"] == "recorded_token_usage_xai_public_list_price"
         solution = folder / f"solution_{task}.py"
         if row["solution_sha256"] is None:
             assert not solution.exists()

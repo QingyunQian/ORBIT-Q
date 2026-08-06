@@ -49,7 +49,9 @@ Tasks 01 and 04 are retained as valid model timeout failures. Tasks 08 and 11 ar
 
 ![Grok 4.5 high agent-side resource use](figs/grok-4.5-high-agent-resource-use.png)
 
-The 12 selected outcomes used 163.1 minutes of Agent wall time and 8.462 million solving-side tokens: 0.805 million non-cache-read prompt tokens, 7.449 million cache-read prompt tokens, and 0.207 million output tokens. This is 20.39 Agent minutes and 1.058 million tokens per valid solution. All 12 selected outcomes use the same repaired compatibility protocol. The integration did not report xAI provider cost, so the comparison uses time and tokens rather than fabricating a dollar estimate.
+The 12 selected outcomes used 163.1 minutes of Agent wall time and 8.462 million solving-side tokens: 0.805 million non-cache-read prompt tokens, 7.449 million cache-read prompt tokens, and 0.207 million output tokens. This is 20.39 Agent minutes and 1.058 million tokens per valid solution. All 12 selected outcomes use the same repaired compatibility protocol.
+
+Solver cost is **$5.090140 total**, or **$0.636267 per valid solution**. The xAI adapter did not populate Harbor's `cost_usd` field, so this value is reconstructed from the recorded token split using the [official Grok 4.5 short-context list prices](https://docs.x.ai/developers/models/grok-4.5): $2.00/M non-cached input tokens, $0.30/M cached input tokens, and $6.00/M output tokens. The raw `job-result.json` files retain the provider-reported `null`; `summary.json` and `stamp-info.json` record both the reconstructed value and its method.
 
 ## Provenance
 

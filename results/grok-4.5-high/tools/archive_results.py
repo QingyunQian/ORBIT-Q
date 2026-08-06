@@ -45,6 +45,27 @@ MODEL_FAILURES = {
     },
 }
 
+# Grok 4.5 public short-context list prices, retrieved 2026-08-06.
+# https://docs.x.ai/developers/models/grok-4.5
+PRICE_PER_MILLION = {
+    "non_cached_input": 2.00,
+    "cached_input": 0.30,
+    "output": 6.00,
+}
+
+
+def list_price_cost(input_tokens: int | None, cache_tokens: int | None,
+                    output_tokens: int | None) -> float:
+    input_count = input_tokens or 0
+    cache_count = cache_tokens or 0
+    output_count = output_tokens or 0
+    non_cached_count = max(input_count - cache_count, 0)
+    return (
+        non_cached_count * PRICE_PER_MILLION["non_cached_input"]
+        + cache_count * PRICE_PER_MILLION["cached_input"]
+        + output_count * PRICE_PER_MILLION["output"]
+    ) / 1_000_000
+
 
 def load(path: Path) -> dict:
     text = path.read_text()
@@ -135,6 +156,12 @@ def main() -> None:
         agent_interval = result.get("agent_execution") or {}
         exception = result.get("exception_info") or {}
         failure = MODEL_FAILURES.get(task)
+        provider_reported_cost = agent_result.get("cost_usd")
+        reconstructed_cost = list_price_cost(
+            agent_result.get("n_input_tokens"),
+            agent_result.get("n_cache_tokens"),
+            agent_result.get("n_output_tokens"),
+        )
         stamp = {
             "challenge": task,
             "selected_attempt": ATTEMPTS[task],
@@ -158,7 +185,9 @@ def main() -> None:
             "n_input_tokens": agent_result.get("n_input_tokens"),
             "n_cache_tokens": agent_result.get("n_cache_tokens"),
             "n_output_tokens": agent_result.get("n_output_tokens"),
-            "cost_usd": agent_result.get("cost_usd"),
+            "cost_usd": round(reconstructed_cost, 9),
+            "provider_reported_cost_usd": provider_reported_cost,
+            "cost_method": "recorded_token_usage_xai_public_list_price",
             "solution_sha256": sha256(solution),
             "reward": reward["reward"],
             "functional_score": reward["functional_score"],
@@ -209,8 +238,25 @@ def main() -> None:
             "input_tokens": sum(row["n_input_tokens"] or 0 for row in task_rows),
             "cache_tokens": sum(row["n_cache_tokens"] or 0 for row in task_rows),
             "output_tokens": sum(row["n_output_tokens"] or 0 for row in task_rows),
-            "cost_usd": None,
-            "cost_note": "The local xAI/Codex integration did not report provider cost.",
+            "cost_usd": round(sum(row["cost_usd"] for row in task_rows), 6),
+            "cost_per_valid_solution_usd": round(
+                sum(row["cost_usd"] for row in task_rows)
+                / sum(row["reward"] == 1 for row in task_rows),
+                6,
+            ),
+            "cost_method": "recorded_token_usage_xai_public_list_price",
+            "provider_reported_cost_usd": None,
+            "pricing": {
+                "model": "grok-4.5",
+                "context_tier": "less_than_200k_prompt_tokens",
+                "usd_per_million_tokens": PRICE_PER_MILLION,
+                "source": "https://docs.x.ai/developers/models/grok-4.5",
+                "retrieved": "2026-08-06",
+            },
+            "cost_note": (
+                "The xAI adapter did not populate cost_usd, so cost is reconstructed "
+                "from recorded cached/non-cached/output tokens and xAI public list prices."
+            ),
         },
         "tasks": task_rows,
         "excluded_attempts": {
